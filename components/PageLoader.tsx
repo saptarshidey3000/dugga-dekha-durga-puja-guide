@@ -23,28 +23,33 @@ export default function PageLoader() {
 
   // 1. Initial startup animation (2 seconds ONLY when website first starts)
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      prevPathnameRef.current = pathname;
-      timerRef.current = setTimeout(() => {
-        setIsVisible(false);
-      }, 2000);
-    }
+    setIsVisible(true);
+    const initialTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(initialTimer);
+    };
   }, []);
 
   // 2. Route change animation (1 second whenever navigating between different pages)
   useEffect(() => {
-    if (!isFirstMount.current) {
-      const prevPath = prevPathnameRef.current;
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
       prevPathnameRef.current = pathname;
-
-      // Do NOT trigger loader when navigating within /metro (e.g. /metro <-> /metro?region=...)
-      if (prevPath === '/metro' && pathname === '/metro') {
-        return;
-      }
-
-      showLoader(1000);
+      return;
     }
+
+    const prevPath = prevPathnameRef.current;
+    prevPathnameRef.current = pathname;
+
+    // Do NOT trigger loader when navigating within /metro (e.g. /metro <-> /metro?region=...)
+    if (prevPath === '/metro' && pathname === '/metro') {
+      return;
+    }
+
+    showLoader(1000);
   }, [pathname]);
 
   // 3. Link click interceptor (triggers 1 second load on navigation, excluding /metro <-> /metro?region=...)
@@ -85,14 +90,14 @@ export default function PageLoader() {
     document.addEventListener('click', handleAnchorClick);
     return () => {
       document.removeEventListener('click', handleAnchorClick);
-      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
   return (
     <div
       aria-hidden={!isVisible}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#120E0C]/90 backdrop-blur-2xl transition-all duration-500 ease-out select-none ${
+      onClick={() => setIsVisible(false)}
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#120E0C]/90 backdrop-blur-2xl transition-all duration-500 ease-out select-none cursor-pointer ${
         isVisible
           ? 'opacity-100 pointer-events-auto scale-100'
           : 'opacity-0 pointer-events-none scale-105'

@@ -18,8 +18,8 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   // - Home ('/'): No blur
   // - Bonedi Bari main listing ('/bonedi'): DO NOT BLUR
   // - Individual Bonedi Baris ('/bonedi/[id]'): REDUCED BLUR (blur-[2px])
-  // - Saved ('/saved'): BLUR (blur-[5px])
-  // - Metro ('/metro', '/metro?region=...'), Routes ('/route/...'), Explore ('/explore'): BLUR (blur-[5px])
+  // - Metro ('/metro', '/metro?region=...'), Routes ('/route/...', '/routes'): REDUCED BLUR (blur-[2px])
+  // - Saved ('/saved'), Explore ('/explore'), Pandal ('/pandal'): BLUR (blur-[5px])
   const getBlurClass = () => {
     if (!pathname || pathname === '/') {
       return 'blur-none scale-100';
@@ -28,16 +28,18 @@ export default function ClientShell({ children }: { children: React.ReactNode })
     if (pathname === '/bonedi') {
       return 'blur-none scale-100';
     }
-    // Individual Bonedi Bari detail pages (e.g. /bonedi/shobhabazar): REDUCE THE BLUR
-    if (pathname.startsWith('/bonedi/')) {
-      return 'blur-[2px] scale-[1.02]';
-    }
-    // Saved, Metro, Routes, Explore, Pandal: FULL BLUR
+    // Individual Bonedi Bari detail pages and Metro & Route pages: REDUCED BLUR
     if (
-      pathname.startsWith('/saved') ||
+      pathname.startsWith('/bonedi/') ||
       pathname.startsWith('/metro') ||
       pathname.startsWith('/route') ||
-      pathname.startsWith('/routes') ||
+      pathname.startsWith('/routes')
+    ) {
+      return 'blur-[2px] scale-[1.02]';
+    }
+    // Saved, Explore, Pandal: FULL BLUR
+    if (
+      pathname.startsWith('/saved') ||
       pathname.startsWith('/explore') ||
       pathname.startsWith('/pandal')
     ) {
