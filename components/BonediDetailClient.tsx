@@ -115,11 +115,35 @@ export default function BonediDetailClient({
                 👉 {bonedi.directions}
               </p>
             )}
+            {bonedi.googleMapsUrl && (
+              <div className="pt-2">
+                <a
+                  href={bonedi.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#E1BE68] hover:text-white underline"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Open in Google Maps ↗</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Narrative Description & Heritage Note */}
         <div className="bg-[#120E0C]/90 backdrop-blur-md p-6 rounded-2xl border border-[#C9973E]/40 space-y-4 shadow-xl text-[#F7F0E2]">
+          {bonedi.founderHistory && bonedi.founderHistory !== bonedi.description && (
+            <div>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-[#E1BE68] mb-1">
+                Founder History
+              </h2>
+              <p className="text-sm leading-relaxed text-[#F7F0E2]/85">
+                {bonedi.founderHistory}
+              </p>
+            </div>
+          )}
+
           <div>
             <h2 className="text-xs font-bold uppercase tracking-widest text-[#E1BE68] mb-1">
               Family & Estate Heritage

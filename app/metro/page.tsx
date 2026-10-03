@@ -35,15 +35,15 @@ const REGION_CONFIGS: { id: Region; label: string; count: number; metroHub: stri
     id: 'Salt Lake + New Town',
     label: 'SALT LAKE + NEW TOWN',
     count: 4,
-    metroHub: 'Salt Lake · Karunamoyee · City Centre',
-    description: 'Spacious modern suburban themes, landmark architecture, and easy access via the Green Line Metro.',
+    metroHub: 'Karunamoyee · City Centre · Sector V / New Town',
+    description: 'Quintessential Salt Lake block-puja hopping circuits and New Town mega-celebrations connected by Green Line (Line 2) Metro.',
   },
   {
     id: 'Central Kolkata',
     label: 'CENTRAL KOLKATA',
     count: 7,
-    metroHub: 'MG Road · Central · Sealdah',
-    description: 'Collegiate heritage around College Square water reservoir, Mohammad Ali Park, and Santosh Mitra Square.',
+    metroHub: 'MG Road · Central · Chandni Chowk',
+    description: 'Heritage heart of Central Kolkata pandal hopping connecting College Square, Mohammad Ali Park, and Santosh Mitra Square to Wellington Square.',
   },
 ];
 
@@ -60,6 +60,11 @@ function MetroGuideContent() {
       (regionParam?.toLowerCase() === 'dumdum area' && r.id === 'Dum Dum') ||
       (regionParam?.toLowerCase() === 'dumdum' && r.id === 'Dum Dum') ||
       (regionParam?.toLowerCase() === 'dum dum' && r.id === 'Dum Dum') ||
+      (regionParam?.toLowerCase() === 'saltlake and newtown' && r.id === 'Salt Lake + New Town') ||
+      (regionParam?.toLowerCase() === 'salt lake and newtown' && r.id === 'Salt Lake + New Town') ||
+      (regionParam?.toLowerCase() === 'salt lake and new town' && r.id === 'Salt Lake + New Town') ||
+      (regionParam?.toLowerCase() === 'salt lake' && r.id === 'Salt Lake + New Town') ||
+      (regionParam?.toLowerCase() === 'new town' && r.id === 'Salt Lake + New Town') ||
       (regionParam?.toLowerCase() === 'east / west metro' && r.id === 'Salt Lake + New Town')
   );
 

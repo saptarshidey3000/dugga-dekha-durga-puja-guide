@@ -120,9 +120,12 @@ export interface BonediBari {
   address: string;
   directions?: string;
   description: string;
+  founderHistory?: string;
   heritageNote?: string;
   yearEstablished?: string;
   image?: string;
+  imageUrl?: string;
+  googleMapsUrl?: string;
   latitude?: number;
   longitude?: number;
 }

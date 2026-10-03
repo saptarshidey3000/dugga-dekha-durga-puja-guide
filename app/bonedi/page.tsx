@@ -141,7 +141,7 @@ export default function BonediLandingPage() {
                 Looking for a Specific Ancestral House?
               </h3>
               <p className="text-xs text-[#F7F0E2]/70">
-                Search across all 22 verified Bonedi Baris by household name, area, or nearest Metro.
+                Search across all {BONEDI_BARIS.length} verified Bonedi Baris by household name, area, or nearest Metro.
               </p>
             </div>
             <span className="text-xs font-semibold text-[#E1BE68]">
