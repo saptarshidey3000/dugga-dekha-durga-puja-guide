@@ -1,0 +1,102 @@
+import { CalendarDay, CulturalRitual } from './types';
+
+export const PUJA_CALENDAR_2026: CalendarDay[] = [
+  {
+    tithi: 'Mahalaya',
+    bengaliTithi: 'মহালয়া',
+    date2026: 'October 10, 2026',
+    englishDay: 'Saturday',
+    significance: 'Tarpan on the Ganges, dawn broadcast of Birendra Krishna Bhadra’s Mahishasuramardini, and the symbolic invocation of the Goddess.',
+  },
+  {
+    tithi: 'Maha Shashthi',
+    bengaliTithi: 'মহা ষষ্ঠী',
+    date2026: 'October 16, 2026',
+    englishDay: 'Friday',
+    significance: 'Bodhon (awakening), Amontron and Adhibas. Unveiling of the Goddess’s face and the official commencement of pandal hopping.',
+    isMainDay: true,
+  },
+  {
+    tithi: 'Maha Saptami',
+    bengaliTithi: 'মহা সপ্তমী',
+    date2026: 'October 17, 2026',
+    englishDay: 'Saturday',
+    significance: 'Kola Bou snan (Bathing of the sacred banana bride at river ghats) and the invocation of the nine sacred plants (Nabapatrika).',
+    isMainDay: true,
+  },
+  {
+    tithi: 'Maha Ashtami',
+    bengaliTithi: 'মহা অষ্টমী',
+    date2026: 'October 18, 2026',
+    englishDay: 'Sunday',
+    significance: 'The emotional pinnacle of Durga Puja. Morning Anjali in traditional attire, Kumari Puja, and the sacred evening Sandhi Puja transition.',
+    isMainDay: true,
+  },
+  {
+    tithi: 'Maha Navami',
+    bengaliTithi: 'মহা নবমী',
+    date2026: 'October 19, 2026',
+    englishDay: 'Monday',
+    significance: 'Grand Maha Aarti, Dhunuchi Naach competitions, community bhog feasts, and nightlong pandal wandering.',
+    isMainDay: true,
+  },
+  {
+    tithi: 'Vijaya Dashami',
+    bengaliTithi: 'বিজয়া দশমী',
+    date2026: 'October 20, 2026',
+    englishDay: 'Tuesday',
+    significance: 'Sindoor Khela, tearful farewell to Maa Durga, immersion (Visarjan) at Babu Ghat and Bagbazar Ghat, and sharing of sweet blessings (Shubho Bijoya).',
+    isMainDay: true,
+  },
+];
+
+export const CULTURAL_RITUALS: CulturalRitual[] = [
+  {
+    id: 'anjali',
+    name: 'Pushpanjali',
+    bengaliName: 'পুষ্পাঞ্জলি',
+    timeframe: 'Maha Ashtami Morning (8:00 AM – 11:30 AM)',
+    description: 'Offering fresh lotus, marigold flowers, and bael leaves in cupped palms while chanting Sanskrit mantras to the Goddess after a ritual fast.',
+    significance: 'The most unifying collective devotional moment for millions of Bengalis across the world.',
+  },
+  {
+    id: 'sandhi-puja',
+    name: 'Sandhi Puja',
+    bengaliName: 'সন্ধিপূজা',
+    timeframe: 'Exact 48 minutes joining Ashtami & Navami',
+    description: 'Celebrated at the sacred cusp between the 8th and 9th lunar days. Exactly 108 clay lamps (pradip) are lit, 108 blue lotuses offered, and sacred fire is invoked.',
+    significance: 'Marks the exact cosmic moment Goddess Durga transformed into Chamunda to vanquish demons Chanda and Munda.',
+  },
+  {
+    id: 'dhunuchi-naach',
+    name: 'Dhunuchi Naach',
+    bengaliName: 'ধুনুচি নাচ',
+    timeframe: 'Evenings of Saptami, Ashtami & Navami Aarti',
+    description: 'A rhythmic, ecstatic trance dance performed before the deity with smoldering clay censers filled with burning coconut husk and fragrant dhuno (frankincense).',
+    significance: 'A dramatic celebration of devotion, rhythm, balance, and pure festive energy.',
+  },
+  {
+    id: 'sindoor-khela',
+    name: 'Sindoor Khela',
+    bengaliName: 'সিঁদুর খেলা',
+    timeframe: 'Vijaya Dashami Afternoon (1:00 PM – 4:00 PM)',
+    description: 'Married women smear bright vermilion (sindoor) on the forehead and feet of Maa Durga as a daughter departing for her in-laws, and then playfully apply it on each other.',
+    significance: 'A joyous celebration of womanhood, prosperity, longevity, and sisterly bonding.',
+  },
+  {
+    id: 'dhak',
+    name: 'The Rhythm of the Dhak',
+    bengaliName: 'ঢাকের বোল',
+    timeframe: 'Continuous across all days',
+    description: 'Traditional huge wooden barrel drums hung around the neck, beaten vigorously with two thin cane sticks by master dhakis adorned with heron feathers.',
+    significance: 'The sound of the Dhak is the auditory soul of Durga Puja. Hearing the first beat signals to every Bengali that Puja has arrived.',
+  },
+  {
+    id: 'visarjan',
+    name: 'Visarjan & Bijoya',
+    bengaliName: 'বিসর্জন ও শুভ বিজয়া',
+    timeframe: 'Dashami Evening onwards',
+    description: 'Processions carrying the idols to the sacred river Ganga. The idol is circled three times before immersion into the water, followed by touching elders’ feet and sharing rasgulla and nimki.',
+    significance: 'The goddess returns to Mount Kailash, leaving behind the promise: "Ashey bochhor aabar hobe" (She will return next year).',
+  },
+];
