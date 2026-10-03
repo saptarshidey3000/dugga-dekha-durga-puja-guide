@@ -138,3 +138,21 @@ h1, h2, h3, h4, .font-editorial {
 ::-webkit-scrollbar-thumb:hover {
   background: #8F1D18;
 }
+
+/* Modern Shimmer Progress Animation for Page Loader */
+@keyframes loaderProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-loader-progress {
+  animation: loaderProgress 2s ease-in-out infinite;
+}
+
