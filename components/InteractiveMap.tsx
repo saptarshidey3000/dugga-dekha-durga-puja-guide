@@ -89,7 +89,7 @@ export default function InteractiveMap({
         boundsCoords.push(metroCoords);
 
         const metroHtml = `
-          <div style="background-color: #071A2F; border: 2px solid #D99A3D; color: #FFF8EC; border-radius: 9999px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); cursor: pointer;">
+          <div style="background-color: #7E1815; border: 2px solid #D6A13A; color: #F8F0DF; border-radius: 9999px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 14px rgba(126,24,21,0.4); cursor: pointer;">
             🚇
           </div>
         `;
@@ -102,9 +102,9 @@ export default function InteractiveMap({
 
         const metroMarker = L.marker(metroCoords, { icon: metroIcon }).addTo(map);
         metroMarker.bindPopup(`
-          <div style="font-family: inherit; padding: 4px; color: #071A2F;">
-            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #B93624;">STARTING METRO</div>
-            <div style="font-size: 14px; font-weight: 700; color: #071A2F;">${metroStation.name}</div>
+          <div style="font-family: inherit; padding: 4px; color: #171311;">
+            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #B52B20;">STARTING METRO</div>
+            <div style="font-size: 14px; font-weight: 700; color: #171311;">${metroStation.name}</div>
             <div style="font-size: 11px; color: #555;">${metroStation.line}</div>
           </div>
         `);
@@ -128,25 +128,27 @@ export default function InteractiveMap({
         const stopOrder = activeRoute
           ? activeRoute.stops.find((s) => s.pandalId === pandal.id)?.order || idx + 1
           : idx + 1;
+        const orderFormatted = stopOrder < 10 ? `0${stopOrder}` : `${stopOrder}`;
 
+        // Section 89: gold numbered markers, dark red selected marker
         const pandalHtml = `
           <div style="
-            background-color: ${isSelected ? '#D99A3D' : '#B93624'};
-            border: 2px solid #FFF8EC;
-            color: #FFF8EC;
+            background-color: ${isSelected ? '#7E1815' : '#D6A13A'};
+            border: 2px solid ${isSelected ? '#D6A13A' : '#FFFFFF'};
+            color: ${isSelected ? '#F8F0DF' : '#7E1815'};
             border-radius: 9999px;
             width: ${isSelected ? '36px' : '30px'};
             height: ${isSelected ? '36px' : '30px'};
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: 0 4px 14px rgba(185,54,36,0.5);
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(126,24,21,0.35);
             transition: all 0.2s ease;
             cursor: pointer;
           ">
-            ${stopOrder}
+            ${orderFormatted}
           </div>
         `;
 
@@ -160,17 +162,17 @@ export default function InteractiveMap({
         const marker = L.marker(coords, { icon: pandalIcon }).addTo(map);
 
         marker.bindPopup(`
-          <div style="font-family: inherit; padding: 4px; min-width: 170px; color: #071A2F;">
-            <div style="font-size: 10px; font-weight: 700; color: #B93624; text-transform: uppercase;">
-              Stop ${stopOrder} • ${pandal.area}
+          <div style="font-family: inherit; padding: 4px; min-width: 170px; color: #171311;">
+            <div style="font-size: 10px; font-weight: 700; color: #B52B20; text-transform: uppercase;">
+              Stop ${orderFormatted} • ${pandal.area}
             </div>
-            <div style="font-size: 13px; font-weight: 700; margin-top: 2px; color: #071A2F;">
+            <div style="font-size: 13px; font-weight: 700; margin-top: 2px; color: #171311;">
               ${pandal.name}
             </div>
             <div style="font-size: 11px; color: #666; margin-top: 3px;">
               🚶 ${pandal.walkingTime || 'Walk from stop'}
             </div>
-            <a href="/pandal/${pandal.id}" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #B93624; font-weight: 700; text-decoration: underline;">
+            <a href="/pandal/${pandal.id}" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #B52B20; font-weight: 700; text-decoration: underline;">
               View Pandal Details →
             </a>
           </div>
@@ -183,12 +185,12 @@ export default function InteractiveMap({
         markersRef.current[pandal.id] = marker;
       });
 
-      // 3. Draw Route Polyline if activeRoute has points
+      // 3. Draw Route Polyline if activeRoute has points (Section 89: deep red route line)
       if (routePoints.length >= 2) {
         polylineRef.current = L.polyline(routePoints, {
-          color: '#B93624',
+          color: '#B52B20',
           weight: 4,
-          opacity: 0.85,
+          opacity: 0.9,
           dashArray: '8, 8',
         }).addTo(map);
       }

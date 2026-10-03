@@ -6,7 +6,6 @@ import { PANDALS } from '@/data/pandals';
 import { ROUTES } from '@/data/routes';
 import PandalCard from '@/components/PandalCard';
 import { MapPin, Navigation, ArrowLeft, Footprints, Clock, ArrowRight } from 'lucide-react';
-import dynamic from 'next/dynamic';
 
 export function generateStaticParams() {
   return METRO_STATIONS.map((m) => ({ station: m.id }));
@@ -28,40 +27,40 @@ export default async function MetroStationDetailPage({
   const connectedRoutes = ROUTES.filter((r) => r.metroStationId === metro.id);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
       {/* Back Link */}
       <Link
         href="/metro"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D99A3D] hover:underline"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7E1815] hover:text-[#B52B20] transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4 text-[#B52B20]" />
         <span>Back to All Metro Hubs</span>
       </Link>
 
-      {/* Station Hero Header */}
-      <div className="bg-[#0B223D] border border-[#D99A3D]/30 rounded-2xl p-6 sm:p-8 shadow-xl">
+      {/* Station Hero Header (Poster Style) */}
+      <div className="bg-gradient-to-br from-[#7E1815] via-[#7E1815] to-[#35120F] border border-[#D6A13A]/40 rounded-2xl p-6 sm:p-8 shadow-xl text-[#F8F0DF]">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#B93624] text-[#FFF8EC]">
+          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#35120F] text-[#E7C46A] border border-[#D6A13A]/40">
             {metro.region}
           </span>
-          <span className="text-xs text-[#D99A3D] font-medium">{metro.line}</span>
+          <span className="text-xs text-[#E7C46A] font-medium">{metro.line}</span>
         </div>
 
-        <h1 className="font-editorial text-3xl sm:text-5xl font-bold text-[#FFF8EC]">
+        <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#F8F0DF]">
           {metro.name} Metro Station
         </h1>
         {metro.bengaliName && (
-          <p className="text-base text-[#D99A3D] font-serif mt-1">{metro.bengaliName}</p>
+          <p className="text-base text-[#E7C46A] font-serif mt-1">{metro.bengaliName}</p>
         )}
 
-        <p className="text-sm text-[#D8CEBE] max-w-2xl mt-3 leading-relaxed">
+        <p className="text-sm text-[#F8F0DF]/90 max-w-2xl mt-3 leading-relaxed">
           {metro.description}
         </p>
 
         {/* Exit Gates Grid */}
-        <div className="mt-8 pt-6 border-t border-[#D99A3D]/20">
-          <h2 className="font-editorial text-lg font-bold text-[#FFF8EC] mb-4 flex items-center gap-2">
-            <Navigation className="w-4 h-4 text-[#D99A3D]" />
+        <div className="mt-8 pt-6 border-t border-[#D6A13A]/25">
+          <h2 className="font-editorial text-lg font-bold text-[#E7C46A] mb-4 flex items-center gap-2">
+            <Navigation className="w-4 h-4 text-[#E7C46A]" />
             <span>Verified Exit Gates & Walking Guidance</span>
           </h2>
 
@@ -69,14 +68,14 @@ export default async function MetroStationDetailPage({
             {metro.exits.map((exit) => (
               <div
                 key={exit.id}
-                className="bg-[#071A2F] border border-[#D99A3D]/25 p-4 rounded-xl space-y-1 shadow-sm"
+                className="bg-[#35120F]/80 border border-[#D6A13A]/30 p-4 rounded-xl space-y-1 shadow-sm"
               >
-                <span className="text-xs font-bold text-[#B93624] tracking-wide uppercase">
+                <span className="text-xs font-bold text-[#E7C46A] tracking-wide uppercase">
                   {exit.gateNumber}
                 </span>
-                <h3 className="font-semibold text-sm text-[#FFF8EC]">{exit.landmark}</h3>
+                <h3 className="font-bold text-sm text-[#F8F0DF]">{exit.landmark}</h3>
                 {exit.direction && (
-                  <p className="text-xs text-[#D8CEBE]/80 pt-1 leading-snug">
+                  <p className="text-xs text-[#F8F0DF]/80 pt-1 leading-snug">
                     👉 {exit.direction}
                   </p>
                 )}
@@ -91,11 +90,11 @@ export default async function MetroStationDetailPage({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#D99A3D]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#B52B20]">
                 Recommended Walking Circuit
               </span>
-              <h2 className="font-editorial text-2xl font-bold text-[#FFF8EC]">
-                Curated Routes Starting from {metro.name}
+              <h2 className="font-editorial text-2xl font-bold text-[#7E1815]">
+                Curated Circuits Starting from {metro.name}
               </h2>
             </div>
           </div>
@@ -105,27 +104,27 @@ export default async function MetroStationDetailPage({
               <Link
                 key={route.id}
                 href={`/route/${route.id}`}
-                className="bg-[#0B223D] border border-[#D99A3D]/30 hover:border-[#D99A3D] p-5 rounded-2xl shadow-md hover:shadow-xl transition-all group flex flex-col justify-between"
+                className="bg-[#FFFFFF] border border-[#D6A13A]/30 hover:border-[#D6A13A] p-5 rounded-2xl shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-[#D99A3D]">
+                    <span className="text-xs font-bold text-[#7E1815]">
                       {route.stopsCount} Pandals
                     </span>
-                    <span className="text-xs text-[#D8CEBE]">
+                    <span className="text-xs text-[#5A4E46]">
                       🚶 {route.estimatedDuration} • {route.totalWalkingDistance}
                     </span>
                   </div>
-                  <h3 className="font-editorial text-xl font-bold text-[#FFF8EC] group-hover:text-[#D99A3D] transition-colors">
+                  <h3 className="font-editorial text-xl font-bold text-[#171311] group-hover:text-[#B52B20] transition-colors">
                     {route.name}
                   </h3>
-                  <p className="text-xs text-[#D8CEBE]/80 mt-1 line-clamp-2">
+                  <p className="text-xs text-[#5A4E46] mt-1 line-clamp-2">
                     {route.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-[#D99A3D] font-bold mt-4 pt-3 border-t border-[#D99A3D]/15 group-hover:translate-x-1 transition-transform">
+                <div className="flex items-center gap-1 text-xs text-[#B52B20] font-bold mt-4 pt-3 border-t border-[#D6A13A]/20 group-hover:translate-x-1 transition-transform">
                   <span>Start Walking Tour</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#D6A13A]" />
                 </div>
               </Link>
             ))}
@@ -135,21 +134,15 @@ export default async function MetroStationDetailPage({
 
       {/* Connected Pandals List */}
       <div className="space-y-4">
-        <h2 className="font-editorial text-2xl font-bold text-[#FFF8EC]">
+        <h2 className="font-editorial text-2xl font-bold text-[#7E1815]">
           Directly Accessible Pandals ({connectedPandals.length})
         </h2>
 
-        {connectedPandals.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {connectedPandals.map((pandal) => (
-              <PandalCard key={pandal.id} pandal={pandal} />
-            ))}
-          </div>
-        ) : (
-          <div className="bg-[#0B223D] p-8 rounded-2xl text-center text-[#D8CEBE] text-xs">
-            Connecting routes transit from this station into surrounding residential clusters.
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {connectedPandals.map((pandal) => (
+            <PandalCard key={pandal.id} pandal={pandal} />
+          ))}
+        </div>
       </div>
     </div>
   );

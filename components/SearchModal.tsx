@@ -77,41 +77,41 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-16 px-3 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div
-        className="w-full max-w-2xl bg-[#071A2F] border border-[#D99A3D]/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]"
+        className="w-full max-w-2xl bg-[#FFFFFF] border-2 border-[#D6A13A]/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh] text-[#171311]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#D99A3D]/20 bg-[#0B223D]">
-          <Search className="w-5 h-5 text-[#D99A3D] shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#D6A13A]/30 bg-[#F8F0DF]">
+          <Search className="w-5 h-5 text-[#7E1815] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a pandal, Metro or Bonedi Bari..."
-            className="w-full bg-transparent text-[#FFF8EC] placeholder-[#D8CEBE]/50 text-base focus:outline-none"
+            className="w-full bg-transparent text-[#171311] placeholder-[#5A4E46]/60 text-base focus:outline-none"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="p-1 rounded-full text-[#D8CEBE] hover:text-[#FFF8EC]"
+              className="p-1 rounded-full text-[#5A4E46] hover:text-[#7E1815]"
             >
               <X className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={onClose}
-            className="px-2.5 py-1 rounded-lg text-xs bg-[#0F2A4A] text-[#D99A3D] border border-[#D99A3D]/30 hover:bg-[#B93624] hover:text-[#FFF8EC] transition-colors"
+            className="px-2.5 py-1 rounded-lg text-xs bg-[#7E1815] text-[#F8F0DF] hover:bg-[#B52B20] transition-colors font-bold"
           >
             ESC
           </button>
         </div>
 
         {/* Results Container */}
-        <div className="overflow-y-auto p-4 space-y-6 flex-1">
+        <div className="overflow-y-auto p-4 space-y-6 flex-1 bg-[#FFFFFF]">
           {!cleanQ && (
             <div className="py-6 text-center">
-              <p className="text-xs uppercase tracking-widest text-[#D99A3D] font-semibold mb-3">
+              <p className="text-xs uppercase tracking-widest text-[#B52B20] font-bold mb-3">
                 Quick Suggestions
               </p>
               <div className="flex flex-wrap justify-center gap-2 max-w-md mx-auto">
@@ -119,7 +119,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <button
                     key={term}
                     onClick={() => setQuery(term)}
-                    className="px-3 py-1.5 rounded-full text-xs bg-[#0F2A4A] text-[#FFF8EC] border border-[#D99A3D]/25 hover:border-[#D99A3D] hover:bg-[#B93624]/20 transition-all"
+                    className="px-3.5 py-1.5 rounded-full text-xs bg-[#F8F0DF] text-[#7E1815] border border-[#D6A13A]/40 hover:border-[#7E1815] hover:bg-[#EFE2C7] transition-all font-semibold"
                   >
                     {term}
                   </button>
@@ -130,11 +130,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
           {cleanQ && !hasResults && (
             <div className="py-12 text-center">
-              <Compass className="w-10 h-10 text-[#D99A3D]/50 mx-auto mb-3" />
-              <h3 className="font-editorial text-lg text-[#FFF8EC] mb-1">
+              <Compass className="w-10 h-10 text-[#D6A13A] mx-auto mb-3" />
+              <h3 className="font-editorial text-lg text-[#7E1815] font-bold mb-1">
                 No verified Puja results found
               </h3>
-              <p className="text-xs text-[#D8CEBE]/70 max-w-sm mx-auto">
+              <p className="text-xs text-[#5A4E46] max-w-sm mx-auto">
                 We couldn&apos;t find matching records for &quot;{query}&quot;. Try searching by major Metro station like Kalighat, Sovabazar, or landmark pandals.
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {matchingPandals.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-[#D99A3D]">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#7E1815]">
                   Pandals ({matchingPandals.length})
                 </span>
               </div>
@@ -154,20 +154,20 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     key={pandal.id}
                     href={`/pandal/${pandal.id}`}
                     onClick={onClose}
-                    className="flex items-center justify-between p-3 rounded-xl bg-[#0B223D]/70 border border-[#D99A3D]/15 hover:border-[#D99A3D]/60 hover:bg-[#0F2A4A] transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#F8F0DF] border border-[#D6A13A]/25 hover:border-[#7E1815] hover:bg-[#EFE2C7] transition-all group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#B93624]/20 border border-[#B93624]/40 flex items-center justify-center shrink-0 mt-0.5">
-                        <Compass className="w-4 h-4 text-[#B93624]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#7E1815] text-[#F8F0DF] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <Compass className="w-4 h-4 text-[#E7C46A]" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-[#FFF8EC] group-hover:text-[#D99A3D] transition-colors">
+                        <h4 className="text-sm font-bold text-[#171311] group-hover:text-[#B52B20] transition-colors">
                           {pandal.name}
                         </h4>
-                        <div className="flex items-center gap-2 text-[11px] text-[#D8CEBE]/70 mt-0.5">
+                        <div className="flex items-center gap-2 text-[11px] text-[#5A4E46] mt-0.5">
                           <span>{pandal.area}</span>
                           <span>•</span>
-                          <span className="text-[#D99A3D]">🚇 {pandal.nearestMetro}</span>
+                          <span className="text-[#7E1815] font-semibold">🚇 {pandal.nearestMetro}</span>
                           {pandal.walkingTime && (
                             <>
                               <span>•</span>
@@ -177,7 +177,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#D8CEBE]/50 group-hover:text-[#D99A3D] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-[#7E1815] group-hover:translate-x-1 transition-all" />
                   </Link>
                 ))}
               </div>
@@ -188,7 +188,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {matchingMetros.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-[#D99A3D]">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#7E1815]">
                   Metro Stations ({matchingMetros.length})
                 </span>
               </div>
@@ -198,22 +198,22 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     key={metro.id}
                     href={`/metro/${metro.id}`}
                     onClick={onClose}
-                    className="flex items-center justify-between p-3 rounded-xl bg-[#0B223D]/70 border border-[#D99A3D]/15 hover:border-[#D99A3D]/60 hover:bg-[#0F2A4A] transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#F8F0DF] border border-[#D6A13A]/25 hover:border-[#7E1815] hover:bg-[#EFE2C7] transition-all group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#071A2F] border border-[#D99A3D]/40 flex items-center justify-center shrink-0 mt-0.5">
-                        <MapPin className="w-4 h-4 text-[#D99A3D]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#7E1815] border border-[#D6A13A]/40 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <MapPin className="w-4 h-4 text-[#E7C46A]" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-[#FFF8EC] group-hover:text-[#D99A3D] transition-colors">
-                          {metro.name} Metro
+                        <h4 className="text-sm font-bold text-[#171311] group-hover:text-[#B52B20] transition-colors">
+                          {metro.name} Metro Hub
                         </h4>
-                        <p className="text-[11px] text-[#D8CEBE]/70 mt-0.5">
+                        <p className="text-[11px] text-[#5A4E46] mt-0.5">
                           {metro.region} • {metro.line} • {metro.exits.length} Exits
                         </p>
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#D8CEBE]/50 group-hover:text-[#D99A3D] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-[#7E1815] group-hover:translate-x-1 transition-all" />
                   </Link>
                 ))}
               </div>
@@ -224,7 +224,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {matchingBonedi.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-[#D99A3D]">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#7E1815]">
                   Bonedi Bari Heritage ({matchingBonedi.length})
                 </span>
               </div>
@@ -234,22 +234,22 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     key={bonedi.id}
                     href={`/bonedi/${bonedi.id}`}
                     onClick={onClose}
-                    className="flex items-center justify-between p-3 rounded-xl bg-[#0B223D]/70 border border-[#D99A3D]/15 hover:border-[#D99A3D]/60 hover:bg-[#0F2A4A] transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#F8F0DF] border border-[#D6A13A]/25 hover:border-[#7E1815] hover:bg-[#EFE2C7] transition-all group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#3A2118] border border-[#D99A3D]/40 flex items-center justify-center shrink-0 mt-0.5">
-                        <Landmark className="w-4 h-4 text-[#D99A3D]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#7E1815] text-[#F8F0DF] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <Landmark className="w-4 h-4 text-[#E7C46A]" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-[#FFF8EC] group-hover:text-[#D99A3D] transition-colors">
+                        <h4 className="text-sm font-bold text-[#171311] group-hover:text-[#B52B20] transition-colors">
                           {bonedi.name}
                         </h4>
-                        <p className="text-[11px] text-[#D8CEBE]/70 mt-0.5">
+                        <p className="text-[11px] text-[#5A4E46] mt-0.5">
                           {bonedi.area} • Metro: {bonedi.nearestMetro}
                         </p>
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#D8CEBE]/50 group-hover:text-[#D99A3D] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-[#7E1815] group-hover:translate-x-1 transition-all" />
                   </Link>
                 ))}
               </div>

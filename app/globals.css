@@ -1,135 +1,146 @@
 @import "tailwindcss";
 
 :root {
-  --navy-midnight: #071A2F;
-  --navy-surface: #0B223D;
-  --navy-card: #0F2A4A;
-  --navy-border: rgba(217, 154, 61, 0.22);
-  
-  --vermilion: #B93624;
-  --vermilion-hover: #D13F2B;
-  --vermilion-glow: rgba(185, 54, 36, 0.25);
-  
-  --gold-antique: #D99A3D;
-  --gold-light: #F3BC65;
-  --gold-muted: rgba(217, 154, 61, 0.18);
-  
-  --cream-warm: #F6E8CC;
-  --cream-surface: #FAF0DC;
-  --cream-border: rgba(58, 33, 24, 0.15);
-  
-  --brown-deep: #3A2118;
-  --brown-muted: #5C3A2E;
-  
-  --white-soft: #FFF8EC;
-  --white-muted: #D8CEBE;
-  
-  --background: var(--navy-midnight);
-  --foreground: var(--white-soft);
+  /* Specification Colors */
+  --puja-red: #B52B20;
+  --deep-red: #7E1815;
+  --antique-gold: #D6A13A;
+  --light-gold: #E7C46A;
+  --off-white: #F8F0DF;
+  --warm-cream: #EFE2C7;
+  --charcoal: #171311;
+  --burgundy: #35120F;
+
+  /* Semantic UI Tokens */
+  --bg-primary: #F8F0DF;
+  --bg-surface: #EFE2C7;
+  --bg-card: #FFFFFF;
+  --text-primary: #171311;
+  --text-muted: #5A4E46;
+  --border-gold: rgba(214, 161, 58, 0.35);
 }
 
 @theme {
-  --color-midnight: #071A2F;
-  --color-midnight-surface: #0B223D;
-  --color-midnight-card: #0F2A4A;
-  
-  --color-vermilion: #B93624;
-  --color-vermilion-hover: #D13F2B;
-  
-  --color-gold: #D99A3D;
-  --color-gold-light: #F3BC65;
-  
-  --color-cream: #F6E8CC;
-  --color-cream-surface: #FAF0DC;
-  
-  --color-deepbrown: #3A2118;
-  --color-deepbrown-muted: #5C3A2E;
-  
-  --color-softwhite: #FFF8EC;
-  --color-mutedwhite: #D8CEBE;
+  --color-puja-red: #B52B20;
+  --color-deep-red: #7E1815;
+  --color-antique-gold: #D6A13A;
+  --color-light-gold: #E7C46A;
+  --color-off-white: #F8F0DF;
+  --color-warm-cream: #EFE2C7;
+  --color-charcoal: #171311;
+  --color-burgundy: #35120F;
 }
 
 body {
-  background-color: var(--navy-midnight);
-  color: var(--white-soft);
+  background-color: var(--off-white);
+  color: var(--charcoal);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 
 /* Editorial Heading Typography */
-h1, h2, h3, .font-editorial {
+h1, h2, h3, h4, .font-editorial {
   font-family: var(--font-display), Georgia, serif;
 }
 
-/* Restrained Glass Effects */
-.glass-nav {
-  background: rgba(7, 26, 47, 0.88);
+/* Red / Burgundy Navigation & Hero Glass */
+.glass-nav-red {
+  background: rgba(126, 24, 21, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(217, 154, 61, 0.2);
+  border-bottom: 1px solid rgba(214, 161, 58, 0.35);
 }
 
-.glass-floating {
-  background: rgba(11, 34, 61, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(217, 154, 61, 0.25);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+.glass-dark-overlay {
+  background: linear-gradient(180deg, rgba(53, 18, 15, 0.3) 0%, rgba(126, 24, 21, 0.85) 60%, #7E1815 100%);
 }
 
-.glass-card-interactive {
-  background: rgba(15, 42, 74, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(217, 154, 61, 0.18);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* Off-White Editorial Card */
+.card-editorial {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(214, 161, 58, 0.28);
+  box-shadow: 0 4px 20px -2px rgba(23, 19, 17, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card-interactive:hover {
-  background: rgba(15, 42, 74, 0.9);
-  border-color: rgba(217, 154, 61, 0.45);
+.card-editorial:hover {
+  border-color: rgba(214, 161, 58, 0.7);
+  box-shadow: 0 12px 32px -4px rgba(126, 24, 21, 0.12);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
-/* Cream Editorial Sections */
-.section-cream {
-  background-color: var(--cream-warm);
-  color: var(--brown-deep);
+/* Dark Red Poster Card (Circuit / Route / Metro Hub) */
+.card-poster {
+  background: linear-gradient(145deg, #35120F 0%, #7E1815 70%, #9B241C 100%);
+  border: 1px solid rgba(214, 161, 58, 0.35);
+  box-shadow: 0 10px 30px -4px rgba(53, 18, 15, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.section-cream h1,
-.section-cream h2,
-.section-cream h3 {
-  color: var(--brown-deep);
+.card-poster:hover {
+  border-color: #D6A13A;
+  box-shadow: 0 16px 36px -4px rgba(126, 24, 21, 0.5);
+  transform: translateY(-2px);
 }
 
-/* Gold Accents & Borders */
+/* Category Chips Specification:
+   Default: cream background, red text, thin gold border
+   Selected: deep red background, cream text, gold border */
+.chip-category {
+  background-color: #F8F0DF;
+  color: #B52B20;
+  border: 1px solid rgba(214, 161, 58, 0.45);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip-category-selected {
+  background-color: #7E1815;
+  color: #F8F0DF;
+  border: 1px solid #D6A13A;
+  box-shadow: 0 2px 8px rgba(126, 24, 21, 0.3);
+}
+
+/* Gold Accents & Divider Lines */
+.gold-divider {
+  background: linear-gradient(90deg, transparent, #D6A13A, transparent);
+  height: 1px;
+  width: 100%;
+}
+
 .gold-border {
-  border-color: rgba(217, 154, 61, 0.3);
+  border-color: rgba(214, 161, 58, 0.35);
 }
 
 .gold-glow {
-  box-shadow: 0 0 25px rgba(217, 154, 61, 0.15);
+  box-shadow: 0 0 20px rgba(214, 161, 58, 0.25);
 }
 
-.vermilion-glow {
-  box-shadow: 0 4px 20px rgba(185, 54, 36, 0.35);
+/* Subtle Alpana Motif Pattern */
+.alpana-pattern {
+  background-image: radial-gradient(rgba(214, 161, 58, 0.12) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar in Red & Gold */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #071A2F;
+  background: #F8F0DF;
 }
 ::-webkit-scrollbar-thumb {
-  background: #173456;
+  background: #D6A13A;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #D99A3D;
+  background: #7E1815;
 }

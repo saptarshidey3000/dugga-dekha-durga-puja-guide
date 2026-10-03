@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
-  loading: () => <div className="h-[300px] bg-[#0B223D] rounded-2xl animate-pulse" />,
+  loading: () => <div className="h-[300px] bg-[#FFFFFF] rounded-2xl animate-pulse border border-[#D6A13A]/30" />,
 });
 
 export default function ExplorePage() {
@@ -40,17 +40,17 @@ export default function ExplorePage() {
   }, [selectedRegion, selectedCategory, searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#D99A3D]/20">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#D6A13A]/30">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#B93624]">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#B52B20]">
             Kolkata Pandal Directory
           </span>
-          <h1 className="font-editorial text-3xl sm:text-5xl font-bold text-[#FFF8EC] mt-1">
+          <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#7E1815] mt-1">
             Explore All Pandals
           </h1>
-          <p className="text-xs sm:text-sm text-[#D8CEBE]/80 mt-2 max-w-xl">
+          <p className="text-xs sm:text-sm text-[#5A4E46] mt-2 max-w-xl">
             Verified Kolkata Durga Puja pandals with exact Metro stations, exit gates, walking times, and crowd levels.
           </p>
         </div>
@@ -58,21 +58,21 @@ export default function ExplorePage() {
         {/* View Toggle (List vs Map) */}
         <button
           onClick={() => setShowMap(!showMap)}
-          className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0B223D] hover:bg-[#0F2A4A] text-[#D99A3D] hover:text-[#FFF8EC] border border-[#D99A3D]/40 text-xs font-bold transition-all shadow-md"
+          className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FFFFFF] hover:bg-[#F8F0DF] text-[#7E1815] border border-[#D6A13A]/60 text-xs font-bold transition-all shadow-sm"
         >
-          <MapPin className="w-4 h-4 text-[#B93624]" />
+          <MapPin className="w-4 h-4 text-[#B52B20]" />
           <span>{showMap ? 'Hide City Map' : 'Show Map Overview'}</span>
         </button>
       </div>
 
       {/* Map Preview (Expandable) */}
       {showMap && (
-        <div className="bg-[#0B223D] border border-[#D99A3D]/30 p-4 rounded-2xl animate-fadeIn shadow-xl">
-          <div className="flex items-center justify-between mb-3 text-xs text-[#D99A3D] font-bold uppercase">
+        <div className="bg-[#FFFFFF] border border-[#D6A13A]/40 p-4 rounded-2xl animate-fadeIn shadow-lg">
+          <div className="flex items-center justify-between mb-3 text-xs text-[#7E1815] font-bold uppercase">
             <span>Kolkata Puja Spatial Distribution ({filteredPandals.length} Pandals)</span>
             <button
               onClick={() => setShowMap(false)}
-              className="text-[#D8CEBE] hover:text-[#FFF8EC]"
+              className="text-[#5A4E46] hover:text-[#B52B20]"
             >
               Close Map ×
             </button>
@@ -86,21 +86,21 @@ export default function ExplorePage() {
       )}
 
       {/* Filter & Search Controls */}
-      <div className="space-y-4 bg-[#0B223D]/80 p-5 rounded-2xl border border-[#D99A3D]/20 shadow-md">
+      <div className="space-y-4 bg-[#FFFFFF] p-5 rounded-2xl border border-[#D6A13A]/30 shadow-sm">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#D99A3D]" />
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#7E1815]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter by name, area, or Metro station..."
-            className="w-full bg-[#071A2F] border border-[#D99A3D]/30 rounded-xl pl-10 pr-10 py-2.5 text-sm text-[#FFF8EC] placeholder-[#D8CEBE]/50 focus:outline-none focus:border-[#D99A3D]"
+            placeholder="Filter by pandal name, area, or nearest Metro..."
+            className="w-full bg-[#F8F0DF] border border-[#D6A13A]/40 rounded-xl pl-10 pr-10 py-2.5 text-sm text-[#171311] placeholder-[#5A4E46]/60 focus:outline-none focus:border-[#7E1815]"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-3 text-[#D8CEBE] hover:text-[#FFF8EC]"
+              className="absolute right-3.5 top-3 text-[#5A4E46] hover:text-[#7E1815]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -109,7 +109,7 @@ export default function ExplorePage() {
 
         {/* Region Filter Buttons */}
         <div>
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#D99A3D] mb-2">
+          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7E1815] mb-2">
             Region:
           </span>
           <div className="flex flex-wrap gap-2">
@@ -117,10 +117,10 @@ export default function ExplorePage() {
               <button
                 key={reg}
                 onClick={() => setSelectedRegion(reg)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
                   selectedRegion === reg
-                    ? 'bg-[#B93624] text-[#FFF8EC] border-[#B93624] shadow-sm'
-                    : 'bg-[#071A2F] text-[#D8CEBE] border-[#D99A3D]/25 hover:border-[#D99A3D]'
+                    ? 'bg-[#7E1815] text-[#F8F0DF] border-[#D6A13A] shadow-sm'
+                    : 'bg-[#F8F0DF] text-[#5A4E46] border-[#D6A13A]/35 hover:border-[#D6A13A]'
                 }`}
               >
                 {reg === 'all' ? 'All Regions' : reg}
@@ -129,18 +129,18 @@ export default function ExplorePage() {
           </div>
         </div>
 
-        {/* Category Filter Buttons */}
+        {/* Category Filter Buttons (Section 83) */}
         <div>
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#D99A3D] mb-2">
+          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7E1815] mb-2">
             Category:
           </span>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
                 selectedCategory === 'all'
-                  ? 'bg-[#D99A3D] text-[#071A2F] border-[#D99A3D] font-bold'
-                  : 'bg-[#071A2F] text-[#D8CEBE] border-[#D99A3D]/25 hover:border-[#D99A3D]'
+                  ? 'chip-category-selected'
+                  : 'chip-category'
               }`}
             >
               All Categories
@@ -149,10 +149,10 @@ export default function ExplorePage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
                   selectedCategory === cat.id
-                    ? 'bg-[#D99A3D] text-[#071A2F] border-[#D99A3D] font-bold'
-                    : 'bg-[#071A2F] text-[#D8CEBE] border-[#D99A3D]/25 hover:border-[#D99A3D]'
+                    ? 'chip-category-selected'
+                    : 'chip-category'
                 }`}
               >
                 <span>{cat.icon}</span>
@@ -164,9 +164,9 @@ export default function ExplorePage() {
       </div>
 
       {/* Results Count Header */}
-      <div className="flex items-center justify-between text-xs text-[#D8CEBE]">
+      <div className="flex items-center justify-between text-xs text-[#5A4E46]">
         <span>
-          Showing <strong className="text-[#FFF8EC]">{filteredPandals.length}</strong> of{' '}
+          Showing <strong className="text-[#7E1815] font-bold">{filteredPandals.length}</strong> of{' '}
           {PANDALS.length} pandals
         </span>
         {(selectedRegion !== 'all' || selectedCategory !== 'all' || searchQuery) && (
@@ -176,14 +176,14 @@ export default function ExplorePage() {
               setSelectedCategory('all');
               setSearchQuery('');
             }}
-            className="text-[#D99A3D] hover:underline"
+            className="text-[#B52B20] font-bold hover:underline"
           >
             Clear all filters
           </button>
         )}
       </div>
 
-      {/* Grid of Pandals */}
+      {/* Grid of Pandals (Section 77 & 78) */}
       {filteredPandals.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPandals.map((pandal) => (
@@ -199,12 +199,12 @@ export default function ExplorePage() {
           ))}
         </div>
       ) : (
-        <div className="bg-[#0B223D] border border-[#D99A3D]/25 rounded-2xl p-12 text-center max-w-md mx-auto">
-          <Compass className="w-10 h-10 text-[#D99A3D]/50 mx-auto mb-3" />
-          <h3 className="font-editorial text-xl font-bold text-[#FFF8EC] mb-1">
+        <div className="bg-[#FFFFFF] border border-[#D6A13A]/30 rounded-2xl p-12 text-center max-w-md mx-auto shadow-sm">
+          <Compass className="w-10 h-10 text-[#D6A13A] mx-auto mb-3" />
+          <h3 className="font-editorial text-xl font-bold text-[#7E1815] mb-1">
             No Pandals Match Your Filter
           </h3>
-          <p className="text-xs text-[#D8CEBE]/80 mb-4">
+          <p className="text-xs text-[#5A4E46] mb-4">
             Try adjusting your region or category preferences to discover more pujas.
           </p>
           <button
@@ -213,7 +213,7 @@ export default function ExplorePage() {
               setSelectedCategory('all');
               setSearchQuery('');
             }}
-            className="px-4 py-2 rounded-full bg-[#B93624] text-[#FFF8EC] text-xs font-semibold"
+            className="px-5 py-2.5 rounded-full bg-[#7E1815] text-[#F8F0DF] text-xs font-bold shadow-md"
           >
             Reset Filters
           </button>

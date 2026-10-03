@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[450px] bg-[#0B223D] flex items-center justify-center text-[#D99A3D] text-sm animate-pulse rounded-2xl border border-[#D99A3D]/20">
+    <div className="w-full h-[450px] bg-[#FFFFFF] flex items-center justify-center text-[#7E1815] text-sm animate-pulse rounded-2xl border border-[#D6A13A]/30">
       Loading Route Map...
     </div>
   ),
@@ -31,33 +31,33 @@ export default function RouteDetailClient({
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
       {/* Back button & top bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-4 border-b border-[#D6A13A]/30">
         <Link
           href="/routes"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D99A3D] hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7E1815] hover:text-[#B52B20] transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to All Walking Routes</span>
+          <ArrowLeft className="w-4 h-4 text-[#B52B20]" />
+          <span>Back to All Puja Circuits</span>
         </Link>
 
         {/* Mobile quick map toggle */}
         <button
           onClick={() => setMobileMapOpen(!mobileMapOpen)}
-          className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0B223D] border border-[#D99A3D]/40 text-xs font-bold text-[#D99A3D]"
+          className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFFFFF] border border-[#D6A13A]/50 text-xs font-bold text-[#7E1815] shadow-sm"
         >
-          <Navigation className="w-3.5 h-3.5" />
+          <Navigation className="w-3.5 h-3.5 text-[#B52B20]" />
           <span>{mobileMapOpen ? 'Hide Map' : 'See on Map'}</span>
         </button>
       </div>
 
       {/* Mobile Map Drawer / Preview */}
       {mobileMapOpen && (
-        <div className="lg:hidden bg-[#0B223D] border border-[#D99A3D]/30 p-4 rounded-2xl shadow-xl animate-fadeIn">
-          <div className="flex items-center justify-between mb-3 text-xs text-[#D99A3D] font-bold uppercase">
+        <div className="lg:hidden bg-[#FFFFFF] border border-[#D6A13A]/40 p-4 rounded-2xl shadow-xl animate-fadeIn">
+          <div className="flex items-center justify-between mb-3 text-xs text-[#7E1815] font-bold uppercase">
             <span>Route Map: {route.name}</span>
-            <button onClick={() => setMobileMapOpen(false)} className="text-[#D8CEBE]">
+            <button onClick={() => setMobileMapOpen(false)} className="text-[#5A4E46] font-bold">
               Close ×
             </button>
           </div>
@@ -72,7 +72,7 @@ export default function RouteDetailClient({
         </div>
       )}
 
-      {/* DESKTOP SPLIT LAYOUT (Section 41 & 42) */}
+      {/* DESKTOP SPLIT LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left: Route Timeline with Start Tour & Next Stop (7 cols) */}
         <div className="lg:col-span-7">
@@ -87,12 +87,12 @@ export default function RouteDetailClient({
 
         {/* Right: Sticky Interactive Map (5 cols) */}
         <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-20 space-y-4">
-          <div className="bg-[#0B223D] border border-[#D99A3D]/30 rounded-2xl p-4 shadow-xl">
+          <div className="bg-[#FFFFFF] border border-[#D6A13A]/40 rounded-2xl p-4 shadow-xl">
             <div className="flex items-center justify-between mb-3 text-xs">
-              <span className="font-bold text-[#D99A3D] uppercase tracking-wider">
+              <span className="font-bold text-[#7E1815] uppercase tracking-wider">
                 Live Route Navigation
               </span>
-              <span className="text-[#D8CEBE]">{route.stops.length} Pandals</span>
+              <span className="text-[#5A4E46] font-semibold">{route.stops.length} Pandals</span>
             </div>
 
             <InteractiveMap
@@ -104,20 +104,20 @@ export default function RouteDetailClient({
               heightClass="h-[520px]"
             />
 
-            <div className="mt-4 pt-3 border-t border-[#D99A3D]/15 space-y-2 text-xs text-[#D8CEBE]">
+            <div className="mt-4 pt-3 border-t border-[#D6A13A]/20 space-y-2 text-xs text-[#5A4E46]">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#FFF8EC]">Starting Point:</span>
-                <span className="text-[#D99A3D]">{route.metroStationName}</span>
+                <span className="font-bold text-[#171311]">Starting Point:</span>
+                <span className="text-[#7E1815] font-semibold">{route.metroStationName}</span>
               </div>
               {route.startingExit && (
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#FFF8EC]">Exit Gate:</span>
-                  <span className="text-[#B93624] font-semibold">{route.startingExit}</span>
+                  <span className="font-bold text-[#171311]">Exit Gate:</span>
+                  <span className="text-[#B52B20] font-semibold">{route.startingExit}</span>
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#FFF8EC]">Total Distance:</span>
-                <span>{route.totalWalkingDistance}</span>
+                <span className="font-bold text-[#171311]">Total Distance:</span>
+                <span className="font-semibold text-[#171311]">{route.totalWalkingDistance}</span>
               </div>
             </div>
           </div>

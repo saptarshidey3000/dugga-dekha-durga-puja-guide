@@ -36,7 +36,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#071A2F',
+  themeColor: '#7E1815',
 };
 
 export default function RootLayout({
@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col selection:bg-[#B93624] selection:text-[#FFF8EC]">
+      <body className="min-h-full flex flex-col bg-[#F8F0DF] text-[#171311] selection:bg-[#B52B20] selection:text-[#F8F0DF]">
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

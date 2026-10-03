@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Map, Sparkles, Bookmark } from 'lucide-react';
+import { Home, Compass, Map, Sparkles, Bookmark } from 'lucide-react';
 import { getSavedPandals, getSavedPlans } from '@/lib/storage';
 
 export default function BottomNav() {
@@ -30,47 +30,48 @@ export default function BottomNav() {
   }, []);
 
   const items = [
+    { label: 'Home', href: '/', icon: Home, exact: true },
     { label: 'Explore', href: '/explore', icon: Compass },
     { label: 'Routes', href: '/routes', icon: Map },
-    { label: 'AI Planner', href: '/planner', icon: Sparkles, highlight: true },
+    { label: 'Plan', href: '/planner', icon: Sparkles },
     { label: 'Saved', href: '/saved', icon: Bookmark, badge: badgeCount > 0 ? badgeCount : null },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#071A2F]/95 backdrop-blur-lg border-t border-[#D99A3D]/25 px-2 py-2 safe-area-pb shadow-2xl">
-      <div className="grid grid-cols-4 items-center">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#35120F]/95 backdrop-blur-xl border-t border-[#D6A13A]/30 px-1 py-1.5 safe-area-pb shadow-[0_-8px_25px_rgba(23,19,17,0.3)]">
+      <div className="grid grid-cols-5 items-center">
         {items.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isActive = item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all relative ${
+              className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all relative ${
                 isActive
-                  ? 'text-[#FFF8EC]'
-                  : item.highlight
-                  ? 'text-[#D99A3D]'
-                  : 'text-[#D8CEBE]/70 hover:text-[#FFF8EC]'
+                  ? 'text-[#F8F0DF]'
+                  : 'text-[#F8F0DF]/60 hover:text-[#E7C46A]'
               }`}
             >
               <div
-                className={`relative flex items-center justify-center w-10 h-7 rounded-full transition-all ${
+                className={`relative flex items-center justify-center w-11 h-7 rounded-full transition-all ${
                   isActive
-                    ? 'bg-[#B93624] text-[#FFF8EC] shadow-sm'
-                    : item.highlight
-                    ? 'bg-[#D99A3D]/20 text-[#D99A3D]'
+                    ? 'bg-[#B52B20] text-[#E7C46A] border border-[#D6A13A] shadow-sm'
                     : ''
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className={`w-4 h-4 ${isActive ? 'stroke-[2.2]' : 'stroke-[1.8]'}`} />
                 {item.badge && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#B93624] text-[#FFF8EC] text-[9px] font-bold flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#B52B20] text-[#F8F0DF] text-[9px] font-bold flex items-center justify-center border border-[#D6A13A]">
                     {item.badge}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] mt-1 font-medium tracking-tight ${isActive ? 'font-semibold text-[#FFF8EC]' : ''}`}>
+              <span
+                className={`text-[10px] mt-0.5 tracking-tight ${
+                  isActive ? 'font-bold text-[#E7C46A]' : 'font-medium'
+                }`}
+              >
                 {item.label}
               </span>
             </Link>
