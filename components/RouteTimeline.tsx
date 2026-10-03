@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Route } from '@/data/types';
 import { PANDALS } from '@/data/pandals';
 import { METRO_STATIONS } from '@/data/metros';
@@ -12,8 +13,6 @@ import {
   ArrowRight,
   Bookmark,
   Footprints,
-  Play,
-  RotateCcw,
 } from 'lucide-react';
 import { isPandalSaved, savePandal, removeSavedPandal } from '@/lib/storage';
 
@@ -23,8 +22,7 @@ interface RouteTimelineProps {
 }
 
 export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps) {
-  const [tourActive, setTourActive] = useState(false);
-  const [currentStopIndex, setCurrentStopIndex] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [savedIds, setSavedIds] = useState<{ [id: string]: boolean }>({});
 
   const metro = METRO_STATIONS.find((m) => m.id === route.metroStationId);
@@ -41,257 +39,169 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
     }
   };
 
-  const currentStop = route.stops[currentStopIndex];
-  const currentPandal = currentStop ? PANDALS.find((p) => p.id === currentStop.pandalId) : null;
-  const nextStop = route.stops[currentStopIndex + 1];
+  const activeStop = route.stops[currentStep];
+  const activePandal = activeStop ? PANDALS.find((p) => p.id === activeStop.pandalId) : null;
+  const nextStop = route.stops[currentStep + 1];
   const nextPandal = nextStop ? PANDALS.find((p) => p.id === nextStop.pandalId) : null;
 
   return (
-    <div className="space-y-6">
-      {/* Route Header Banner (Red / Burgundy Poster style) */}
-      <div className="bg-gradient-to-br from-[#7E1815] via-[#7E1815] to-[#35120F] border border-[#D6A13A]/40 rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden text-[#F8F0DF]">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-[#D6A13A]/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-          <span className="px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase bg-[#35120F] text-[#E7C46A] border border-[#D6A13A]/40 shadow-sm">
+    <div className="space-y-6 text-[#120E0C]">
+      {/* Route Header Banner (Section 36 - Authentic Festive Red) */}
+      <div className="bg-gradient-to-br from-[#8F1D18] via-[#8F1D18] to-[#241714] text-[#F7F0E2] rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-[#C9973E]/40 relative overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <span className="text-[11px] font-bold tracking-widest uppercase bg-[#241714] text-[#E1BE68] px-3 py-1 rounded-full border border-[#C9973E]/30">
             {route.region}
           </span>
-          <div className="flex items-center gap-3 text-xs text-[#F8F0DF]/90 font-medium">
-            <span className="flex items-center gap-1 text-[#E7C46A]">
-              <Clock className="w-3.5 h-3.5" /> {route.estimatedDuration}
+          <div className="flex items-center gap-3 text-xs text-[#F7F0E2]/80 font-medium">
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-[#E1BE68]" /> {route.estimatedDuration}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <Footprints className="w-3.5 h-3.5 text-[#E7C46A]" /> {route.totalWalkingDistance}
+              <Footprints className="w-3.5 h-3.5 text-[#E1BE68]" /> {route.totalWalkingDistance}
             </span>
-            <span>•</span>
-            <span className="text-[#F8F0DF] font-bold">{route.stopsCount} Pandals</span>
           </div>
         </div>
 
-        <h2 className="font-editorial text-2xl sm:text-3xl font-extrabold text-[#F8F0DF] mb-1">
+        <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold tracking-tight mt-1 mb-1">
           {route.name}
-        </h2>
-        {route.bengaliName && (
-          <p className="text-sm text-[#E7C46A] font-serif mb-3">{route.bengaliName}</p>
-        )}
-        <p className="text-xs sm:text-sm text-[#F8F0DF]/90 leading-relaxed mb-5">
+        </h1>
+        <p className="font-editorial text-lg text-[#E1BE68] italic mb-3">
+          Pandal Hopping • {route.stopsCount} Stops
+        </p>
+
+        <p className="text-xs sm:text-sm text-[#F7F0E2]/90 leading-relaxed mb-4 max-w-xl">
           {route.description}
         </p>
 
-        {/* Start Tour CTA Button */}
-        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#D6A13A]/25">
-          {!tourActive ? (
-            <button
-              onClick={() => {
-                setTourActive(true);
-                setCurrentStopIndex(0);
-                if (route.stops[0] && onSeeOnMap) onSeeOnMap(route.stops[0].pandalId);
-              }}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#F8F0DF] hover:bg-[#FFFFFF] text-[#7E1815] text-xs font-bold tracking-wider uppercase shadow-lg transition-all hover:scale-[1.02]"
-            >
-              <Play className="w-3.5 h-3.5 fill-current text-[#B52B20]" />
-              <span>START TOUR MODE</span>
-            </button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold animate-pulse">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                TOUR IN PROGRESS
-              </span>
-              <button
-                onClick={() => setTourActive(false)}
-                className="px-3 py-1.5 rounded-full bg-[#35120F] text-xs text-[#F8F0DF]/80 hover:text-[#F8F0DF] border border-[#D6A13A]/30"
-              >
-                Exit Tour
-              </button>
+        {/* Starting Point Banner (Section 13, 14, 36) */}
+        <div className="bg-[#241714] border border-[#C9973E]/40 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#8F1D18] border border-[#C9973E] flex items-center justify-center text-lg">
+              🚇
             </div>
-          )}
-
-          {metro && (
-            <Link
-              href={`/metro/${metro.id}`}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#35120F]/80 text-[#E7C46A] hover:text-[#F8F0DF] border border-[#D6A13A]/40 text-xs font-semibold transition-colors"
-            >
-              <MapPin className="w-3.5 h-3.5" />
-              <span>Explore {metro.name} Hub</span>
-            </Link>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#E1BE68] block">
+                STARTING POINT
+              </span>
+              <p className="font-bold text-sm text-[#F7F0E2]">{route.metroStationName} Metro</p>
+            </div>
+          </div>
+          {route.startingExit && (
+            <div className="px-3.5 py-1.5 rounded-full bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold border border-[#C9973E]/50 text-center">
+              Take {route.startingExit}
+            </div>
           )}
         </div>
       </div>
 
-      {/* ACTIVE "NEXT STOP" LIVE COMPASS BANNER (When Tour is Running) */}
-      {tourActive && currentPandal && (
-        <div className="bg-gradient-to-r from-[#7E1815] to-[#B52B20] text-[#F8F0DF] p-5 rounded-2xl shadow-2xl border-2 border-[#D6A13A] animate-fadeIn">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold tracking-widest uppercase bg-black/30 px-3 py-1 rounded-full border border-white/20 text-[#E7C46A]">
-              STOP {currentStopIndex + 1} OF {route.stops.length}
+      {/* Sticky / Prominent Current & Next Stop Banner (Section 15 & 37) */}
+      {activePandal && (
+        <div className="sticky top-16 z-30 bg-[#241714] text-[#F7F0E2] p-4 rounded-2xl border-2 border-[#C9973E] shadow-2xl animate-fadeIn">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="font-bold uppercase tracking-widest text-[#E1BE68]">
+              STOP {currentStep + 1} OF {route.stops.length}: {activePandal.name}
             </span>
-            <span className="text-xs text-[#F8F0DF]/90 font-medium">YOU ARE HERE</span>
+            {nextPandal && (
+              <span className="text-[11px] text-[#F7F0E2]/70 hidden sm:inline">
+                Next: {nextPandal.name} ({nextStop?.walkingTime || 'walk'})
+              </span>
+            )}
           </div>
 
-          <h3 className="font-editorial text-2xl font-bold mb-1">
-            🛕 {currentPandal.name}
-          </h3>
-          <p className="text-xs text-[#F8F0DF]/85 mb-4 leading-relaxed">
-            {currentPandal.address}
-          </p>
-
-          {/* NEXT STOP POINTER */}
-          {nextPandal && nextStop ? (
-            <div className="bg-[#35120F]/90 text-[#F8F0DF] p-4 rounded-xl border border-[#D6A13A]/50 mb-4">
-              <div className="flex items-center justify-between text-xs text-[#E7C46A] font-bold uppercase tracking-wider mb-1">
-                <span>NEXT STOP</span>
-                <span>🚶 {nextStop.walkingTime || '5 min'} • {nextStop.walkingDistance || '300 m'}</span>
-              </div>
-              <h4 className="text-lg font-bold text-[#F8F0DF]">{nextPandal.name}</h4>
-              <p className="text-xs text-[#F8F0DF]/80 mt-1 italic">
-                &quot;{nextStop.instruction || nextPandal.directions}&quot;
+          <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#C9973E]/30">
+            {nextPandal ? (
+              <p className="text-xs text-[#F7F0E2]/90 truncate">
+                <span className="text-[#E1BE68] font-semibold">NEXT: </span>
+                <span className="font-bold">{nextPandal.name}</span>
+                <span className="text-xs text-[#E1BE68] ml-1">
+                  🚶 {nextStop?.walkingTime || '4 min'}
+                </span>
               </p>
-            </div>
-          ) : (
-            <div className="bg-[#35120F]/80 p-3 rounded-xl border border-[#D6A13A]/40 mb-4 text-center">
-              <p className="text-xs font-bold text-[#E7C46A]">
-                🎉 Final Stop on this circuit! You have experienced all curated pandals.
-              </p>
-            </div>
-          )}
-
-          {/* Tour Controls */}
-          <div className="flex items-center justify-between gap-2 pt-2">
-            <button
-              disabled={currentStopIndex === 0}
-              onClick={() => {
-                const prev = currentStopIndex - 1;
-                setCurrentStopIndex(prev);
-                if (route.stops[prev] && onSeeOnMap) onSeeOnMap(route.stops[prev].pandalId);
-              }}
-              className="px-3.5 py-2 rounded-xl bg-black/30 text-xs font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/50 transition-colors"
-            >
-              ← Previous Stop
-            </button>
-
-            {onSeeOnMap && currentPandal.latitude && (
-              <button
-                onClick={() => onSeeOnMap(currentPandal.id)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#35120F] text-[#E7C46A] border border-[#D6A13A]/50 text-xs font-bold hover:bg-[#7E1815]"
-              >
-                <Navigation className="w-3.5 h-3.5" />
-                <span>SEE ON MAP</span>
-              </button>
-            )}
-
-            {nextStop ? (
-              <button
-                onClick={() => {
-                  const next = currentStopIndex + 1;
-                  setCurrentStopIndex(next);
-                  if (route.stops[next] && onSeeOnMap) onSeeOnMap(route.stops[next].pandalId);
-                }}
-                className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#E7C46A] text-[#7E1815] text-xs font-bold shadow-md hover:bg-[#F8F0DF] transition-colors"
-              >
-                <span>Proceed to Next</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             ) : (
-              <button
-                onClick={() => {
-                  setCurrentStopIndex(0);
-                  setTourActive(false);
-                }}
-                className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#E7C46A] text-[#7E1815] text-xs font-bold"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Finish Tour</span>
-              </button>
+              <p className="text-xs text-[#E1BE68] font-bold">
+                🎉 Final Pandal on this route!
+              </p>
             )}
+
+            <div className="flex items-center gap-2 shrink-0">
+              {onSeeOnMap && activePandal.latitude && (
+                <button
+                  onClick={() => onSeeOnMap(activePandal.id)}
+                  className="px-3 py-1.5 rounded-xl bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold hover:bg-[#B52A22] transition-colors border border-[#C9973E]/40"
+                >
+                  See on Map
+                </button>
+              )}
+              {nextStop && (
+                <button
+                  onClick={() => {
+                    const next = currentStep + 1;
+                    setCurrentStep(next);
+                    if (route.stops[next] && onSeeOnMap) onSeeOnMap(route.stops[next].pandalId);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-[#C9973E] text-[#241714] text-xs font-bold hover:bg-[#E1BE68] transition-colors shadow-sm"
+                >
+                  Next Stop →
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* SIGNATURE VERTICAL ROUTE TIMELINE (Sections 79, 90, 91) */}
-      <div className="relative pl-7 sm:pl-9 border-l-2 border-[#D6A13A] space-y-8 my-6 ml-3 sm:ml-4">
-        {/* STARTING METRO HUB NODE */}
-        <div className="relative group">
-          {/* Node Icon - Antique Gold with Deep Red Metro */}
-          <div className="absolute -left-[41px] sm:-left-[49px] top-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#7E1815] border-2 border-[#D6A13A] flex items-center justify-center text-sm sm:text-base shadow-lg shadow-[#7E1815]/30">
-            🚇
-          </div>
-
-          <div className="bg-[#FFFFFF] border border-[#D6A13A]/40 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#B52B20] mb-1">
-              <span>METRO STARTING POINT</span>
-              <span className="text-[#D6A13A] font-semibold">{metro?.line || 'Kolkata Metro'}</span>
-            </div>
-            <h3 className="font-editorial text-xl font-bold text-[#171311]">
-              {route.metroStationName}
-            </h3>
-            {route.startingExit && (
-              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8F0DF] border border-[#D6A13A]/40 text-xs font-bold text-[#7E1815]">
-                <Footprints className="w-3.5 h-3.5 text-[#B52B20]" />
-                <span>Take {route.startingExit}</span>
-              </div>
-            )}
-            <p className="text-xs text-[#5A4E46] mt-2">
-              Exit through the designated gate and follow the pedestrian route below to the first pandal.
-            </p>
-          </div>
-        </div>
-
-        {/* ORDERED PANDAL STOPS (01, 02, 03, 04...) */}
+      {/* Signature Vertical Timeline (Sections 14, 36) */}
+      <div className="relative pl-8 sm:pl-10 border-l-2 border-[#C9973E] space-y-10 my-8 ml-4 sm:ml-6">
         {route.stops.map((stop, idx) => {
           const pandal = PANDALS.find((p) => p.id === stop.pandalId);
           if (!pandal) return null;
 
           const isSaved = savedIds[pandal.id] ?? isPandalSaved(pandal.id);
-          const isCurrentActive = tourActive && currentStopIndex === idx;
+          const isCurrent = currentStep === idx;
           const stopNumberFormatted = stop.order < 10 ? `0${stop.order}` : `${stop.order}`;
 
           return (
             <div key={stop.pandalId} className="relative group">
-              {/* Transition Walking Step Indicator (between stops) */}
-              <div className="absolute -left-[32px] sm:-left-[40px] -top-5 flex items-center gap-1 text-[10px] font-bold text-[#7E1815] bg-[#F8F0DF] px-2.5 py-0.5 rounded-full border border-[#D6A13A]/50 shadow-sm">
-                <span>↓</span>
-                <span>{stop.walkingTime || '4 min'}</span>
-              </div>
+              {/* Walking time from previous stop */}
+              {idx > 0 && (
+                <div className="absolute -left-[35px] sm:-left-[43px] -top-6 flex items-center gap-1 text-[11px] font-bold text-[#8F1D18] bg-[#F7F0E2] px-2.5 py-0.5 rounded-full border border-[#C9973E] shadow-sm">
+                  <span>↓ 🚶 {stop.walkingTime || '4 min'}</span>
+                </div>
+              )}
 
-              {/* Numbered Stop Node Icon (Section 90: Antique gold circle with deep red number or vice versa) */}
+              {/* Red Numbered Circle (Section 14) */}
               <div
-                className={`absolute -left-[41px] sm:-left-[49px] top-1 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm border-2 shadow-lg transition-transform ${
-                  isCurrentActive
-                    ? 'bg-[#E7C46A] text-[#7E1815] border-[#7E1815] scale-110 ring-4 ring-[#D6A13A]/40'
-                    : 'bg-[#D6A13A] text-[#7E1815] border-[#FFFFFF]'
+                onClick={() => {
+                  setCurrentStep(idx);
+                  if (onSeeOnMap) onSeeOnMap(pandal.id);
+                }}
+                className={`cursor-pointer absolute -left-[44px] sm:-left-[52px] top-1 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-bold text-sm border-2 shadow-lg transition-transform ${
+                  isCurrent
+                    ? 'bg-[#8F1D18] text-[#E1BE68] border-[#C9973E] scale-110 ring-4 ring-[#C9973E]/30'
+                    : 'bg-[#8F1D18] text-[#F7F0E2] border-[#FFFFFF]'
                 }`}
               >
                 {stopNumberFormatted}
               </div>
 
-              {/* Stop Card */}
+              {/* Pandal Stop Card (Section 36) */}
               <div
-                className={`rounded-2xl p-5 border transition-all ${
-                  isCurrentActive
-                    ? 'bg-[#FFFFFF] border-[#D6A13A] shadow-xl ring-2 ring-[#D6A13A]/30'
-                    : 'bg-[#FFFFFF] border-[#D6A13A]/25 hover:border-[#D6A13A] shadow-sm hover:shadow-md'
+                className={`rounded-2xl p-5 sm:p-6 border-2 transition-all ${
+                  isCurrent
+                    ? 'bg-[#FFFFFF] border-[#8F1D18] shadow-xl ring-2 ring-[#8F1D18]/10'
+                    : 'bg-[#FFFFFF] border-[#C9973E]/30 hover:border-[#8F1D18] shadow-sm'
                 }`}
               >
-                {/* Header info */}
-                <div className="flex items-start justify-between gap-2 mb-1.5">
+                <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E1815]">
-                        STOP {stopNumberFormatted} • {pandal.area}
-                      </span>
-                      {pandal.category.includes('must-visit') && (
-                        <span className="chip-category text-[10px] py-0 px-2">
-                          🔥 MUST VISIT
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-editorial text-lg sm:text-xl font-bold text-[#171311]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block mb-0.5">
+                      STOP {stopNumberFormatted} • {pandal.area}
+                    </span>
+                    <h3 className="font-editorial text-xl sm:text-2xl font-bold text-[#120E0C]">
                       {pandal.name}
                     </h3>
                     {pandal.bengaliName && (
-                      <p className="text-xs text-[#7E1815] font-serif">{pandal.bengaliName}</p>
+                      <p className="text-xs text-[#8F1D18] font-serif">{pandal.bengaliName}</p>
                     )}
                   </div>
 
@@ -301,55 +211,60 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
                     aria-label="Save Pandal"
                     className={`p-2 rounded-full border transition-all ${
                       isSaved
-                        ? 'bg-[#B52B20] text-[#F8F0DF] border-[#B52B20]'
-                        : 'bg-[#F8F0DF] text-[#7E1815] border-[#D6A13A]/40 hover:text-[#B52B20]'
+                        ? 'bg-[#8F1D18] text-[#F7F0E2] border-[#8F1D18]'
+                        : 'bg-[#F7F0E2] text-[#8F1D18] border-[#C9973E]/40 hover:text-[#B52A22]'
                     }`}
                   >
                     <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
                   </button>
                 </div>
 
-                <p className="text-xs text-[#5A4E46] leading-relaxed mb-3">
+                <p className="text-xs sm:text-sm text-[#5A4E46] leading-relaxed mb-4">
                   {pandal.description}
                 </p>
 
-                {/* Walking Instruction Step Box */}
+                {/* Walking Information (Section 36) */}
                 {stop.instruction && (
-                  <div className="bg-[#F8F0DF] p-3 rounded-xl border border-[#D6A13A]/30 mb-3 text-xs text-[#171311] flex items-start gap-2">
-                    <Navigation className="w-4 h-4 text-[#B52B20] shrink-0 mt-0.5" />
+                  <div className="bg-[#F7F0E2] p-3 rounded-xl border border-[#C9973E]/30 mb-4 text-xs text-[#120E0C] flex items-start gap-2">
+                    <Navigation className="w-4 h-4 text-[#8F1D18] shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-[#7E1815]">Walking Direction: </span>
+                      <span className="font-bold text-[#8F1D18]">Walking Direction: </span>
                       <span className="text-[#5A4E46]">{stop.instruction}</span>
                       {stop.walkingDistance && (
-                        <span className="ml-1 text-[#7E1815] font-semibold">({stop.walkingDistance})</span>
+                        <span className="ml-1 text-[#8F1D18] font-semibold">({stop.walkingDistance})</span>
                       )}
                     </div>
                   </div>
                 )}
 
-                {/* Card Action Buttons */}
-                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#D6A13A]/20">
-                  {onSeeOnMap && pandal.latitude && (
-                    <button
-                      onClick={() => onSeeOnMap(pandal.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8F0DF] text-[#7E1815] border border-[#D6A13A]/40 text-xs font-bold hover:bg-[#EFE2C7] transition-colors"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                      <span>See on Map</span>
-                    </button>
-                  )}
+                {/* Actions: [ SEE ON MAP ] and View Pandal */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[#C9973E]/20">
+                  <div className="flex items-center gap-2">
+                    {onSeeOnMap && pandal.latitude && (
+                      <button
+                        onClick={() => {
+                          setCurrentStep(idx);
+                          onSeeOnMap(pandal.id);
+                        }}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F7F0E2] text-[#8F1D18] border border-[#C9973E]/40 text-xs font-bold hover:bg-[#EEE1C8] transition-colors"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>SEE ON MAP</span>
+                      </button>
+                    )}
 
-                  <Link
-                    href={`/pandal/${pandal.id}`}
-                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#7E1815] text-[#F8F0DF] text-xs font-bold hover:bg-[#B52B20] transition-colors shadow-sm"
-                  >
-                    <span>View Pandal</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#E7C46A]" />
-                  </Link>
+                    <Link
+                      href={`/pandal/${pandal.id}`}
+                      className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold hover:bg-[#B52A22] transition-colors shadow-sm"
+                    >
+                      <span>Pandal Details</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#E1BE68]" />
+                    </Link>
+                  </div>
 
                   {idx < route.stops.length - 1 && (
-                    <span className="text-[11px] text-[#5A4E46] ml-auto hidden sm:inline">
-                      Next: {PANDALS.find((p) => p.id === route.stops[idx + 1].pandalId)?.name}
+                    <span className="text-xs text-[#8F1D18] font-bold">
+                      ↓ NEXT: {PANDALS.find((p) => p.id === route.stops[idx + 1].pandalId)?.name}
                     </span>
                   )}
                 </div>

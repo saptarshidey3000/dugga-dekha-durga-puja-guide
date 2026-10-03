@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { Pandal, MetroStation, Route } from '@/data/types';
+import { Pandal, MetroStation, Route, BonediBari } from '@/data/types';
 import 'leaflet/dist/leaflet.css';
 
 interface InteractiveMapProps {
   pandals?: Pandal[];
+  bonediBaris?: BonediBari[];
   metroStation?: MetroStation;
+  metroPoint?: { name: string; coordinates: [number, number]; exit?: string };
   activeRoute?: Route;
   selectedPandalId?: string | null;
   onSelectPandal?: (id: string) => void;
@@ -17,7 +19,9 @@ interface InteractiveMapProps {
 
 export default function InteractiveMap({
   pandals = [],
+  bonediBaris = [],
   metroStation,
+  metroPoint,
   activeRoute,
   selectedPandalId,
   onSelectPandal,
@@ -39,18 +43,24 @@ export default function InteractiveMap({
       const L = await import('leaflet');
 
       // Calculate initial center
-      let initialLat = 22.5200;
-      let initialLng = 88.3500;
+      let initialLat = 22.5800;
+      let initialLng = 88.3600;
 
       if (center) {
         initialLat = center[0];
         initialLng = center[1];
+      } else if (metroPoint?.coordinates) {
+        initialLat = metroPoint.coordinates[0];
+        initialLng = metroPoint.coordinates[1];
       } else if (metroStation?.coordinates) {
         initialLat = metroStation.coordinates[0];
         initialLng = metroStation.coordinates[1];
       } else if (pandals.length > 0 && pandals[0].latitude && pandals[0].longitude) {
         initialLat = pandals[0].latitude;
         initialLng = pandals[0].longitude;
+      } else if (bonediBaris.length > 0 && bonediBaris[0].latitude && bonediBaris[0].longitude) {
+        initialLat = bonediBaris[0].latitude;
+        initialLng = bonediBaris[0].longitude;
       }
 
       if (!mapInstanceRef.current && mapContainerRef.current) {
@@ -61,7 +71,7 @@ export default function InteractiveMap({
           attributionControl: false,
         });
 
-        // CartoDB Dark Matter or Voyager tiles for stunning retro midnight editorial look
+        // CartoDB Voyager tiles for clear, warm, high-contrast map rendering
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
           maxZoom: 19,
           subdomains: 'abcd',
@@ -82,14 +92,17 @@ export default function InteractiveMap({
       }
 
       const boundsCoords: [number, number][] = [];
+      const routePoints: [number, number][] = [];
 
       // 1. Add Metro Station Marker if present
-      if (metroStation?.coordinates) {
-        const metroCoords = metroStation.coordinates;
+      const activeMetro = metroPoint || (metroStation ? { name: metroStation.name, coordinates: metroStation.coordinates, exit: undefined } : null);
+      if (activeMetro?.coordinates) {
+        const metroCoords = activeMetro.coordinates;
         boundsCoords.push(metroCoords);
+        routePoints.push(metroCoords);
 
         const metroHtml = `
-          <div style="background-color: #7E1815; border: 2px solid #D6A13A; color: #F8F0DF; border-radius: 9999px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 14px rgba(126,24,21,0.4); cursor: pointer;">
+          <div style="background-color: #8F1D18; border: 2px solid #C9973E; color: #F7F0E2; border-radius: 9999px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 14px rgba(143,29,24,0.4); cursor: pointer;">
             🚇
           </div>
         `;
@@ -102,21 +115,16 @@ export default function InteractiveMap({
 
         const metroMarker = L.marker(metroCoords, { icon: metroIcon }).addTo(map);
         metroMarker.bindPopup(`
-          <div style="font-family: inherit; padding: 4px; color: #171311;">
-            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #B52B20;">STARTING METRO</div>
-            <div style="font-size: 14px; font-weight: 700; color: #171311;">${metroStation.name}</div>
-            <div style="font-size: 11px; color: #555;">${metroStation.line}</div>
+          <div style="font-family: inherit; padding: 4px; color: #120E0C;">
+            <div style="font-size: 10px; text-transform: uppercase; font-weight: 700; color: #B52A22;">STARTING POINT</div>
+            <div style="font-size: 14px; font-weight: 700; color: #120E0C;">${activeMetro.name} Metro</div>
+            ${activeMetro.exit ? `<div style="font-size: 11px; color: #8F1D18; font-weight: 600;">${activeMetro.exit}</div>` : ''}
           </div>
         `);
         markersRef.current['metro'] = metroMarker;
       }
 
       // 2. Add Pandal Markers (ordered if route stops available)
-      const routePoints: [number, number][] = [];
-      if (metroStation?.coordinates) {
-        routePoints.push(metroStation.coordinates);
-      }
-
       pandals.forEach((pandal, idx) => {
         if (!pandal.latitude || !pandal.longitude) return;
 
@@ -130,12 +138,11 @@ export default function InteractiveMap({
           : idx + 1;
         const orderFormatted = stopOrder < 10 ? `0${stopOrder}` : `${stopOrder}`;
 
-        // Section 89: gold numbered markers, dark red selected marker
         const pandalHtml = `
           <div style="
-            background-color: ${isSelected ? '#7E1815' : '#D6A13A'};
-            border: 2px solid ${isSelected ? '#D6A13A' : '#FFFFFF'};
-            color: ${isSelected ? '#F8F0DF' : '#7E1815'};
+            background-color: ${isSelected ? '#8F1D18' : '#C9973E'};
+            border: 2px solid ${isSelected ? '#C9973E' : '#FFFFFF'};
+            color: ${isSelected ? '#F7F0E2' : '#120E0C'};
             border-radius: 9999px;
             width: ${isSelected ? '36px' : '30px'};
             height: ${isSelected ? '36px' : '30px'};
@@ -144,7 +151,7 @@ export default function InteractiveMap({
             justify-content: center;
             font-size: 12px;
             font-weight: 800;
-            box-shadow: 0 4px 14px rgba(126,24,21,0.35);
+            box-shadow: 0 4px 14px rgba(143,29,24,0.35);
             transition: all 0.2s ease;
             cursor: pointer;
           ">
@@ -162,17 +169,17 @@ export default function InteractiveMap({
         const marker = L.marker(coords, { icon: pandalIcon }).addTo(map);
 
         marker.bindPopup(`
-          <div style="font-family: inherit; padding: 4px; min-width: 170px; color: #171311;">
-            <div style="font-size: 10px; font-weight: 700; color: #B52B20; text-transform: uppercase;">
+          <div style="font-family: inherit; padding: 4px; min-width: 170px; color: #120E0C;">
+            <div style="font-size: 10px; font-weight: 700; color: #B52A22; text-transform: uppercase;">
               Stop ${orderFormatted} • ${pandal.area}
             </div>
-            <div style="font-size: 13px; font-weight: 700; margin-top: 2px; color: #171311;">
+            <div style="font-size: 13px; font-weight: 700; margin-top: 2px; color: #120E0C;">
               ${pandal.name}
             </div>
-            <div style="font-size: 11px; color: #666; margin-top: 3px;">
+            <div style="font-size: 11px; color: #241714; margin-top: 3px;">
               🚶 ${pandal.walkingTime || 'Walk from stop'}
             </div>
-            <a href="/pandal/${pandal.id}" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #B52B20; font-weight: 700; text-decoration: underline;">
+            <a href="/pandal/${pandal.id}" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">
               View Pandal Details →
             </a>
           </div>
@@ -185,10 +192,76 @@ export default function InteractiveMap({
         markersRef.current[pandal.id] = marker;
       });
 
-      // 3. Draw Route Polyline if activeRoute has points (Section 89: deep red route line)
+      // 3. Add Bonedi Bari Markers
+      bonediBaris.forEach((bari, idx) => {
+        if (!bari.latitude || !bari.longitude) return;
+
+        const coords: [number, number] = [bari.latitude, bari.longitude];
+        boundsCoords.push(coords);
+        routePoints.push(coords);
+
+        const isSelected = selectedPandalId === bari.id;
+        const stopOrder = idx + 1;
+        const orderFormatted = stopOrder < 10 ? `0${stopOrder}` : `${stopOrder}`;
+
+        const bariHtml = `
+          <div style="
+            background-color: ${isSelected ? '#8F1D18' : '#C9973E'};
+            border: 2px solid ${isSelected ? '#E1BE68' : '#FFFFFF'};
+            color: ${isSelected ? '#F7F0E2' : '#120E0C'};
+            border-radius: 9999px;
+            width: ${isSelected ? '36px' : '30px'};
+            height: ${isSelected ? '36px' : '30px'};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(143,29,24,0.35);
+            transition: all 0.2s ease;
+            cursor: pointer;
+          ">
+            ${orderFormatted}
+          </div>
+        `;
+
+        const bariIcon = L.divIcon({
+          html: bariHtml,
+          className: 'custom-bonedi-icon',
+          iconSize: [isSelected ? 36 : 30, isSelected ? 36 : 30],
+          iconAnchor: [isSelected ? 18 : 15, isSelected ? 18 : 15],
+        });
+
+        const marker = L.marker(coords, { icon: bariIcon }).addTo(map);
+
+        marker.bindPopup(`
+          <div style="font-family: inherit; padding: 4px; min-width: 170px; color: #120E0C;">
+            <div style="font-size: 10px; font-weight: 700; color: #8F1D18; text-transform: uppercase;">
+              Stop ${orderFormatted} • ${bari.area}
+            </div>
+            <div style="font-size: 13px; font-weight: 700; margin-top: 2px; color: #120E0C;">
+              ${bari.name}
+            </div>
+            <div style="font-size: 11px; color: #241714; margin-top: 3px;">
+              🚶 ${bari.walkingTime || 'Walk from station'}
+            </div>
+            <a href="/bonedi/${bari.id}" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">
+              View Household Details →
+            </a>
+          </div>
+        `);
+
+        marker.on('click', () => {
+          if (onSelectPandal) onSelectPandal(bari.id);
+        });
+
+        markersRef.current[bari.id] = marker;
+      });
+
+      // 4. Draw Route Polyline (Section 17: deep red route line)
       if (routePoints.length >= 2) {
         polylineRef.current = L.polyline(routePoints, {
-          color: '#B52B20',
+          color: '#8F1D18',
           weight: 4,
           opacity: 0.9,
           dashArray: '8, 8',
@@ -208,7 +281,7 @@ export default function InteractiveMap({
     return () => {
       isMounted = false;
     };
-  }, [pandals, metroStation, activeRoute, selectedPandalId, center, zoom, onSelectPandal]);
+  }, [pandals, bonediBaris, metroStation, metroPoint, activeRoute, selectedPandalId, center, zoom, onSelectPandal]);
 
   // Handle focus when selectedPandalId changes
   useEffect(() => {
@@ -220,12 +293,13 @@ export default function InteractiveMap({
   }, [selectedPandalId]);
 
   return (
-    <div className={`relative w-full rounded-2xl overflow-hidden border border-[#D99A3D]/30 shadow-xl ${heightClass}`}>
+    <div className={`relative w-full rounded-2xl overflow-hidden border border-[#C9973E]/30 shadow-xl ${heightClass}`}>
       <div ref={mapContainerRef} className="w-full h-full z-0" />
-      <div className="absolute bottom-2.5 right-2.5 z-10 bg-[#071A2F]/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#D99A3D]/30 text-[10px] text-[#FFF8EC] flex items-center gap-2 shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-[#B93624] animate-pulse" />
+      <div className="absolute bottom-2.5 right-2.5 z-10 bg-[#241714]/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#C9973E]/30 text-[10px] text-[#F7F0E2] flex items-center gap-2 shadow-lg">
+        <span className="w-2 h-2 rounded-full bg-[#B52A22] animate-pulse" />
         <span>Kolkata Puja Route Coordinates</span>
       </div>
     </div>
   );
 }
+

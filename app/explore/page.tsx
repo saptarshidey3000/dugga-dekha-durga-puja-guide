@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { PANDALS } from '@/data/pandals';
 import { CATEGORIES } from '@/data/categories';
 import { Region, PandalCategory } from '@/data/types';
@@ -11,11 +12,14 @@ import dynamic from 'next/dynamic';
 
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
-  loading: () => <div className="h-[300px] bg-[#FFFFFF] rounded-2xl animate-pulse border border-[#D6A13A]/30" />,
+  loading: () => <div className="h-[300px] bg-[#FFFFFF] rounded-2xl animate-pulse border border-[#E8DECE]" />,
 });
 
-export default function ExplorePage() {
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
+function ExploreContent() {
+  const searchParams = useSearchParams();
+  const initialRegion = searchParams.get('region') || 'all';
+
+  const [selectedRegion, setSelectedRegion] = useState<string>(initialRegion);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMap, setShowMap] = useState(false);
@@ -40,107 +44,107 @@ export default function ExplorePage() {
   }, [selectedRegion, selectedCategory, searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#FAF8F5] text-[#1A1412] min-h-screen">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#D6A13A]/30">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#E8DECE]">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#B52B20]">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#8F1D18]">
             Kolkata Pandal Directory
           </span>
-          <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#7E1815] mt-1">
+          <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#1A1412] mt-1">
             Explore All Pandals
           </h1>
-          <p className="text-xs sm:text-sm text-[#5A4E46] mt-2 max-w-xl">
-            Verified Kolkata Durga Puja pandals with exact Metro stations, exit gates, walking times, and crowd levels.
+          <p className="text-xs sm:text-sm text-[#6B5E55] mt-1 max-w-xl">
+            Verified Kolkata Durga Puja pandals with exact Metro stations, exit gates, and walking times.
           </p>
         </div>
 
-        {/* View Toggle (List vs Map) */}
         <button
           onClick={() => setShowMap(!showMap)}
-          className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FFFFFF] hover:bg-[#F8F0DF] text-[#7E1815] border border-[#D6A13A]/60 text-xs font-bold transition-all shadow-sm"
+          className="self-start md:self-auto flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFFFFF] border border-[#E8DECE] text-xs font-bold text-[#8F1D18] hover:bg-[#F3EBDD] transition-colors shadow-xs"
         >
-          <MapPin className="w-4 h-4 text-[#B52B20]" />
-          <span>{showMap ? 'Hide City Map' : 'Show Map Overview'}</span>
+          <MapPin className="w-3.5 h-3.5 text-[#8F1D18]" />
+          <span>{showMap ? 'Hide Spatial Map' : 'View on Spatial Map'}</span>
         </button>
       </div>
 
-      {/* Map Preview (Expandable) */}
+      {/* Interactive Map Drawer (if toggled) */}
       {showMap && (
-        <div className="bg-[#FFFFFF] border border-[#D6A13A]/40 p-4 rounded-2xl animate-fadeIn shadow-lg">
-          <div className="flex items-center justify-between mb-3 text-xs text-[#7E1815] font-bold uppercase">
-            <span>Kolkata Puja Spatial Distribution ({filteredPandals.length} Pandals)</span>
+        <div className="bg-[#FFFFFF] border border-[#E8DECE] p-4 rounded-3xl shadow-sm animate-fadeIn">
+          <div className="flex items-center justify-between mb-3 text-xs text-[#8F1D18] font-bold uppercase">
+            <span>Showing {filteredPandals.length} Pandals on Kolkata Map</span>
             <button
               onClick={() => setShowMap(false)}
-              className="text-[#5A4E46] hover:text-[#B52B20]"
+              className="text-[#6B5E55] font-bold px-2 py-0.5 rounded bg-[#FAF8F5] border border-[#E8DECE]"
             >
-              Close Map ×
+              Close Map ✕
             </button>
           </div>
           <InteractiveMap
             pandals={filteredPandals}
             selectedPandalId={selectedPandalId}
-            heightClass="h-[360px] sm:h-[440px]"
+            onSelectPandal={(id) => setSelectedPandalId(id)}
+            heightClass="h-[420px]"
           />
         </div>
       )}
 
-      {/* Filter & Search Controls */}
-      <div className="space-y-4 bg-[#FFFFFF] p-5 rounded-2xl border border-[#D6A13A]/30 shadow-sm">
-        {/* Search Bar */}
+      {/* Search and Filters Bar */}
+      <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E8DECE] shadow-xs space-y-4">
+        {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#7E1815]" />
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#8F1D18]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter by pandal name, area, or nearest Metro..."
-            className="w-full bg-[#F8F0DF] border border-[#D6A13A]/40 rounded-xl pl-10 pr-10 py-2.5 text-sm text-[#171311] placeholder-[#5A4E46]/60 focus:outline-none focus:border-[#7E1815]"
+            placeholder="Search by pandal name, area, Metro hub, or theme..."
+            className="w-full bg-[#FAF8F5] border border-[#E8DECE] rounded-xl pl-10 pr-10 py-2.5 text-sm text-[#1A1412] placeholder-[#6B5E55]/60 focus:outline-none focus:border-[#8F1D18]"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-3 text-[#5A4E46] hover:text-[#7E1815]"
+              className="absolute right-3.5 top-3 text-[#6B5E55]"
             >
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        {/* Region Filter Buttons */}
-        <div>
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7E1815] mb-2">
-            Region:
+        {/* Region Pills */}
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block">
+            Filter by Kolkata Region:
           </span>
           <div className="flex flex-wrap gap-2">
-            {regions.map((reg) => (
+            {regions.map((region) => (
               <button
-                key={reg}
-                onClick={() => setSelectedRegion(reg)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
-                  selectedRegion === reg
-                    ? 'bg-[#7E1815] text-[#F8F0DF] border-[#D6A13A] shadow-sm'
-                    : 'bg-[#F8F0DF] text-[#5A4E46] border-[#D6A13A]/35 hover:border-[#D6A13A]'
+                key={region}
+                onClick={() => setSelectedRegion(region)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                  selectedRegion === region
+                    ? 'bg-[#8F1D18] text-[#FAF8F5] border-[#8F1D18]'
+                    : 'bg-[#FAF8F5] text-[#1A1412] border-[#E8DECE] hover:border-[#8F1D18]/50'
                 }`}
               >
-                {reg === 'all' ? 'All Regions' : reg}
+                {region === 'all' ? 'All Regions' : region}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Category Filter Buttons (Section 83) */}
-        <div>
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7E1815] mb-2">
-            Category:
+        {/* Category Pills */}
+        <div className="space-y-1.5 pt-2 border-t border-[#E8DECE]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block">
+            Filter by Category:
           </span>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
+              className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
                 selectedCategory === 'all'
-                  ? 'chip-category-selected'
-                  : 'chip-category'
+                  ? 'bg-[#8F1D18] text-[#FAF8F5] border-[#8F1D18]'
+                  : 'bg-[#FAF8F5] text-[#1A1412] border-[#E8DECE] hover:border-[#8F1D18]/50'
               }`}
             >
               All Categories
@@ -149,24 +153,23 @@ export default function ExplorePage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
                   selectedCategory === cat.id
-                    ? 'chip-category-selected'
-                    : 'chip-category'
+                    ? 'bg-[#8F1D18] text-[#FAF8F5] border-[#8F1D18]'
+                    : 'bg-[#FAF8F5] text-[#1A1412] border-[#E8DECE] hover:border-[#8F1D18]/50'
                 }`}
               >
-                <span>{cat.icon}</span>
-                <span>{cat.name}</span>
+                {cat.icon} {cat.name}
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Results Count Header */}
-      <div className="flex items-center justify-between text-xs text-[#5A4E46]">
+      {/* Results Header */}
+      <div className="flex items-center justify-between text-xs text-[#6B5E55]">
         <span>
-          Showing <strong className="text-[#7E1815] font-bold">{filteredPandals.length}</strong> of{' '}
+          Showing <strong className="text-[#8F1D18] font-bold">{filteredPandals.length}</strong> of{' '}
           {PANDALS.length} pandals
         </span>
         {(selectedRegion !== 'all' || selectedCategory !== 'all' || searchQuery) && (
@@ -176,14 +179,14 @@ export default function ExplorePage() {
               setSelectedCategory('all');
               setSearchQuery('');
             }}
-            className="text-[#B52B20] font-bold hover:underline"
+            className="text-xs text-[#8F1D18] font-bold hover:underline"
           >
-            Clear all filters
+            Reset Filters
           </button>
         )}
       </div>
 
-      {/* Grid of Pandals (Section 77 & 78) */}
+      {/* Pandals Grid */}
       {filteredPandals.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPandals.map((pandal) => (
@@ -193,19 +196,16 @@ export default function ExplorePage() {
               onSeeOnMap={(id) => {
                 setSelectedPandalId(id);
                 setShowMap(true);
-                window.scrollTo({ top: 120, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             />
           ))}
         </div>
       ) : (
-        <div className="bg-[#FFFFFF] border border-[#D6A13A]/30 rounded-2xl p-12 text-center max-w-md mx-auto shadow-sm">
-          <Compass className="w-10 h-10 text-[#D6A13A] mx-auto mb-3" />
-          <h3 className="font-editorial text-xl font-bold text-[#7E1815] mb-1">
-            No Pandals Match Your Filter
-          </h3>
-          <p className="text-xs text-[#5A4E46] mb-4">
-            Try adjusting your region or category preferences to discover more pujas.
+        <div className="bg-[#FFFFFF] border border-[#E8DECE] rounded-2xl p-12 text-center max-w-md mx-auto shadow-xs">
+          <p className="text-base font-bold text-[#1A1412]">No Pandals Match Your Filter</p>
+          <p className="text-xs text-[#6B5E55] mt-1 mb-4">
+            Try choosing another region, clearing the search query, or selecting &quot;All Categories&quot;.
           </p>
           <button
             onClick={() => {
@@ -213,12 +213,20 @@ export default function ExplorePage() {
               setSelectedCategory('all');
               setSearchQuery('');
             }}
-            className="px-5 py-2.5 rounded-full bg-[#7E1815] text-[#F8F0DF] text-xs font-bold shadow-md"
+            className="px-4 py-2 rounded-xl bg-[#8F1D18] text-[#FAF8F5] text-xs font-bold hover:bg-[#B52A22]"
           >
-            Reset Filters
+            Clear All Filters
           </button>
         </div>
       )}
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-sm text-[#8F1D18]">Loading Pandals...</div>}>
+      <ExploreContent />
+    </Suspense>
   );
 }

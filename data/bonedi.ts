@@ -1,5 +1,100 @@
 import { BonediBari } from './types';
 
+export interface BonediAreaGroup {
+  id: string;
+  name: string;
+  bengaliName: string;
+  nearestMetro: string;
+  metroExit?: string;
+  description: string;
+  bariIds: string[];
+}
+
+export const BONEDI_AREAS: BonediAreaGroup[] = [
+  {
+    id: 'shobhabazar',
+    name: 'Shobhabazar',
+    bengaliName: 'শোভাবাজার',
+    nearestMetro: 'Sovabazar–Sutanuti',
+    metroExit: 'Exit Gate 2',
+    description: 'The epicenter of aristocratic Bengal where Raja Nabakrishna Deb hosted Lord Clive in 1757, initiating grand community zamindari pujas.',
+    bariIds: [
+      'shobhabazar-boro-rajbari',
+      'shobhabazar-choto-rajbari',
+      'darjipara-mitra-bari',
+      'chhatu-babu-latu-babu-bari',
+    ],
+  },
+  {
+    id: 'girish-park',
+    name: 'Girish Park',
+    bengaliName: 'গিরিশ পার্ক',
+    nearestMetro: 'Girish Park',
+    metroExit: 'Exit Gate 1 & 2',
+    description: 'Magnificent merchant mansions, arms merchants, gold filigree pratimas, and the iconic Lap-of-Shiva idol of Laha Bari.',
+    bariIds: [
+      'bholanath-dham-dutta-bari',
+      'maniktala-saha-bari',
+      'laha-bari',
+      'shamul-dhone-dutta-bari',
+      'daw-bari-bandook-wala',
+      'jorasanko-shib-krishna-daw-bari',
+      'harakutir-ray-banerjee-bari',
+      'pathuriaghata-rajbari',
+    ],
+  },
+  {
+    id: 'mg-road',
+    name: 'MG Road / College Street',
+    bengaliName: 'এম জি রোড / কলেজ স্ট্রিট',
+    nearestMetro: 'MG Road',
+    metroExit: 'Exit Gate 1',
+    description: 'Historic merchant estates of Muktaram Babu Street and College Street, retaining 19th-century courtyards and marble Thakurdalans.',
+    bariIds: [
+      'chorbagon-sil-bari',
+      'chorbagon-mitra-bari',
+      'thanthania-dutta-bari',
+    ],
+  },
+  {
+    id: 'central',
+    name: 'Central / Bowbazar',
+    bengaliName: 'সেন্ট্রাল / বউবাজার',
+    nearestMetro: 'Central',
+    metroExit: 'Exit Gate 1 & 2',
+    description: 'The monumental courtyard of Lokmata Rani Rashmoni and ancient merchant lineages of Colootola and Bowbazar.',
+    bariIds: [
+      'badan-chand-roy-bari',
+      'ramgopal-saha-bari',
+      'nilmoni-dutta-thakur-bari',
+      'rani-rashmoni-bari',
+    ],
+  },
+  {
+    id: 'bhowanipore',
+    name: 'Bhowanipore',
+    bengaliName: 'ভবানীপুর',
+    nearestMetro: 'Netaji Bhavan',
+    metroExit: 'Exit Gate 1',
+    description: 'The beloved cultural estate of the Mallick family, filled with warmth, film history, and authentic Bengali community festivities.',
+    bariIds: [
+      'mallick-bari-bhowanipore',
+    ],
+  },
+  {
+    id: 'behala',
+    name: 'Behala / Barisha',
+    bengaliName: 'বেহালা / বড়িশা',
+    nearestMetro: 'Mahanayak Uttam Kumar',
+    metroExit: 'Exit Gate 2',
+    description: 'The Sabarna Roy Chowdhury legacy dating to 1610—the oldest recorded family Durga Puja in Kolkata.',
+    bariIds: [
+      'sabarna-roy-chowdhury-atchala-bari',
+      'amarendra-bhavan-roy-bari',
+    ],
+  },
+];
+
 export const BONEDI_BARIS: BonediBari[] = [
   // ==========================================
   // SHOVABAZAR GROUP

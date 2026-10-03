@@ -1,39 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  /* Specification Colors */
-  --puja-red: #B52B20;
-  --deep-red: #7E1815;
-  --antique-gold: #D6A13A;
-  --light-gold: #E7C46A;
-  --off-white: #F8F0DF;
-  --warm-cream: #EFE2C7;
-  --charcoal: #171311;
-  --burgundy: #35120F;
+  /* Specification 06 Colors - Authentic Kolkata Durga Puja Palette */
+  --deep-puja-red: #8F1D18;
+  --primary-red: #B52A22;
+  --antique-gold: #C9973E;
+  --light-gold: #E1BE68;
+  --off-white: #F7F0E2;
+  --warm-cream: #EEE1C8;
+  --dark-brown: #241714;
+  --almost-black: #120E0C;
 
   /* Semantic UI Tokens */
-  --bg-primary: #F8F0DF;
-  --bg-surface: #EFE2C7;
+  --bg-primary: #F7F0E2;
+  --bg-surface: #EEE1C8;
   --bg-card: #FFFFFF;
-  --text-primary: #171311;
+  --text-primary: #120E0C;
   --text-muted: #5A4E46;
-  --border-gold: rgba(214, 161, 58, 0.35);
+  --border-gold: rgba(201, 151, 62, 0.35);
 }
 
 @theme {
-  --color-puja-red: #B52B20;
-  --color-deep-red: #7E1815;
-  --color-antique-gold: #D6A13A;
-  --color-light-gold: #E7C46A;
-  --color-off-white: #F8F0DF;
-  --color-warm-cream: #EFE2C7;
-  --color-charcoal: #171311;
-  --color-burgundy: #35120F;
+  --color-deep-puja-red: #8F1D18;
+  --color-primary-red: #B52A22;
+  --color-antique-gold: #C9973E;
+  --color-light-gold: #E1BE68;
+  --color-off-white: #F7F0E2;
+  --color-warm-cream: #EEE1C8;
+  --color-dark-brown: #241714;
+  --color-almost-black: #120E0C;
 }
 
 body {
-  background-color: var(--off-white);
-  color: var(--charcoal);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
@@ -44,53 +44,50 @@ h1, h2, h3, h4, .font-editorial {
   font-family: var(--font-display), Georgia, serif;
 }
 
-/* Red / Burgundy Navigation & Hero Glass */
+/* Red / Burgundy Navigation & Festive Glass */
 .glass-nav-red {
-  background: rgba(126, 24, 21, 0.96);
+  background: rgba(143, 29, 24, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(214, 161, 58, 0.35);
-}
-
-.glass-dark-overlay {
-  background: linear-gradient(180deg, rgba(53, 18, 15, 0.3) 0%, rgba(126, 24, 21, 0.85) 60%, #7E1815 100%);
+  border-bottom: 1px solid rgba(201, 151, 62, 0.4);
 }
 
 /* Off-White Editorial Card */
 .card-editorial {
   background-color: #FFFFFF;
-  border: 1px solid rgba(214, 161, 58, 0.28);
-  box-shadow: 0 4px 20px -2px rgba(23, 19, 17, 0.06);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(201, 151, 62, 0.35);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(18, 14, 12, 0.06);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-editorial:hover {
-  border-color: rgba(214, 161, 58, 0.7);
-  box-shadow: 0 12px 32px -4px rgba(126, 24, 21, 0.12);
+  border-color: rgba(201, 151, 62, 0.7);
+  box-shadow: 0 10px 28px -4px rgba(143, 29, 24, 0.15);
   transform: translateY(-2px);
 }
 
 /* Dark Red Poster Card (Circuit / Route / Metro Hub) */
 .card-poster {
-  background: linear-gradient(145deg, #35120F 0%, #7E1815 70%, #9B241C 100%);
-  border: 1px solid rgba(214, 161, 58, 0.35);
-  box-shadow: 0 10px 30px -4px rgba(53, 18, 15, 0.4);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(145deg, #241714 0%, #8F1D18 70%, #B52A22 100%);
+  border: 1px solid rgba(201, 151, 62, 0.4);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 30px -4px rgba(36, 23, 20, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-poster:hover {
-  border-color: #D6A13A;
-  box-shadow: 0 16px 36px -4px rgba(126, 24, 21, 0.5);
+  border-color: #C9973E;
+  box-shadow: 0 14px 34px -4px rgba(143, 29, 24, 0.5);
   transform: translateY(-2px);
 }
 
 /* Category Chips Specification:
-   Default: cream background, red text, thin gold border
-   Selected: deep red background, cream text, gold border */
+   Default: cream background, red text, thin gold border */
 .chip-category {
-  background-color: #F8F0DF;
-  color: #B52B20;
-  border: 1px solid rgba(214, 161, 58, 0.45);
+  background-color: #F7F0E2;
+  color: #8F1D18;
+  border: 1px solid rgba(201, 151, 62, 0.45);
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.03em;
@@ -102,31 +99,21 @@ h1, h2, h3, h4, .font-editorial {
 }
 
 .chip-category-selected {
-  background-color: #7E1815;
-  color: #F8F0DF;
-  border: 1px solid #D6A13A;
-  box-shadow: 0 2px 8px rgba(126, 24, 21, 0.3);
+  background-color: #8F1D18;
+  color: #F7F0E2;
+  border: 1px solid #C9973E;
+  box-shadow: 0 2px 8px rgba(143, 29, 24, 0.3);
 }
 
 /* Gold Accents & Divider Lines */
 .gold-divider {
-  background: linear-gradient(90deg, transparent, #D6A13A, transparent);
+  background: linear-gradient(90deg, transparent, #C9973E, transparent);
   height: 1px;
   width: 100%;
 }
 
 .gold-border {
-  border-color: rgba(214, 161, 58, 0.35);
-}
-
-.gold-glow {
-  box-shadow: 0 0 20px rgba(214, 161, 58, 0.25);
-}
-
-/* Subtle Alpana Motif Pattern */
-.alpana-pattern {
-  background-image: radial-gradient(rgba(214, 161, 58, 0.12) 1px, transparent 0);
-  background-size: 24px 24px;
+  border-color: rgba(201, 151, 62, 0.35);
 }
 
 /* Custom Scrollbar in Red & Gold */
@@ -135,12 +122,12 @@ h1, h2, h3, h4, .font-editorial {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F0DF;
+  background: #F7F0E2;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D6A13A;
+  background: #C9973E;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7E1815;
+  background: #8F1D18;
 }

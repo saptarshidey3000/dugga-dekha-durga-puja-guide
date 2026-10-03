@@ -16,9 +16,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'DUGGA Dekha — Kolkata Durga Puja Guide 2026',
+  title: 'DUGGA DEKHA — Kolkata Durga Puja 2026 Metro & Bonedi Bari Guide',
   description:
-    'Find the Puja. Follow the route. Experience more. Curated Kolkata pandal walking routes, Metro exits, Bonedi Bari heritage, and AI Puja Planner for Durga Puja 2026.',
+    'Dugga Dekha tells you where to start and where to go next. Curated Kolkata pandal walking routes, Metro exits, and Bonedi Bari heritage for Durga Puja 2026.',
   keywords: [
     'Durga Puja 2026',
     'Kolkata Durga Puja Guide',
@@ -36,7 +36,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#7E1815',
+  themeColor: '#8F1D18',
 };
 
 export default function RootLayout({
@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#F8F0DF] text-[#171311] selection:bg-[#B52B20] selection:text-[#F8F0DF]">
+      <body className="min-h-full flex flex-col bg-[#F7F0E2] text-[#120E0C] selection:bg-[#8F1D18] selection:text-[#F7F0E2]">
         <ClientShell>{children}</ClientShell>
       </body>
     </html>
