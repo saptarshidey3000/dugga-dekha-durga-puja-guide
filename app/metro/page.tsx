@@ -20,8 +20,8 @@ const REGION_CONFIGS: { id: Region; label: string; count: number; metroHub: stri
   {
     id: 'North Kolkata',
     label: 'NORTH KOLKATA',
-    count: 18,
-    metroHub: 'Sovabazar · Shyambazar · Girish Park',
+    count: 12,
+    metroHub: 'Sovabazar Sutanuti · Girish Park · Belgachia · Shyambazar',
     description: 'Traditional heritage, clay artisans of Kumartuli, Bagbazar Sarbojanin, and historic narrow Rajbari lanes.',
   },
   {
