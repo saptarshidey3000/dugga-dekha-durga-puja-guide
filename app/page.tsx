@@ -35,27 +35,56 @@ export default function HomePage() {
             Explore Puja. Follow the route.
           </p>
 
-          {/* Primary Action: Links directly to Metro Guide */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          {/* Dual Primary Gateways directly in Hero: Metro Guide & Bonedi Bari */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
+            {/* 1. Metro Guide Card */}
             <Link
               href="/metro"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] font-black text-sm tracking-wider uppercase shadow-2xl shadow-[#8F1D18]/50 border border-[#C9973E]/60 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#8F1D18]/90 via-[#8F1D18]/70 to-[#241714]/90 border-2 border-[#C9973E]/60 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
             >
-              <span>EXPLORE PUJA</span>
-              <ArrowRight className="w-4 h-4 text-[#E1BE68]" />
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#8F1D18] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                  <Train className="w-6 h-6 text-[#E1BE68]" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                    Curated Trails · 5 Regions
+                  </span>
+                  <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                    METRO GUIDE
+                  </h3>
+                  <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
+                    Station exits & walking routes
+                  </p>
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
             </Link>
-            <a
-              href="#discovery"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-[#241714]/90 hover:bg-[#241714] text-[#E1BE68] font-bold text-xs tracking-wider uppercase border border-[#C9973E]/40 transition-all shadow-md"
-            >
-              <span>All Guides</span>
-            </a>
-          </div>
 
-          {/* Secondary reassurance text */}
-          <p className="text-[11px] sm:text-xs text-[#F7F0E2]/80 tracking-wider uppercase mt-6 font-semibold">
-            Metro Guides · Pandal Routes · Bonedi Bari
-          </p>
+            {/* 2. Bonedi Bari Card */}
+            <Link
+              href="/bonedi"
+              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#241714]/90 via-[#241714]/80 to-[#120E0C]/95 border-2 border-[#C9973E]/50 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#241714] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                  <Landmark className="w-6 h-6 text-[#E1BE68]" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                    Heritage Enclaves
+                  </span>
+                  <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                    BONEDI BARI
+                  </h3>
+                  <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
+                    300-year-old aristocratic pujas
+                  </p>
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
+            </Link>
+          </div>
         </div>
       </section>
 
