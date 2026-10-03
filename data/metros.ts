@@ -295,17 +295,21 @@ export const METRO_STATIONS: MetroStation[] = [
     popularFor: ['New Town Sarbojanin'],
   },
 
-  // DUM DUM AREA
+  // DUM DUM
   {
     id: 'dum-dum-park',
     name: 'Dum Dum Park',
     bengaliName: 'দমদম পার্ক',
-    line: 'Blue Line (North-South)',
-    region: 'Dum Dum Area',
+    line: 'Blue Line (Line 1)',
+    region: 'Dum Dum',
     coordinates: [22.6100510, 88.4114880],
-    description: 'The epicenter of North-East Kolkata artistic pandals. Direct gateway to the curated 5-stop Dum Dum Park hopping trail.',
+    description: 'A compact, walkable cluster centered inside Dum Dum Park where five renowned, award-winning theme pujas are situated within easy strolls of each other around the numbered local tanks.',
+    recommendedExit: 'Exit toward Dum Dum Junction / Auto-rickshaw stand for Dum Dum Park / VIP Road connector',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Metro+Station+Kolkata',
+    totalPandals: 5,
+    estimatedWalkingMinutes: 25,
     exits: [
-      { id: 'ddp-gate-1', gateNumber: 'VIP Road Entry Point', landmark: 'Kazi Nazrul Islam Avenue', direction: 'Direct entry into Dum Dum Park Tarun Sangha' },
+      { id: 'ddp-gate-1', gateNumber: 'Dum Dum Junction / Auto Stand Exit', landmark: 'Dum Dum Junction / Auto-rickshaw stand for Dum Dum Park / VIP Road connector', direction: 'Direct auto/transit to Dum Dum Park Entry / Tank No. 3' },
     ],
     popularFor: [
       'Dum Dum Park Tarun Sangha',

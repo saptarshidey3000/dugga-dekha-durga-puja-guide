@@ -19,7 +19,8 @@ function RoutesContent() {
     'South Kolkata',
     'North Kolkata',
     'Central Kolkata',
-    'East / West Metro',
+    'Salt Lake + New Town',
+    'Dum Dum',
   ];
 
   const filteredRoutes =

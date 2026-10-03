@@ -25,11 +25,11 @@ const REGION_CONFIGS: { id: Region; label: string; count: number; metroHub: stri
     description: 'Traditional heritage, clay artisans of Kumartuli, Bagbazar Sarbojanin, and historic narrow Rajbari lanes.',
   },
   {
-    id: 'Dum Dum Area',
-    label: 'DUM DUM AREA',
+    id: 'Dum Dum',
+    label: 'DUM DUM',
     count: 5,
-    metroHub: 'Dum Dum Park · VIP Road Gateway',
-    description: 'The iconic 5-stop Dum Dum Park walking circuit spanning 2.4 km: Tarun Sangha, Bharat Chakra, Tarun Dal, Sarbojanin, and Yubak Brinda.',
+    metroHub: 'Dum Dum Park',
+    description: 'A compact, walkable cluster centered inside Dum Dum Park where five renowned, award-winning theme pujas are situated within easy strolls of each other around the numbered local tanks.',
   },
   {
     id: 'Salt Lake + New Town',
@@ -55,6 +55,11 @@ function MetroGuideContent() {
   const matchedRegion = REGION_CONFIGS.find(
     (r) =>
       r.id.toLowerCase() === regionParam?.toLowerCase() ||
+      r.label.toLowerCase() === regionParam?.toLowerCase() ||
+      (regionParam?.toLowerCase() === 'dum dum area' && r.id === 'Dum Dum') ||
+      (regionParam?.toLowerCase() === 'dumdum area' && r.id === 'Dum Dum') ||
+      (regionParam?.toLowerCase() === 'dumdum' && r.id === 'Dum Dum') ||
+      (regionParam?.toLowerCase() === 'dum dum' && r.id === 'Dum Dum') ||
       (regionParam?.toLowerCase() === 'east / west metro' && r.id === 'Salt Lake + New Town')
   );
 
@@ -64,6 +69,8 @@ function MetroGuideContent() {
     const stationsInRegion = METRO_STATIONS.filter(
       (m) =>
         m.region === selectedRegion ||
+        (selectedRegion === 'Dum Dum' && (m.region as string) === 'Dum Dum Area') ||
+        (selectedRegion === 'Dum Dum Area' && (m.region as string) === 'Dum Dum') ||
         (selectedRegion === 'Salt Lake + New Town' && (m.region as string) === 'East / West Metro')
     );
 
@@ -164,7 +171,7 @@ function MetroGuideContent() {
           Choose Your Kolkata Region
         </p>
         <p className="text-xs sm:text-sm text-[#F7F0E2]/85 mt-2 max-w-xl mx-auto leading-relaxed">
-          &quot;Organized around primary Metro arteries for effortless travel across North, South, Central, Salt Lake + New Town, and Dum Dum Area.&quot;
+          &quot;Organized around primary Metro arteries for effortless travel across North, South, Central, Salt Lake + New Town, and Dum Dum.&quot;
         </p>
       </div>
 

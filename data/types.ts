@@ -3,6 +3,7 @@ export type Region =
   | 'North Kolkata'
   | 'Central Kolkata'
   | 'Salt Lake + New Town'
+  | 'Dum Dum'
   | 'Dum Dum Area'
   | 'East / West Metro';
 

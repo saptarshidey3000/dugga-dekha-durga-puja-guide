@@ -31,7 +31,7 @@ function ExploreContent() {
     'all',
     'South Kolkata',
     'North Kolkata',
-    'Dum Dum Area',
+    'Dum Dum',
     'Salt Lake + New Town',
     'Central Kolkata',
   ];
@@ -41,6 +41,7 @@ function ExploreContent() {
       const matchRegion =
         selectedRegion === 'all' ||
         p.region === selectedRegion ||
+        (selectedRegion === 'Dum Dum' && (p.region as string) === 'Dum Dum Area') ||
         (selectedRegion === 'Salt Lake + New Town' && (p.region as string) === 'East / West Metro');
 
       const matchCategory =
