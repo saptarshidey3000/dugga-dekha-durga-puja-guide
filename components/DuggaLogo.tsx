@@ -1,63 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 interface DuggaLogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   showSubtitle?: boolean;
 }
 
 export default function DuggaLogo({
   className = '',
   size = 'md',
-  showSubtitle = true,
+  showSubtitle = false,
 }: DuggaLogoProps) {
-  const [imgError, setImgError] = useState(false);
+  // Size dimensions (exact 2:1 aspect ratio: 1774 x 887)
+  const sizeStyles = {
+    sm: 'h-8 sm:h-9 w-auto',
+    md: 'h-10 sm:h-12 w-auto',
+    lg: 'h-16 sm:h-20 w-auto',
+    xl: 'h-24 sm:h-28 w-auto',
+  }[size];
 
-  // Size dimensions
-  const dims = {
-    sm: { img: 28, text: 'text-lg', year: 'text-[10px]', sub: 'text-[9px]' },
-    md: { img: 36, text: 'text-xl sm:text-2xl', year: 'text-xs', sub: 'text-[10px]' },
-    lg: { img: 48, text: 'text-2xl sm:text-3xl', year: 'text-sm', sub: 'text-xs' },
+  const imgDimensions = {
+    sm: { width: 72, height: 36 },
+    md: { width: 104, height: 52 },
+    lg: { width: 160, height: 80 },
+    xl: { width: 220, height: 110 },
   }[size];
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      {/* Brand Mark Icon / Provided Logo Asset */}
-      {!imgError ? (
-        <div className="relative shrink-0 overflow-hidden rounded-xl">
-          <Image
-            src="/logo.png"
-            alt="Dugga Dekha Logo"
-            width={dims.img}
-            height={dims.img}
-            className="object-contain"
-            onError={() => setImgError(true)}
-            priority
-          />
-        </div>
-      ) : (
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#B52A22] via-[#8F1D18] to-[#241714] border-2 border-[#C9973E] flex items-center justify-center shadow-md shrink-0">
-          <span className="font-editorial text-sm font-black text-[#E1BE68]">DD</span>
-        </div>
-      )}
-
-      {/* Typography Brand Name */}
-      <div className="flex flex-col">
-        <span className={`font-editorial font-black tracking-wider text-[#F7F0E2] leading-none ${dims.text}`}>
-          DUGGA DEKHA{' '}
-          <span className={`text-[#E1BE68] font-sans font-extrabold ml-0.5 tracking-normal ${dims.year}`}>
-            2026
-          </span>
-        </span>
-        {showSubtitle && (
-          <span className={`tracking-widest uppercase text-[#E1BE68]/90 font-semibold mt-0.5 ${dims.sub}`}>
-            Kolkata Durga Puja Guide
-          </span>
-        )}
+    <div className={`flex flex-col items-center sm:items-start ${className}`}>
+      <div className="relative group flex items-center">
+        <Image
+          src="/logo-dd.png"
+          alt="Dugga Dekha Logo"
+          width={imgDimensions.width * 2}
+          height={imgDimensions.height * 2}
+          className={`${sizeStyles} object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-md`}
+          priority
+        />
       </div>
+      {showSubtitle && (
+        <span className="text-[10px] tracking-widest uppercase text-[#E1BE68]/90 font-semibold mt-1">
+          Kolkata Durga Puja Guide 2026
+        </span>
+      )}
     </div>
   );
 }
