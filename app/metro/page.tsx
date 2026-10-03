@@ -13,8 +13,8 @@ const REGION_CONFIGS: { id: Region; label: string; count: number; metroHub: stri
   {
     id: 'South Kolkata',
     label: 'SOUTH KOLKATA',
-    count: 18,
-    metroHub: 'Kalighat · Deshapriya · Rabindra Sarobar',
+    count: 23,
+    metroHub: 'Kalighat · Deshapriya Park · Netaji Bhavan · Jatin Das Park · Rabindra Sarobar · Mahanayak Uttam Kumar · Gitanjali',
     description: 'Premier mega pandals, artistic experimental themes, and classical lighting corridors along Rashbehari Avenue.',
   },
   {

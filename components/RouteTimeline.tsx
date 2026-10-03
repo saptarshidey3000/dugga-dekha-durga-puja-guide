@@ -131,9 +131,9 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
             )}
 
             <div className="flex items-center gap-2 shrink-0">
-              {activePandal.latitude && (
+              {(activePandal.googleMapsUrl || activePandal.latitude) && (
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${activePandal.latitude},${activePandal.longitude}`}
+                  href={activePandal.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${activePandal.latitude},${activePandal.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] text-xs font-bold transition-colors border border-[#C9973E]/40 flex items-center gap-1"
@@ -276,9 +276,9 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#C9973E]/20">
                   <div className="flex flex-wrap items-center gap-2">
                     {/* External Google Maps (Section 10 & 18: No API key needed) */}
-                    {pandal.latitude && (
+                    {(stop.googleMapsUrl || pandal.googleMapsUrl || pandal.latitude) && (
                       <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${pandal.latitude},${pandal.longitude}`}
+                        href={stop.googleMapsUrl || pandal.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${pandal.latitude},${pandal.longitude}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"

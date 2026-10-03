@@ -71,9 +71,10 @@ export default function PandalDetailClient({ pandal }: { pandal: Pandal }) {
   }
 
   const externalGoogleMapsUrl =
-    pandal.latitude && pandal.longitude
+    pandal.googleMapsUrl ||
+    (pandal.latitude && pandal.longitude
       ? `https://www.google.com/maps/search/?api=1&query=${pandal.latitude},${pandal.longitude}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pandal.name + ', ' + pandal.address)}`;
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pandal.name + ', ' + pandal.address)}`);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 bg-transparent text-[#F7F0E2]">

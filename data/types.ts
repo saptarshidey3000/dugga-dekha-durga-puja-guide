@@ -29,12 +29,16 @@ export interface MetroStation {
   id: string;
   name: string;
   bengaliName?: string;
-  line: 'Blue Line (North-South)' | 'Green Line (East-West)' | 'Purple Line';
+  line: 'Blue Line (North-South)' | 'Green Line (East-West)' | 'Purple Line' | string;
   region: Region;
   exits: MetroExit[];
   description?: string;
   coordinates: [number, number];
   popularFor?: string[];
+  recommendedExit?: string;
+  googleMapsUrl?: string;
+  totalPandals?: number;
+  estimatedWalkingMinutes?: number;
 }
 
 export interface Pandal {
@@ -42,6 +46,7 @@ export interface Pandal {
   name: string;
   bengaliName?: string;
   area: string;
+  neighborhood?: string;
   region: Region;
   category: PandalCategory[];
   description: string;
@@ -61,6 +66,13 @@ export interface Pandal {
   crowdSource?: string;
   bestTimeToVisit?: string;
   yearEstablished?: number | string;
+  googleMapsUrl?: string;
+  walkingFromPrevious?: {
+    from: string;
+    distanceMeters: number;
+    walkingTimeMinutes: number;
+    directions: string;
+  };
 }
 
 export interface RouteStop {
@@ -70,6 +82,13 @@ export interface RouteStop {
   walkingDistance?: string;
   direction?: string;
   instruction?: string;
+  googleMapsUrl?: string;
+  walkingFromPrevious?: {
+    from: string;
+    distanceMeters: number;
+    walkingTimeMinutes: number;
+    directions: string;
+  };
 }
 
 export interface Route {
