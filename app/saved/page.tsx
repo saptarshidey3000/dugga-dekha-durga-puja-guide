@@ -29,7 +29,7 @@ export default function SavedPandalsPage() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#FAF8F5] text-[#1A1412] min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-transparent text-[#120E0C] min-h-screen">
       {/* Page Header */}
       <div className="pb-6 border-b border-[#E8DECE]">
         <span className="text-xs font-bold uppercase tracking-widest text-[#8F1D18]">

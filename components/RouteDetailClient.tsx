@@ -6,12 +6,13 @@ import { Route, Pandal, MetroStation } from '@/data/types';
 import RouteTimeline from '@/components/RouteTimeline';
 import { ArrowLeft, Navigation, MapPin } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { RouteMapStop } from '@/components/CuratedRouteMap';
 
-const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+const CuratedRouteMap = dynamic(() => import('@/components/CuratedRouteMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[450px] bg-[#FFFFFF] flex items-center justify-center text-[#7E1815] text-sm animate-pulse rounded-2xl border border-[#D6A13A]/30">
-      Loading Route Map...
+    <div className="w-full h-[400px] bg-[#120E0C]/90 flex items-center justify-center text-[#E1BE68] text-sm animate-pulse rounded-3xl border-2 border-[#C9973E]/40">
+      Loading OpenStreetMap Walking Route...
     </div>
   ),
 });
@@ -30,43 +31,65 @@ export default function RouteDetailClient({
   const [selectedPandalId, setSelectedPandalId] = useState<string | null>(null);
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
 
+  // Convert route stops to map format
+  const mapStops: RouteMapStop[] = route.stops.map((s) => {
+    const p = pandals.find((pandal) => pandal.id === s.pandalId);
+    return {
+      order: s.order,
+      name: p?.name || 'Pandal Stop',
+      lat: p?.latitude || 0,
+      lng: p?.longitude || 0,
+      area: p?.area,
+      walkingTime: s.walkingTime,
+      pandalId: s.pandalId,
+    };
+  });
+
+  const activeOrder = selectedPandalId
+    ? route.stops.find((s) => s.pandalId === selectedPandalId)?.order || null
+    : null;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 bg-transparent text-[#F7F0E2]">
       {/* Back button & top bar */}
-      <div className="flex items-center justify-between pb-4 border-b border-[#D6A13A]/30">
+      <div className="flex items-center justify-between pb-4 border-b border-[#C9973E]/30">
         <Link
-          href="/routes"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7E1815] hover:text-[#B52B20] transition-colors"
+          href={`/metro?region=${encodeURIComponent(route.region)}`}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#120E0C]/90 hover:bg-[#8F1D18] text-xs font-bold text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/50 shadow-md transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-[#B52B20]" />
-          <span>Back to All Puja Circuits</span>
+          <ArrowLeft className="w-4 h-4" />
+          <span>← Back to {route.region} Metro Hubs</span>
         </Link>
 
         {/* Mobile quick map toggle */}
         <button
           onClick={() => setMobileMapOpen(!mobileMapOpen)}
-          className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFFFFF] border border-[#D6A13A]/50 text-xs font-bold text-[#7E1815] shadow-sm"
+          className="lg:hidden flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold shadow-md"
         >
-          <Navigation className="w-3.5 h-3.5 text-[#B52B20]" />
+          <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
           <span>{mobileMapOpen ? 'Hide Map' : 'See on Map'}</span>
         </button>
       </div>
 
       {/* Mobile Map Drawer / Preview */}
       {mobileMapOpen && (
-        <div className="lg:hidden bg-[#FFFFFF] border border-[#D6A13A]/40 p-4 rounded-2xl shadow-xl animate-fadeIn">
-          <div className="flex items-center justify-between mb-3 text-xs text-[#7E1815] font-bold uppercase">
+        <div className="lg:hidden animate-fadeIn space-y-2">
+          <div className="flex items-center justify-between px-2 text-xs text-[#E1BE68] font-bold uppercase">
             <span>Route Map: {route.name}</span>
-            <button onClick={() => setMobileMapOpen(false)} className="text-[#5A4E46] font-bold">
+            <button
+              onClick={() => setMobileMapOpen(false)}
+              className="text-[#F7F0E2]/70 hover:text-[#F7F0E2] font-extrabold px-2 py-0.5 rounded bg-[#120E0C]"
+            >
               Close ×
             </button>
           </div>
-          <InteractiveMap
-            pandals={pandals}
-            metroStation={metroStation}
-            activeRoute={route}
-            selectedPandalId={selectedPandalId}
-            onSelectPandal={(id) => setSelectedPandalId(id)}
+          <CuratedRouteMap
+            regionName={route.region}
+            distance={route.totalWalkingDistance}
+            walkingTime={route.estimatedDuration}
+            stops={mapStops}
+            activeStopOrder={activeOrder}
+            onSelectStop={(_, id) => id && setSelectedPandalId(id)}
             heightClass="h-[360px]"
           />
         </div>
@@ -85,40 +108,32 @@ export default function RouteDetailClient({
           />
         </div>
 
-        {/* Right: Sticky Interactive Map (5 cols) */}
+        {/* Right: Sticky CuratedRouteMap (5 cols) */}
         <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-20 space-y-4">
-          <div className="bg-[#FFFFFF] border border-[#D6A13A]/40 rounded-2xl p-4 shadow-xl">
-            <div className="flex items-center justify-between mb-3 text-xs">
-              <span className="font-bold text-[#7E1815] uppercase tracking-wider">
-                Live Route Navigation
-              </span>
-              <span className="text-[#5A4E46] font-semibold">{route.stops.length} Pandals</span>
+          <CuratedRouteMap
+            regionName={route.region}
+            distance={route.totalWalkingDistance}
+            walkingTime={route.estimatedDuration}
+            stops={mapStops}
+            activeStopOrder={activeOrder}
+            onSelectStop={(_, id) => id && setSelectedPandalId(id)}
+            heightClass="h-[460px]"
+          />
+
+          <div className="rounded-2xl bg-[#120E0C]/90 backdrop-blur-md border border-[#C9973E]/40 p-4 space-y-2 text-xs text-[#F7F0E2]/90 shadow-xl">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-[#E1BE68]">Starting Point:</span>
+              <span className="font-semibold text-[#F7F0E2]">{route.metroStationName}</span>
             </div>
-
-            <InteractiveMap
-              pandals={pandals}
-              metroStation={metroStation}
-              activeRoute={route}
-              selectedPandalId={selectedPandalId}
-              onSelectPandal={(id) => setSelectedPandalId(id)}
-              heightClass="h-[520px]"
-            />
-
-            <div className="mt-4 pt-3 border-t border-[#D6A13A]/20 space-y-2 text-xs text-[#5A4E46]">
+            {route.startingExit && (
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#171311]">Starting Point:</span>
-                <span className="text-[#7E1815] font-semibold">{route.metroStationName}</span>
+                <span className="font-bold text-[#E1BE68]">Exit Gate:</span>
+                <span className="font-semibold text-[#F7F0E2]">{route.startingExit}</span>
               </div>
-              {route.startingExit && (
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#171311]">Exit Gate:</span>
-                  <span className="text-[#B52B20] font-semibold">{route.startingExit}</span>
-                </div>
-              )}
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[#171311]">Total Distance:</span>
-                <span className="font-semibold text-[#171311]">{route.totalWalkingDistance}</span>
-              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-[#E1BE68]">Curated Trail:</span>
+              <span className="font-semibold text-[#F7F0E2]">{route.totalWalkingDistance} · {route.stops.length} Stops</span>
             </div>
           </div>
         </div>

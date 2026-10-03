@@ -2,6 +2,8 @@ export type Region =
   | 'South Kolkata'
   | 'North Kolkata'
   | 'Central Kolkata'
+  | 'Salt Lake + New Town'
+  | 'Dum Dum Area'
   | 'East / West Metro';
 
 export type PandalCategory = 

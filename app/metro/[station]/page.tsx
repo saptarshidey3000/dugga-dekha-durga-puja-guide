@@ -27,14 +27,14 @@ export default async function MetroStationDetailPage({
   const connectedRoutes = ROUTES.filter((r) => r.metroStationId === metro.id);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-[#F8F0DF] text-[#171311]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-8 bg-transparent text-[#120E0C]">
       {/* Back Link */}
       <Link
-        href="/metro"
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#7E1815] hover:text-[#B52B20] transition-colors"
+        href={`/metro?region=${encodeURIComponent(metro.region)}`}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFFFFF]/90 hover:bg-[#FFFFFF] text-xs font-bold text-[#8F1D18] hover:text-[#B52A22] border border-[#C9973E]/40 shadow-xs transition-colors"
       >
-        <ArrowLeft className="w-4 h-4 text-[#B52B20]" />
-        <span>Back to All Metro Hubs</span>
+        <ArrowLeft className="w-4 h-4 text-[#8F1D18]" />
+        <span>← Back to {metro.region} Metro Hubs</span>
       </Link>
 
       {/* Station Hero Header (Poster Style) */}

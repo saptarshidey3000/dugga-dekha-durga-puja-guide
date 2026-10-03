@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#F7F0E2] text-[#120E0C] selection:bg-[#8F1D18] selection:text-[#F7F0E2]">
+      <body className="min-h-full flex flex-col bg-[#120E0C] text-[#F7F0E2] selection:bg-[#8F1D18] selection:text-[#E1BE68]">
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

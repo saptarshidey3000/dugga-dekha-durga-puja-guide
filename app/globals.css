@@ -12,12 +12,12 @@
   --almost-black: #120E0C;
 
   /* Semantic UI Tokens */
-  --bg-primary: #F7F0E2;
-  --bg-surface: #EEE1C8;
-  --bg-card: #FFFFFF;
-  --text-primary: #120E0C;
-  --text-muted: #5A4E46;
-  --border-gold: rgba(201, 151, 62, 0.35);
+  --bg-primary: transparent;
+  --bg-surface: #241714;
+  --bg-card: #1A1210;
+  --text-primary: #F7F0E2;
+  --text-muted: #E1BE68;
+  --border-gold: rgba(201, 151, 62, 0.45);
 }
 
 @theme {
@@ -32,7 +32,7 @@
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: transparent;
   color: var(--text-primary);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
@@ -44,12 +44,19 @@ h1, h2, h3, h4, .font-editorial {
   font-family: var(--font-display), Georgia, serif;
 }
 
-/* Red / Burgundy Navigation & Festive Glass */
-.glass-nav-red {
-  background: rgba(143, 29, 24, 0.96);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(201, 151, 62, 0.4);
+/* Glassmorphic Header & Navigation */
+.glass-nav-red,
+.glassmorphic-header {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 14, 12, 0.72) 0%,
+    rgba(143, 29, 24, 0.65) 50%,
+    rgba(36, 23, 20, 0.78) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-bottom: 1px solid rgba(201, 151, 62, 0.35);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Off-White Editorial Card */

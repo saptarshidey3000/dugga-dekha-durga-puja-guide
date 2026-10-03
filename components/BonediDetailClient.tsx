@@ -27,7 +27,7 @@ export default function BonediDetailClient({
   nextBari,
 }: BonediDetailClientProps) {
   return (
-    <div className="bg-[#F7F0E2] min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#120E0C]">
+    <div className="bg-transparent min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#120E0C]">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Back Link */}
         <div className="flex items-center justify-between pb-3 border-b border-[#C9973E]/30">
@@ -56,7 +56,7 @@ export default function BonediDetailClient({
         {/* Visual Banner (Section 18 & 06 Palette) */}
         <div className="relative h-64 sm:h-96 w-full rounded-3xl overflow-hidden border border-[#C9973E]/40 shadow-2xl bg-[#241714]">
           <Image
-            src={bonedi.image || '/pujo-mobile.png'}
+            src={bonedi.image || '/bonedi-mobile.png'}
             alt={bonedi.name}
             fill
             priority
@@ -91,27 +91,27 @@ export default function BonediDetailClient({
 
         {/* Tactical Heritage Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-[#EEE1C8]/60 p-4 rounded-2xl border border-[#C9973E]/30 space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block">
+          <div className="bg-[#120E0C]/90 backdrop-blur-md p-4 rounded-2xl border border-[#C9973E]/40 space-y-1">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#E1BE68] block">
               Nearest Metro Hub
             </span>
-            <p className="font-bold text-base text-[#120E0C] flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-[#B52A22]" />
+            <p className="font-bold text-base text-[#F7F0E2] flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-[#E1BE68]" />
               <span>{bonedi.nearestMetro} Metro</span>
             </p>
-            <p className="text-xs text-[#241714]/80">
+            <p className="text-xs text-[#F7F0E2]/80">
               {bonedi.metroExit || 'Main Gate Exit'} • Walking:{' '}
-              <strong className="text-[#8F1D18]">{bonedi.walkingTime || '~5 min'}</strong>
+              <strong className="text-[#E1BE68]">{bonedi.walkingTime || '~5 min'}</strong>
             </p>
           </div>
 
-          <div className="bg-[#EEE1C8]/60 p-4 rounded-2xl border border-[#C9973E]/30 space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block">
+          <div className="bg-[#120E0C]/90 backdrop-blur-md p-4 rounded-2xl border border-[#C9973E]/40 space-y-1">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#E1BE68] block">
               Courtyard Address & Direction
             </span>
-            <p className="font-semibold text-xs text-[#120E0C]">{bonedi.address}</p>
+            <p className="font-semibold text-xs text-[#F7F0E2]">{bonedi.address}</p>
             {bonedi.directions && (
-              <p className="text-xs text-[#8F1D18] font-medium pt-1">
+              <p className="text-xs text-[#E1BE68] font-medium pt-1">
                 👉 {bonedi.directions}
               </p>
             )}
@@ -119,22 +119,22 @@ export default function BonediDetailClient({
         </div>
 
         {/* Narrative Description & Heritage Note */}
-        <div className="bg-[#EEE1C8]/40 p-6 rounded-2xl border border-[#C9973E]/30 space-y-4 shadow-sm text-[#120E0C]">
+        <div className="bg-[#120E0C]/90 backdrop-blur-md p-6 rounded-2xl border border-[#C9973E]/40 space-y-4 shadow-xl text-[#F7F0E2]">
           <div>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#8F1D18] mb-1">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-[#E1BE68] mb-1">
               Family & Estate Heritage
             </h2>
-            <p className="text-sm leading-relaxed text-[#241714]">
+            <p className="text-sm leading-relaxed text-[#F7F0E2]/85">
               {bonedi.description}
             </p>
           </div>
 
           {bonedi.heritageNote && (
-            <div className="pt-3 border-t border-[#C9973E]/20">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[#8F1D18] mb-1">
+            <div className="pt-3 border-t border-[#C9973E]/30">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[#E1BE68] mb-1">
                 Notable Ritual & Iconography Features
               </h3>
-              <p className="text-xs text-[#241714] italic leading-relaxed">
+              <p className="text-xs text-[#F7F0E2]/80 italic leading-relaxed">
                 &quot;{bonedi.heritageNote}&quot;
               </p>
             </div>

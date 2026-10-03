@@ -54,7 +54,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
   };
 
   return (
-    <div className="bg-[#F7F0E2] min-h-screen py-8 sm:py-12 px-4 sm:px-8 text-[#120E0C]">
+    <div className="bg-transparent min-h-screen py-8 sm:py-12 px-4 sm:px-8 text-[#F7F0E2]">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Top Breadcrumb & Quick Actions */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#C9973E]/30">

@@ -203,13 +203,13 @@ export const METRO_STATIONS: MetroStation[] = [
     popularFor: ['Subodh Mallick Square', 'Taltala Sarbojanin'],
   },
 
-  // EAST / WEST METRO
+  // SALT LAKE + NEW TOWN
   {
     id: 'karunamoyee',
     name: 'Karunamoyee (Salt Lake)',
     bengaliName: 'করুণাময়ী',
     line: 'Green Line (East-West)',
-    region: 'East / West Metro',
+    region: 'Salt Lake + New Town',
     coordinates: [22.5878, 88.4234],
     description: 'Heart of Salt Lake City. Easy access to broad leafy boulevards, AJ Block, and AK Block pujas.',
     exits: [
@@ -222,7 +222,7 @@ export const METRO_STATIONS: MetroStation[] = [
     name: 'City Centre (Salt Lake)',
     bengaliName: 'সিটি সেন্টার',
     line: 'Green Line (East-West)',
-    region: 'East / West Metro',
+    region: 'Salt Lake + New Town',
     coordinates: [22.5892, 88.4095],
     description: 'Commercial heart of Salt Lake, providing quick access to the famous FD Block themed installation.',
     exits: [
@@ -235,12 +235,33 @@ export const METRO_STATIONS: MetroStation[] = [
     name: 'Sector V / New Town',
     bengaliName: 'সেক্টর ফাইভ / নিউ টাউন',
     line: 'Green Line (East-West)',
-    region: 'East / West Metro',
+    region: 'Salt Lake + New Town',
     coordinates: [22.5765, 88.4342],
     description: 'IT corridor terminal connecting to New Town Sarbojanin and East Kolkata mega celebrations.',
     exits: [
       { id: 'sec-gate-1', gateNumber: 'Exit Gate 1', landmark: 'Sector V Ring Road', direction: 'Shuttle / walk towards New Town Mela Ground' },
     ],
     popularFor: ['New Town Sarbojanin'],
+  },
+
+  // DUM DUM AREA
+  {
+    id: 'dum-dum-park',
+    name: 'Dum Dum Park',
+    bengaliName: 'দমদম পার্ক',
+    line: 'Blue Line (North-South)',
+    region: 'Dum Dum Area',
+    coordinates: [22.6100510, 88.4114880],
+    description: 'The epicenter of North-East Kolkata artistic pandals. Direct gateway to the curated 5-stop Dum Dum Park hopping trail.',
+    exits: [
+      { id: 'ddp-gate-1', gateNumber: 'VIP Road Entry Point', landmark: 'Kazi Nazrul Islam Avenue', direction: 'Direct entry into Dum Dum Park Tarun Sangha' },
+    ],
+    popularFor: [
+      'Dum Dum Park Tarun Sangha',
+      'Dum Dum Park Bharat Chakra',
+      'Dum Dum Park Tarun Dal',
+      'Dum Dum Park Sarbojanin',
+      'Dum Dum Park Yubak Brinda',
+    ],
   },
 ];
