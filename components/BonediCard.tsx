@@ -64,7 +64,7 @@ export default function BonediCard({ bonedi, onSeeOnMap }: BonediCardProps) {
           </p>
 
           {/* NEAREST METRO */}
-          <div className="bg-[#241714]/80 p-3 rounded-2xl border border-[#C9973E]/30 space-y-1 text-xs mb-4">
+          <div className="bg-[#241714]/80 p-3 rounded-2xl border border-[#C9973E]/30 space-y-1 text-xs mb-3">
             <div className="flex items-center gap-1.5 font-bold text-[#E1BE68]">
               <MapPin className="w-3.5 h-3.5 text-[#E1BE68]" />
               <span>🚇 Nearest Metro: {bonedi.nearestMetro}</span>
@@ -74,6 +74,23 @@ export default function BonediCard({ bonedi, onSeeOnMap }: BonediCardProps) {
             </div>
             <p className="text-[11px] text-[#F7F0E2]/70 pl-5">{bonedi.address}</p>
           </div>
+
+          {/* COMMUTE / TRANSIT INFO */}
+          {bonedi.commute && (
+            <div className="bg-[#241714]/90 p-3 rounded-2xl border border-[#C9973E]/30 text-xs mb-4 space-y-1">
+              <div className="flex items-center justify-between font-bold text-[#E1BE68] text-[11px]">
+                <span>
+                  {bonedi.commute.mode === 'WALK' ? '🚶 Walk' : bonedi.commute.mode === 'BOOK_AUTO' ? '🛺 Book Auto' : '🚶/🛺 Transit'} • {bonedi.commute.durationMinutes} min
+                </span>
+                <span className="text-[#F7F0E2]/70 font-normal">
+                  {bonedi.commute.distanceMeters}m · ~{bonedi.commute.estimatedSteps} steps
+                </span>
+              </div>
+              <p className="text-[11px] text-[#F7F0E2]/80 leading-snug line-clamp-2">
+                {bonedi.commute.transitRecommendation}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 3. Action Buttons: VIEW DETAILS */}

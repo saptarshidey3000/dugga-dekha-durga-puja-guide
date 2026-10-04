@@ -275,12 +275,21 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18]">
                                   STOP {formattedNum} OF {baris.length}
                                 </span>
-                                {bari.walkingTime && (
-                                  <span className="text-xs font-semibold text-[#8F1D18] flex items-center gap-1">
-                                    <Clock className="w-3 h-3 text-[#B52A22]" />
-                                    <span>{bari.walkingTime}</span>
-                                  </span>
-                                )}
+                                <div className="flex items-center gap-2">
+                                  {bari.commute ? (
+                                    <span className="text-xs font-semibold text-[#8F1D18] flex items-center gap-1.5">
+                                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#8F1D18] text-[#F7F0E2]">
+                                        {bari.commute.mode === 'WALK' ? '🚶 Walk' : bari.commute.mode === 'BOOK_AUTO' ? '🛺 Auto' : '🚶/🛺 Transit'}
+                                      </span>
+                                      <span>{bari.commute.durationMinutes} min ({bari.commute.distanceMeters}m · ~{bari.commute.estimatedSteps} steps)</span>
+                                    </span>
+                                  ) : bari.walkingTime && (
+                                    <span className="text-xs font-semibold text-[#8F1D18] flex items-center gap-1">
+                                      <Clock className="w-3 h-3 text-[#B52A22]" />
+                                      <span>{bari.walkingTime}</span>
+                                    </span>
+                                  )}
+                                </div>
                               </div>
 
                               <h3 className="font-editorial text-2xl font-bold text-[#120E0C] mt-1">
@@ -331,15 +340,22 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                       </div>
 
                       {/* DOWN ARROW / NEXT STOP CONNECTOR */}
-                      {idx < baris.length - 1 && (
-                        <div className="flex items-center gap-2 py-2 text-xs font-bold text-[#8F1D18] uppercase tracking-wider pl-2">
-                          <span>↓ NEXT STOP:</span>
-                          <span className="text-[#120E0C] font-semibold">{baris[idx + 1].name}</span>
-                          {baris[idx + 1].walkingTime && (
-                            <span className="text-[#C9973E]">({baris[idx + 1].walkingTime})</span>
-                          )}
-                        </div>
-                      )}
+                      {idx < baris.length - 1 && (() => {
+                        const nextStop = baris[idx + 1];
+                        return (
+                          <div className="flex flex-wrap items-center gap-2 py-2 text-xs font-bold text-[#8F1D18] uppercase tracking-wider pl-2">
+                            <span>↓ NEXT STOP:</span>
+                            <span className="text-[#120E0C] font-semibold">{nextStop.name}</span>
+                            {nextStop.commute ? (
+                              <span className="text-[#C9973E] font-medium lowercase">
+                                ({nextStop.commute.mode === 'WALK' ? 'walk' : nextStop.commute.mode === 'BOOK_AUTO' ? 'auto' : 'transit'} ~{nextStop.commute.durationMinutes} min · {nextStop.commute.distanceMeters}m · ~{nextStop.commute.estimatedSteps} steps)
+                              </span>
+                            ) : nextStop.walkingTime && (
+                              <span className="text-[#C9973E]">({nextStop.walkingTime})</span>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   );
                 })}

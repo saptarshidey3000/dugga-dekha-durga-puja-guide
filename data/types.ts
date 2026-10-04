@@ -108,6 +108,14 @@ export interface Route {
   stops: RouteStop[];
 }
 
+export interface BonediCommute {
+  mode: 'WALK' | 'BOOK_AUTO_OR_WALK' | 'BOOK_AUTO' | 'WALK_OR_TOTO' | string;
+  distanceMeters: number;
+  estimatedSteps: number;
+  durationMinutes: number;
+  transitRecommendation: string;
+}
+
 export interface BonediBari {
   id: string;
   name: string;
@@ -123,6 +131,7 @@ export interface BonediBari {
   founderHistory?: string;
   heritageNote?: string;
   yearEstablished?: string;
+  commute?: BonediCommute;
   image?: string;
   imageUrl?: string;
   googleMapsUrl?: string;

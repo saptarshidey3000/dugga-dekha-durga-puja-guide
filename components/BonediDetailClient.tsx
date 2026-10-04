@@ -131,6 +131,37 @@ export default function BonediDetailClient({
           </div>
         </div>
 
+        {/* Commute & Navigation Guidance */}
+        {bonedi.commute && (
+          <div className="bg-[#120E0C]/90 backdrop-blur-md p-5 rounded-2xl border-2 border-[#C9973E]/50 shadow-xl space-y-3 text-[#F7F0E2]">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#C9973E]/30 pb-2">
+              <span className="text-xs font-black uppercase tracking-widest text-[#E1BE68] flex items-center gap-1.5">
+                <span>🚶 Transit & Commute Guidance</span>
+              </span>
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E]/40">
+                {bonedi.commute.mode === 'WALK' ? '🚶 Pure Walk' : bonedi.commute.mode === 'BOOK_AUTO' ? '🛺 Book Auto' : '🚶 / 🛺 Transit Option'}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 text-xs">
+              <div className="bg-[#241714] p-2.5 rounded-xl border border-[#C9973E]/30">
+                <span className="text-[10px] text-[#E1BE68] block font-bold uppercase">Estimated Duration</span>
+                <span className="text-sm font-extrabold text-[#F7F0E2]">{bonedi.commute.durationMinutes} Minutes</span>
+              </div>
+              <div className="bg-[#241714] p-2.5 rounded-xl border border-[#C9973E]/30">
+                <span className="text-[10px] text-[#E1BE68] block font-bold uppercase">Distance</span>
+                <span className="text-sm font-extrabold text-[#F7F0E2]">{bonedi.commute.distanceMeters} Meters</span>
+              </div>
+              <div className="bg-[#241714] p-2.5 rounded-xl border border-[#C9973E]/30 col-span-2 sm:col-span-1">
+                <span className="text-[10px] text-[#E1BE68] block font-bold uppercase">Pedometer Steps</span>
+                <span className="text-sm font-extrabold text-[#F7F0E2]">~{bonedi.commute.estimatedSteps} Steps</span>
+              </div>
+            </div>
+            <p className="text-xs text-[#F7F0E2]/90 pt-1 leading-relaxed font-medium">
+              👉 {bonedi.commute.transitRecommendation}
+            </p>
+          </div>
+        )}
+
         {/* Narrative Description & Heritage Note */}
         <div className="bg-[#120E0C]/90 backdrop-blur-md p-6 rounded-2xl border border-[#C9973E]/40 space-y-4 shadow-xl text-[#F7F0E2]">
           {bonedi.founderHistory && bonedi.founderHistory !== bonedi.description && (
