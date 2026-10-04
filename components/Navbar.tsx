@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bookmark, Train, Landmark, Compass, Menu, X } from 'lucide-react';
+import { Search, Bookmark, Train, Landmark, Compass, Menu, X, Download } from 'lucide-react';
 import { getSavedPandals } from '@/lib/storage';
+import { usePWA } from './PWAInstallProvider';
 
 import DuggaLogo from './DuggaLogo';
 
@@ -16,6 +17,8 @@ export default function Navbar({ onOpenSearch }: NavbarProps) {
   const pathname = usePathname();
   const [savedCount, setSavedCount] = useState<number>(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isInstallable, isStandalone, installApp } = usePWA();
+  const shouldShowInstall = isInstallable && !isStandalone;
 
   const updateCounts = () => {
     const pandals = getSavedPandals();
@@ -76,6 +79,18 @@ export default function Navbar({ onOpenSearch }: NavbarProps) {
                 </Link>
               );
             })}
+
+            {/* Desktop Install Button: Subtle, matching Dugga Dekha branding */}
+            {shouldShowInstall && (
+              <button
+                onClick={installApp}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#8F1D18]/85 hover:bg-[#8F1D18] text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/70 shadow-sm transition-all backdrop-blur-md cursor-pointer tracking-wider uppercase ml-1"
+                title="Install Dugga Dekha on your device"
+              >
+                <Download className="w-3.5 h-3.5 text-[#E1BE68]" />
+                <span>INSTALL DUGGA DEKHA</span>
+              </button>
+            )}
           </nav>
 
           {/* Right Action Icons: Search & Mobile Menu Button */}
@@ -132,6 +147,25 @@ export default function Navbar({ onOpenSearch }: NavbarProps) {
                 </Link>
               );
             })}
+
+            {/* Mobile Install Button inside drawer */}
+            {shouldShowInstall && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  installApp();
+                }}
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold bg-[#8F1D18]/40 text-[#E1BE68] border border-[#C9973E]/50 hover:bg-[#8F1D18] hover:text-[#F7F0E2] transition-all cursor-pointer text-left mt-2"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Download className="w-4 h-4 text-[#E1BE68]" />
+                  <span>INSTALL DUGGA DEKHA</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E]/40 font-bold uppercase tracking-wider">
+                  App
+                </span>
+              </button>
+            )}
           </div>
         )}
       </header>

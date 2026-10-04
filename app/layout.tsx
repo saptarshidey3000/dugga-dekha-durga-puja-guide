@@ -30,6 +30,22 @@ export const metadata: Metadata = {
     'Kalighat Metro Pandals',
     'Kumartuli Puja',
   ],
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Dugga Dekha',
+  },
 };
 
 export const viewport: Viewport = {
@@ -39,6 +55,8 @@ export const viewport: Viewport = {
   themeColor: '#8F1D18',
 };
 
+import PWAInstallProvider from '@/components/PWAInstallProvider';
+
 export default function RootLayout({
   children,
 }: {
@@ -47,7 +65,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#120E0C] text-[#F7F0E2] selection:bg-[#8F1D18] selection:text-[#E1BE68]">
-        <ClientShell>{children}</ClientShell>
+        <PWAInstallProvider>
+          <ClientShell>{children}</ClientShell>
+        </PWAInstallProvider>
       </body>
     </html>
   );
