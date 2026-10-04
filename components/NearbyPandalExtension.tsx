@@ -145,16 +145,16 @@ export default function NearbyPandalExtension({
                     </Link>
                   )}
 
-                  {onSeeOnMap && pandal.latitude && (
-                    <button
-                      type="button"
-                      onClick={() => onSeeOnMap(pandal.id)}
-                      className="p-2.5 rounded-xl bg-[#120E0C] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-colors"
-                      title="See on Map"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  {/* Direct Google Maps Navigation */}
+                  <a
+                    href={pandal.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(pandal.name + ' Kolkata')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl bg-[#120E0C] hover:bg-[#8F1D18] text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/40 text-xs font-bold transition-colors"
+                    title="See on Map (Google Maps)"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                  </a>
 
                   <Link
                     href={`/pandal/${pandal.id}`}

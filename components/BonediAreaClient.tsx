@@ -20,6 +20,8 @@ import {
   Eye,
   CheckCircle2,
   Compass,
+  Map,
+  ExternalLink,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -42,6 +44,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
   const [viewMode, setViewMode] = useState<'hopping' | 'list'>('hopping');
   const [selectedBariId, setSelectedBariId] = useState<string | null>(baris[0]?.id || null);
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
+  const [openMiniMapBariId, setOpenMiniMapBariId] = useState<string | null>(null);
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
 
   const currentBari = baris[currentStopIndex] || baris[0];
@@ -343,29 +346,73 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                               )}
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-3 pt-3 border-t border-[#C9973E]/20 mt-3">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedBariId(bari.id);
-                                  setCurrentStopIndex(idx);
-                                  setMobileMapOpen(true);
-                                }}
-                                className="px-3 py-1.5 rounded-lg bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold hover:bg-[#B52A22] transition-colors flex items-center gap-1.5 shadow-sm"
+                            {/* Actions: SEE ON MAP (Google Maps) + Walking Route Mini Map + View History */}
+                            <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#C9973E]/20 mt-3">
+                              <a
+                                href={bari.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(bari.name + ' Kolkata')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="px-3 py-1.5 rounded-lg bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold hover:bg-[#B52A22] transition-colors flex items-center gap-1.5 shadow-sm border border-[#C9973E]/40"
                               >
                                 <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
                                 <span>SEE ON MAP</span>
+                                <ExternalLink className="w-3 h-3 text-[#E1BE68]" />
+                              </a>
+
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenMiniMapBariId(openMiniMapBariId === bari.id ? null : bari.id);
+                                }}
+                                className="px-3 py-1.5 rounded-lg bg-[#241714] text-[#E1BE68] border border-[#C9973E]/50 text-xs font-bold hover:bg-[#35120F] transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+                              >
+                                <Map className="w-3.5 h-3.5 text-[#E1BE68]" />
+                                <span>{openMiniMapBariId === bari.id ? 'Close Mini Map ✕' : 'Walking Route Mini Map'}</span>
                               </button>
 
                               <Link
                                 href={`/bonedi/${bari.id}`}
+                                onClick={(e) => e.stopPropagation()}
                                 className="px-3 py-1.5 rounded-lg bg-[#F7F0E2] border border-[#C9973E]/40 text-[#120E0C] text-xs font-bold hover:border-[#8F1D18] transition-colors flex items-center gap-1"
                               >
                                 <span>View History</span>
                                 <ArrowRight className="w-3 h-3 text-[#8F1D18]" />
                               </Link>
                             </div>
+
+                            {/* INLINE WALKING ROUTE MINI MAP (inside this particular bonedi bari card div) */}
+                            {openMiniMapBariId === bari.id && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="mt-4 pt-3 border-t border-[#C9973E]/30 space-y-2 animate-fadeIn"
+                              >
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="font-bold text-[#8F1D18] flex items-center gap-1.5">
+                                    <MapPin className="w-3.5 h-3.5 text-[#8F1D18]" />
+                                    <span>Walking Route Mini Map • Stop {formattedNum}: {bari.name}</span>
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenMiniMapBariId(null);
+                                    }}
+                                    className="px-2.5 py-1 rounded-md bg-[#241714] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#8F1D18] cursor-pointer"
+                                  >
+                                    Close Mini Map ✕
+                                  </button>
+                                </div>
+                                <InteractiveMap
+                                  bonediBaris={baris}
+                                  selectedPandalId={bari.id}
+                                  center={[bari.latitude || 22.57, bari.longitude || 88.36]}
+                                  zoom={16}
+                                  heightClass="h-[280px] sm:h-[320px]"
+                                />
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

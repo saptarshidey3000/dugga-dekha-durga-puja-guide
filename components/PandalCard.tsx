@@ -2,9 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bookmark, MapPin, ArrowRight, Navigation, ExternalLink } from 'lucide-react';
+import { Bookmark, MapPin, ArrowRight, Navigation, ExternalLink, Map } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { Pandal } from '@/data/types';
 import { isPandalSaved, savePandal, removeSavedPandal } from '@/lib/storage';
+
+const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[240px] bg-[#241714]/80 flex items-center justify-center text-[#E1BE68] text-xs animate-pulse rounded-xl border border-[#C9973E]/30">
+      Loading Mini Map...
+    </div>
+  ),
+});
 
 interface PandalCardProps {
   pandal: Pandal;
@@ -14,6 +24,7 @@ interface PandalCardProps {
 
 export default function PandalCard({ pandal, orderNumber, onSeeOnMap }: PandalCardProps) {
   const [saved, setSaved] = useState(false);
+  const [miniMapOpen, setMiniMapOpen] = useState(false);
 
   useEffect(() => {
     setSaved(isPandalSaved(pandal.id));
@@ -114,28 +125,78 @@ export default function PandalCard({ pandal, orderNumber, onSeeOnMap }: PandalCa
         </div>
       </div>
 
-      {/* Action Buttons: [ SEE ON MAP ] & [ DETAILS ] (Section 10 & 22) */}
-      <div className="flex items-center gap-2 pt-3 border-t border-[#C9973E]/30">
+      {/* Action Buttons: [ SEE ON MAP ] & [ Walking Route Mini Map ] & [ DETAILS ] */}
+      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#C9973E]/30">
         {pandal.latitude && pandal.longitude && (
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${pandal.latitude},${pandal.longitude}`}
+            href={pandal.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(pandal.name + ' Kolkata')}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 py-2.5 px-3 rounded-xl bg-[#241714] hover:bg-[#8F1D18] text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/40 text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5"
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 min-w-[110px] py-2 px-2.5 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/40 text-xs font-bold transition-all text-center flex items-center justify-center gap-1 shadow-sm"
           >
-            <Navigation className="w-3.5 h-3.5" />
-            <span>SEE ON MAP →</span>
+            <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
+            <span className="truncate">SEE ON MAP →</span>
           </a>
+        )}
+
+        {pandal.latitude && pandal.longitude && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMiniMapOpen(!miniMapOpen);
+            }}
+            className="flex-1 min-w-[125px] py-2 px-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span className="truncate">{miniMapOpen ? 'Close Map ✕' : 'Walking Route Mini Map'}</span>
+          </button>
         )}
 
         <Link
           href={`/pandal/${pandal.id}`}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] text-xs font-extrabold uppercase tracking-wider shadow-sm transition-all border border-[#C9973E]/50"
+          onClick={(e) => e.stopPropagation()}
+          className="px-3.5 py-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] text-xs font-extrabold uppercase tracking-wider shadow-sm transition-all border border-[#C9973E]/40 flex items-center justify-center gap-1"
         >
           <span>DETAILS</span>
           <ArrowRight className="w-3.5 h-3.5 text-[#E1BE68]" />
         </Link>
       </div>
+
+      {/* INLINE WALKING ROUTE MINI MAP (inside this particular pandal card div) */}
+      {miniMapOpen && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="mt-3 pt-3 border-t border-[#C9973E]/30 space-y-2 animate-fadeIn"
+        >
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-bold text-[#E1BE68] flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#E1BE68]" />
+              <span>Walking Route Mini Map • {pandal.name}</span>
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setMiniMapOpen(false);
+              }}
+              className="px-2.5 py-0.5 rounded bg-[#241714] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#8F1D18] border border-[#C9973E]/40 cursor-pointer"
+            >
+              Close Mini Map ✕
+            </button>
+          </div>
+          <InteractiveMap
+            pandals={[pandal]}
+            selectedPandalId={pandal.id}
+            center={[pandal.latitude || 22.57, pandal.longitude || 88.36]}
+            zoom={16}
+            heightClass="h-[240px] sm:h-[280px]"
+          />
+        </div>
+      )}
     </div>
   );
 }

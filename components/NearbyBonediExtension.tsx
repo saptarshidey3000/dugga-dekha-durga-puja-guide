@@ -133,16 +133,16 @@ export default function NearbyBonediExtension({
 
                 {/* Secondary: See on Map & View History */}
                 <div className="flex items-center gap-1.5">
-                  {onSeeOnMap && bonedi.latitude && (
-                    <button
-                      type="button"
-                      onClick={() => onSeeOnMap(bonedi.id)}
-                      className="p-2.5 rounded-xl bg-[#120E0C] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-colors"
-                      title="See on Map"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  {/* Direct Google Maps Navigation */}
+                  <a
+                    href={bonedi.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(bonedi.name + ' Kolkata')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl bg-[#120E0C] hover:bg-[#8F1D18] text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/40 text-xs font-bold transition-colors"
+                    title="See on Map (Google Maps)"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                  </a>
 
                   <Link
                     href={`/bonedi/${bonedi.id}`}

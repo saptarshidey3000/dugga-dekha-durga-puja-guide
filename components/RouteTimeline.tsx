@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Route } from '@/data/types';
 import { PANDALS } from '@/data/pandals';
 import { METRO_STATIONS } from '@/data/metros';
@@ -16,10 +17,30 @@ import {
   Landmark,
   Check,
   X,
+  Map,
 } from 'lucide-react';
 import { isPandalSaved, savePandal, removeSavedPandal } from '@/lib/storage';
-import { NearbyBonediItem } from '@/lib/proximity';
+import { NearbyBonediItem, getNextRouteForRoute } from '@/lib/proximity';
 import NearbyBonediExtension from '@/components/NearbyBonediExtension';
+import NextRouteExtension from '@/components/NextRouteExtension';
+
+const CuratedRouteMap = dynamic(() => import('@/components/CuratedRouteMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[280px] bg-[#120E0C] rounded-2xl animate-pulse flex items-center justify-center text-xs text-[#E1BE68]">
+      Loading Walking Route Mini Map...
+    </div>
+  ),
+});
+
+const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[280px] bg-[#120E0C] rounded-2xl animate-pulse flex items-center justify-center text-xs text-[#E1BE68]">
+      Loading Courtyard Mini Map...
+    </div>
+  ),
+});
 
 interface RouteTimelineProps {
   route: Route;
@@ -38,8 +59,11 @@ export default function RouteTimeline({
 }: RouteTimelineProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedIds, setSavedIds] = useState<{ [id: string]: boolean }>({});
+  const [openMiniMapPandalId, setOpenMiniMapPandalId] = useState<string | null>(null);
+  const [openMiniMapBariId, setOpenMiniMapBariId] = useState<string | null>(null);
 
   const metro = METRO_STATIONS.find((m) => m.id === route.metroStationId);
+  const nextRoute = getNextRouteForRoute(route);
 
   const toggleSave = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,6 +85,31 @@ export default function RouteTimeline({
   const lastPandal = lastStop ? PANDALS.find((p) => p.id === lastStop.pandalId) : null;
 
   const addedBarisList = nearbyBaris.filter((item) => addedBariIds.includes(item.bonedi.id));
+
+  // Full stops array for the inline mini maps
+  const routeMapStops = [
+    ...route.stops.map((s) => {
+      const p = PANDALS.find((item) => item.id === s.pandalId);
+      return {
+        order: s.order,
+        name: p?.name || s.pandalId,
+        lat: p?.latitude || 0,
+        lng: p?.longitude || 0,
+        area: p?.area,
+        walkingTime: s.walkingTime,
+        pandalId: s.pandalId,
+      };
+    }),
+    ...addedBarisList.map((item, idx) => ({
+      order: route.stops.length + idx + 1,
+      name: `🏛️ ${item.bonedi.name}`,
+      lat: item.bonedi.latitude || 0,
+      lng: item.bonedi.longitude || 0,
+      area: `${item.bonedi.area} (Bonedi Bari)`,
+      walkingTime: item.walkingMinutes ? `~${item.walkingMinutes} min` : '~10 min',
+      pandalId: item.bonedi.id,
+    })),
+  ];
 
   const currentFormatted =
     activeStop && activeStop.order < 10 ? `0${activeStop.order}` : `${activeStop?.order || '01'}`;
@@ -290,21 +339,31 @@ export default function RouteTimeline({
                   </div>
                 )}
 
-                {/* Action Buttons: [ SEE ON MAP ] & [ Pandal Details ] */}
+                {/* Action Buttons: [ SEE ON MAP ] & [ Walking Route Mini Map ] & [ Details ] */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#C9973E]/20">
                   <div className="flex flex-wrap items-center gap-2">
-                    {/* External Google Maps (Section 10 & 18: No API key needed) */}
+                    {/* External Google Maps (Direct redirect) */}
                     {(stop.googleMapsUrl || pandal.googleMapsUrl || pandal.latitude) && (
                       <a
-                        href={stop.googleMapsUrl || pandal.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${pandal.latitude},${pandal.longitude}`}
+                        href={pandal.googleMapsUrl || stop.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(pandal.name + ' Kolkata')}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"
                       >
                         <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
                         <span>SEE ON MAP →</span>
+                        <ExternalLink className="w-3 h-3 text-[#E1BE68]" />
                       </a>
                     )}
+
+                    {/* Walking Route Mini Map Button */}
+                    <button
+                      onClick={() => setOpenMiniMapPandalId(openMiniMapPandalId === pandal.id ? null : pandal.id)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    >
+                      <Map className="w-3.5 h-3.5 text-[#E1BE68]" />
+                      <span>{openMiniMapPandalId === pandal.id ? 'Hide Mini Map' : 'Walking Route Mini Map'}</span>
+                    </button>
 
                     <Link
                       href={`/pandal/${pandal.id}`}
@@ -322,6 +381,29 @@ export default function RouteTimeline({
                     </div>
                   )}
                 </div>
+
+                {/* INLINE WALKING ROUTE MINI MAP (inside this particular pandal div) */}
+                {openMiniMapPandalId === pandal.id && (
+                  <div className="mt-4 pt-3 border-t border-[#C9973E]/30 space-y-2 animate-fadeIn">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#E1BE68] flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#E1BE68]" />
+                        <span>Walking Route Mini Map • Stop {stopNumberFormatted}: {pandal.name}</span>
+                      </span>
+                      <button
+                        onClick={() => setOpenMiniMapPandalId(null)}
+                        className="px-2.5 py-1 rounded-md bg-[#241714] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#8F1D18] border border-[#C9973E]/40 cursor-pointer"
+                      >
+                        Close Mini Map ✕
+                      </button>
+                    </div>
+                    <CuratedRouteMap
+                      stops={routeMapStops}
+                      activeStopOrder={stop.order}
+                      heightClass="h-[280px] sm:h-[320px]"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -400,15 +482,24 @@ export default function RouteTimeline({
                 {/* Actions */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#C9973E]/20">
                   <div className="flex flex-wrap items-center gap-2">
-                    {onSeeOnMap && item.bonedi.latitude && (
-                      <button
-                        onClick={() => onSeeOnMap(item.bonedi.id)}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"
-                      >
-                        <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
-                        <span>SEE ON MAP →</span>
-                      </button>
-                    )}
+                    <a
+                      href={item.bonedi.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(item.bonedi.name + ' Kolkata')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"
+                    >
+                      <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
+                      <span>SEE ON MAP →</span>
+                      <ExternalLink className="w-3 h-3 text-[#E1BE68]" />
+                    </a>
+
+                    <button
+                      onClick={() => setOpenMiniMapBariId(openMiniMapBariId === item.bonedi.id ? null : item.bonedi.id)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                    >
+                      <Map className="w-3.5 h-3.5 text-[#E1BE68]" />
+                      <span>{openMiniMapBariId === item.bonedi.id ? 'Hide Mini Map' : 'Walking Route Mini Map'}</span>
+                    </button>
 
                     <Link
                       href={`/bonedi/${item.bonedi.id}`}
@@ -423,14 +514,38 @@ export default function RouteTimeline({
                     Est. {item.bonedi.yearEstablished || 'Ancient Heritage'}
                   </span>
                 </div>
+
+                {/* INLINE WALKING ROUTE MINI MAP FOR BONEDI BARI */}
+                {openMiniMapBariId === item.bonedi.id && (
+                  <div className="mt-4 pt-3 border-t border-[#C9973E]/30 space-y-2 animate-fadeIn">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#E1BE68] flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#E1BE68]" />
+                        <span>Courtyard Mini Map • {item.bonedi.name}</span>
+                      </span>
+                      <button
+                        onClick={() => setOpenMiniMapBariId(null)}
+                        className="px-2.5 py-1 rounded-md bg-[#241714] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#8F1D18] border border-[#C9973E]/40 cursor-pointer"
+                      >
+                        Close Mini Map ✕
+                      </button>
+                    </div>
+                    <InteractiveMap
+                      bonediBaris={[item.bonedi]}
+                      center={[item.bonedi.latitude || 22.57, item.bonedi.longitude || 88.36]}
+                      zoom={16}
+                      heightClass="h-[280px] sm:h-[320px]"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* EXTEND YOUR WALK: NEARBY HERITAGE / BONEDI BARI SECTION */}
-      {nearbyBaris && nearbyBaris.length > 0 && (
+      {/* EXTEND YOUR WALK: NEARBY HERITAGE (if <= 1km same metro) OR RECOMMENDED NEXT ROUTE */}
+      {nearbyBaris && nearbyBaris.length > 0 ? (
         <div className="pt-4">
           <NearbyBonediExtension
             nearbyBaris={nearbyBaris}
@@ -440,7 +555,15 @@ export default function RouteTimeline({
             lastPandalName={lastPandal?.name || 'Last Pandal'}
           />
         </div>
-      )}
+      ) : nextRoute ? (
+        <div className="pt-4">
+          <NextRouteExtension
+            currentRoute={route}
+            nextRoute={nextRoute}
+            lastPandalName={lastPandal?.name || 'Last Pandal'}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -5,7 +5,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { BonediBari } from '@/data/types';
-import { Landmark, MapPin, Navigation, ArrowRight } from 'lucide-react';
+import { Landmark, MapPin, Navigation, ArrowRight, Map, ExternalLink } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[240px] bg-[#241714]/80 flex items-center justify-center text-[#E1BE68] text-xs animate-pulse rounded-xl border border-[#C9973E]/30">
+      Loading Mini Map...
+    </div>
+  ),
+});
 
 interface BonediCardProps {
   bonedi: BonediBari;
@@ -15,6 +25,7 @@ interface BonediCardProps {
 export default function BonediCard({ bonedi, onSeeOnMap }: BonediCardProps) {
   const router = useRouter();
   const [imgSrc, setImgSrc] = useState(bonedi.image || '/bonedi-mobile.png');
+  const [miniMapOpen, setMiniMapOpen] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -105,26 +116,72 @@ export default function BonediCard({ bonedi, onSeeOnMap }: BonediCardProps) {
           )}
         </div>
 
-        {/* 3. Action Buttons: VIEW DETAILS */}
-        <div className="flex items-center gap-2 pt-3 border-t border-[#C9973E]/30">
-          {onSeeOnMap && bonedi.latitude && (
-            <button
-              onClick={() => onSeeOnMap(bonedi.id)}
-              className="flex-1 flex items-center justify-center gap-1 py-2.5 px-3 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-colors"
-            >
-              <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
-              <span>See on Map</span>
-            </button>
-          )}
+        {/* 3. Action Buttons: [ SEE ON MAP ] & [ Walking Route Mini Map ] & [ DETAILS ] */}
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#C9973E]/30">
+          <a
+            href={bonedi.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(bonedi.name + ' Kolkata')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 min-w-[110px] py-2 px-2.5 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/40 text-xs font-bold transition-all text-center flex items-center justify-center gap-1 shadow-sm"
+          >
+            <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
+            <span className="truncate">SEE ON MAP →</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMiniMapOpen(!miniMapOpen);
+            }}
+            className="flex-1 min-w-[125px] py-2 px-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] border border-[#C9973E]/40 text-xs font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span className="truncate">{miniMapOpen ? 'Close Map ✕' : 'Walking Route Mini Map'}</span>
+          </button>
 
           <Link
             href={`/bonedi/${bonedi.id}`}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] text-xs font-black uppercase tracking-wider transition-all shadow-md border border-[#C9973E]/50"
+            onClick={(e) => e.stopPropagation()}
+            className="px-3.5 py-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] text-xs font-extrabold uppercase tracking-wider shadow-sm transition-all border border-[#C9973E]/40 flex items-center justify-center gap-1"
           >
-            <span>VIEW DETAILS</span>
+            <span>DETAILS</span>
             <ArrowRight className="w-3.5 h-3.5 text-[#E1BE68]" />
           </Link>
         </div>
+
+        {/* INLINE WALKING ROUTE MINI MAP (inside this particular bonedi bari card div) */}
+        {miniMapOpen && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="mt-3 pt-3 border-t border-[#C9973E]/30 space-y-2 animate-fadeIn"
+          >
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-[#E1BE68] flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#E1BE68]" />
+                <span>Walking Route Mini Map • {bonedi.name}</span>
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMiniMapOpen(false);
+                }}
+                className="px-2.5 py-0.5 rounded bg-[#241714] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#8F1D18] border border-[#C9973E]/40 cursor-pointer"
+              >
+                Close Mini Map ✕
+              </button>
+            </div>
+            <InteractiveMap
+              bonediBaris={[bonedi]}
+              selectedPandalId={bonedi.id}
+              center={[bonedi.latitude || 22.57, bonedi.longitude || 88.36]}
+              zoom={16}
+              heightClass="h-[240px] sm:h-[280px]"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

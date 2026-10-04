@@ -95,30 +95,6 @@ const ROUTE_TO_BONEDI_DIRECTIONS: Record<string, Record<string, string>> = {
     'mallick-bari-bhowanipore':
       'From Chakraberia/75 Palli, walk 400 meters west into Mohini Mohan Road to visit the iconic Mallick family estate.',
   },
-  // Behala / Tollygunge
-  'tollygunge-haridevpur-behala-trail': {
-    'sabarna-roy-chowdhury-atchala-bari':
-      'From Barisha Club, take a quick 5-minute auto or 700m walk south along Sakher Bazar to Kolkata’s oldest Durgotsav (1610).',
-    'amarendra-bhavan-roy-bari':
-      'Walk 500 meters from Barisha Club along Roy Bahadur Road to Amarendra Bhavan.',
-  },
-  // Shyambazar
-  'shyambazar-bagbazar-corridor': {
-    'shobhabazar-boro-rajbari':
-      'Head 600 meters south along Rabindra Sarani into Raja Nabakrishna Street.',
-    'darjipara-mitra-bari':
-      'Walk 700 meters south into Nilmoni Mitra Street.',
-  },
-  // Hazra / Maddox
-  'hazra-maddox-adda': {
-    'mallick-bari-bhowanipore':
-      'Walk 600 meters north via Ashutosh Mukherjee Road connector into Mohini Mohan Road.',
-  },
-  // Kalighat
-  'kalighat-chetla-trail': {
-    'mallick-bari-bhowanipore':
-      'Take a quick 5-minute auto or 1 metro stop to Netaji Bhavan / Mohini Mohan Road.',
-  },
 };
 
 /**
@@ -199,6 +175,9 @@ const BONEDI_TO_PANDAL_DIRECTIONS: Record<string, Record<string, string>> = {
 
 /**
  * Finds nearby Bonedi Baris for a given Metro Route
+ * STRICT USER REQUIREMENT:
+ * 1. Only show if the Bonedi Bari is within 1km (<= 1000m)
+ * 2. Only if they share the same metro station route / corridor
  */
 export function getNearbyBonediForRoute(route: Route): NearbyBonediItem[] {
   if (!route.stops || route.stops.length === 0) return [];
@@ -208,14 +187,12 @@ export function getNearbyBonediForRoute(route: Route): NearbyBonediItem[] {
   const lastPandal = PANDALS.find((p) => p.id === lastStop.pandalId);
 
   const routeCustomMap = ROUTE_TO_BONEDI_DIRECTIONS[route.id] || {};
-
   const candidates: NearbyBonediItem[] = [];
 
+  const routeMetroNorm = (route.metroStationName || '').toLowerCase().replace(/metro.*$/i, '').trim();
+
   BONEDI_BARIS.forEach((bari) => {
-    let distanceMeters = 800; // default estimate
-    let directionInstruction =
-      routeCustomMap[bari.id] ||
-      `Head towards ${bari.address} (approx ~${bari.walkingTime || '8 min'} walk from ${lastPandal?.name || 'the last stop'}).`;
+    let distanceMeters = 9999;
 
     if (lastPandal?.latitude && lastPandal?.longitude && bari.latitude && bari.longitude) {
       distanceMeters = calculateDistanceMeters(
@@ -231,19 +208,25 @@ export function getNearbyBonediForRoute(route: Route): NearbyBonediItem[] {
     // Walking minutes: ~75 meters per minute in congested lanes, minimum 3 mins
     const walkingMinutes = Math.max(3, Math.round(distanceMeters / 75));
 
-    // Priority criteria:
-    // 1) Explicitly curated route mapping
-    // 2) Distance < 1600m
-    // 3) Or same region / adjacent neighborhood
-    const isCurated = !!routeCustomMap[bari.id];
-    const isClose = distanceMeters <= 1600;
-    const sameRegion =
-      bari.region === route.region ||
-      (route.region === 'North Kolkata' && bari.region === 'North Kolkata') ||
-      (route.region === 'Central Kolkata' && bari.region === 'Central Kolkata') ||
-      (route.region === 'South Kolkata' && bari.region === 'South Kolkata');
+    // STRICT USER REQUIREMENT:
+    // 1) Distance must be strictly within 1km (<= 1000 meters)
+    // 2) Must share the same metro station route / corridor
+    const isWithin1km = distanceMeters <= 1000;
 
-    if (isCurated || (isClose && sameRegion)) {
+    const bariMetroNorm = (bari.nearestMetro || '').toLowerCase().replace(/metro.*$/i, '').trim();
+    const sharesSameMetro =
+      (routeMetroNorm && bariMetroNorm && (routeMetroNorm.includes(bariMetroNorm) || bariMetroNorm.includes(routeMetroNorm))) ||
+      (route.id.includes('sovabazar') && bari.area.toLowerCase().includes('sovabazar')) ||
+      (route.id.includes('girish-park') && (bari.area.toLowerCase().includes('girish') || bari.area.toLowerCase().includes('machuabazar'))) ||
+      (route.id.includes('college-square') && (bari.area.toLowerCase().includes('college') || bari.area.toLowerCase().includes('chorebagan') || bari.area.toLowerCase().includes('thanthania'))) ||
+      (route.id.includes('central-bowbazar') && (bari.area.toLowerCase().includes('bowbazar') || bari.area.toLowerCase().includes('colootola') || bari.area.toLowerCase().includes('janbazar'))) ||
+      (route.id.includes('bhowanipore') && bari.area.toLowerCase().includes('bhowanipore'));
+
+    if (isWithin1km && sharesSameMetro) {
+      const directionInstruction =
+        routeCustomMap[bari.id] ||
+        `Head towards ${bari.address} (~${walkingMinutes} min walk / ${distanceMeters}m from ${lastPandal?.name || 'the last stop'}).`;
+
       candidates.push({
         bonedi: bari,
         distanceMeters,
@@ -254,14 +237,46 @@ export function getNearbyBonediForRoute(route: Route): NearbyBonediItem[] {
     }
   });
 
-  // Sort candidates by curated priority first, then by closest distance
-  return candidates.sort((a, b) => {
-    const aCurated = !!routeCustomMap[a.bonedi.id];
-    const bCurated = !!routeCustomMap[b.bonedi.id];
-    if (aCurated && !bCurated) return -1;
-    if (!aCurated && bCurated) return 1;
-    return a.distanceMeters - b.distanceMeters;
-  }).slice(0, 3);
+  // Sort candidates by closest distance
+  return candidates.sort((a, b) => a.distanceMeters - b.distanceMeters).slice(0, 3);
+}
+
+/**
+ * When no Bonedi Bari is within 1km sharing the metro station route,
+ * returns the logical next route to follow in the city.
+ */
+export function getNextRouteForRoute(route: Route): Route | null {
+  const NEXT_ROUTE_MAP: Record<string, string> = {
+    // South Kolkata
+    'kalighat-chetla-trail': 'deshapriya-gariahat-circuit',
+    'deshapriya-gariahat-circuit': 'hazra-maddox-adda',
+    'hazra-maddox-adda': 'bhowanipore-heritage-walk',
+    'bhowanipore-heritage-walk': 'mudiali-shib-mandir-circuit',
+    'mudiali-shib-mandir-circuit': 'jodhpur-park-selimpur-dhakuria',
+    'jodhpur-park-selimpur-dhakuria': 'kasba-santoshpur-bypass',
+    'kasba-santoshpur-bypass': 'behala-parnasree-circuit',
+    'behala-parnasree-circuit': 'tollygunge-haridevpur-behala-trail',
+    'tollygunge-haridevpur-behala-trail': 'kalighat-chetla-trail',
+
+    // North & Central Kolkata
+    'dum-dum-kankurgachi-trail': 'salt-lake-block-trail',
+    'salt-lake-block-trail': 'shyambazar-bagbazar-corridor',
+    'shyambazar-bagbazar-corridor': 'sovabazar-kumartuli-trail',
+    'sovabazar-kumartuli-trail': 'girish-park-ram-mandir-circuit',
+    'girish-park-ram-mandir-circuit': 'college-square-heritage-trail',
+    'college-square-heritage-trail': 'central-bowbazar-trail',
+    'central-bowbazar-trail': 'bhowanipore-heritage-walk',
+  };
+
+  const nextId = NEXT_ROUTE_MAP[route.id];
+  if (nextId) {
+    const found = ROUTES.find((r) => r.id === nextId);
+    if (found) return found;
+  }
+
+  // Fallback: next route in same region
+  const sameRegion = ROUTES.filter((r) => r.region === route.region && r.id !== route.id);
+  return sameRegion.length > 0 ? sameRegion[0] : null;
 }
 
 /**
