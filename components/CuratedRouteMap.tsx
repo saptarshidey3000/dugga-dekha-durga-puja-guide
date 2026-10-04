@@ -121,25 +121,27 @@ export default function CuratedRouteMap({
           const isActive = activeStopOrder === stop.order;
           const orderFormatted = stop.order < 10 ? `0${stop.order}` : `${stop.order}`;
 
+          const isHeritageStop = stop.name.includes('🏛️');
+
           const markerHtml = `
             <div style="
-              background-color: ${isActive ? '#8F1D18' : '#C9973E'};
-              border: 2.5px solid ${isActive ? '#E1BE68' : '#FFFFFF'};
-              color: ${isActive ? '#F7F0E2' : '#120E0C'};
+              background-color: ${isActive ? '#8F1D18' : isHeritageStop ? '#241714' : '#C9973E'};
+              border: 2.5px solid ${isActive ? '#E1BE68' : isHeritageStop ? '#E1BE68' : '#FFFFFF'};
+              color: ${isActive ? '#F7F0E2' : isHeritageStop ? '#E1BE68' : '#120E0C'};
               border-radius: 9999px;
               width: ${isActive ? '38px' : '32px'};
               height: ${isActive ? '38px' : '32px'};
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: 13px;
+              font-size: ${isHeritageStop ? '14px' : '13px'};
               font-weight: 900;
               font-family: system-ui, sans-serif;
               box-shadow: 0 4px 16px rgba(18,14,12,0.6);
               cursor: pointer;
               transition: all 0.2s ease;
             ">
-              ${orderFormatted}
+              ${isHeritageStop ? '🏛️' : orderFormatted}
             </div>
           `;
 
@@ -153,17 +155,20 @@ export default function CuratedRouteMap({
           const marker = L.marker(coords, { icon }).addTo(map);
 
           marker.bindPopup(`
-            <div style="font-family: inherit; padding: 4px; min-width: 175px; color: #120E0C;">
+            <div style="font-family: inherit; padding: 4px; min-width: 180px; color: #120E0C;">
               <div style="font-size: 10px; font-weight: 800; color: #8F1D18; text-transform: uppercase;">
-                STOP ${orderFormatted}
+                ${isHeritageStop ? '🏛️ HERITAGE COURTYARD' : `STOP ${orderFormatted}`}
               </div>
               <div style="font-size: 13px; font-weight: 800; margin-top: 2px; color: #120E0C;">
                 ${stop.name}
               </div>
               ${stop.walkingTime ? `<div style="font-size: 11px; color: #5A4E46; margin-top: 2px;">🚶 ${stop.walkingTime}</div>` : ''}
-              <a href="https://www.google.com/maps/search/?api=1&query=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">
-                Navigate on Google Maps ↗
-              </a>
+              <div style="margin-top: 6px; display: flex; align-items: center; gap: 8px;">
+                ${stop.pandalId ? `<a href="${isHeritageStop ? `/bonedi/${stop.pandalId}` : `/pandal/${stop.pandalId}`}" style="font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">Details →</a>` : ''}
+                <a href="https://maps.google.com/?q=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">
+                  Google Maps ↗
+                </a>
+              </div>
             </div>
           `);
 

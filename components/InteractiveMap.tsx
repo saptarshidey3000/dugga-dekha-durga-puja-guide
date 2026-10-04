@@ -37,6 +37,9 @@ export default function InteractiveMap({
   const [mapError, setMapError] = useState(false);
 
   // Generate external Google Maps query URL (Requires NO API key)
+  const selectedBari = bonediBaris.find((b) => b.id === selectedPandalId);
+  const selectedPandal = pandals.find((p) => p.id === selectedPandalId);
+
   const fallbackCoords: [number, number] | null = center
     ? center
     : metroPoint?.coordinates
@@ -49,9 +52,15 @@ export default function InteractiveMap({
     ? [bonediBaris[0].latitude, bonediBaris[0].longitude]
     : [22.5180, 88.3444];
 
-  const externalGoogleMapsUrl = fallbackCoords
-    ? `https://www.google.com/maps/search/?api=1&query=${fallbackCoords[0]},${fallbackCoords[1]}`
-    : `https://www.google.com/maps/search/?api=1&query=Kolkata+Durga+Puja`;
+  const externalGoogleMapsUrl = selectedBari?.googleMapsUrl
+    ? selectedBari.googleMapsUrl
+    : bonediBaris.length === 1 && bonediBaris[0].googleMapsUrl
+    ? bonediBaris[0].googleMapsUrl
+    : selectedPandal?.googleMapsUrl
+    ? selectedPandal.googleMapsUrl
+    : fallbackCoords
+    ? `https://maps.google.com/?q=${fallbackCoords[0]},${fallbackCoords[1]}`
+    : `https://maps.google.com/?q=Kolkata+Durga+Puja`;
 
   useEffect(() => {
     let isMounted = true;
@@ -246,22 +255,22 @@ export default function InteractiveMap({
 
           const bariHtml = `
             <div style="
-              background-color: ${isSelected ? '#8F1D18' : '#C9973E'};
-              border: 2.5px solid ${isSelected ? '#E1BE68' : '#FFFFFF'};
-              color: ${isSelected ? '#F7F0E2' : '#120E0C'};
+              background-color: ${isSelected ? '#8F1D18' : '#241714'};
+              border: 2.5px solid ${isSelected ? '#E1BE68' : '#C9973E'};
+              color: #F7F0E2;
               border-radius: 9999px;
               width: ${isSelected ? '38px' : '32px'};
               height: ${isSelected ? '38px' : '32px'};
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: 13px;
+              font-size: ${bonediBaris.length === 1 ? '16px' : '11px'};
               font-weight: 900;
-              box-shadow: 0 4px 16px rgba(18,14,12,0.6);
+              box-shadow: 0 4px 16px rgba(18,14,12,0.7);
               transition: all 0.2s ease;
               cursor: pointer;
-            ">
-              ${orderFormatted}
+            " title="${bari.name}">
+              ${bonediBaris.length === 1 ? '🏛️' : `${orderFormatted}`}
             </div>
           `;
 
@@ -273,21 +282,31 @@ export default function InteractiveMap({
           });
 
           const marker = L.marker(coords, { icon: bariIcon }).addTo(map);
+          const mapsUrl = bari.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(bari.name + ' Kolkata')}`;
 
           marker.bindPopup(`
-            <div style="font-family: inherit; padding: 4px; min-width: 175px; color: #120E0C;">
-              <div style="font-size: 10px; font-weight: 800; color: #8F1D18; text-transform: uppercase;">
-                COURTYARD ${orderFormatted} • ${bari.area}
+            <div style="font-family: inherit; padding: 6px; min-width: 210px; color: #120E0C;">
+              <div style="font-size: 10px; font-weight: 800; color: #8F1D18; text-transform: uppercase; letter-spacing: 0.5px;">
+                🏛️ HERITAGE COURTYARD ${orderFormatted} • ${bari.area}
               </div>
-              <div style="font-size: 13px; font-weight: 800; margin-top: 2px; color: #120E0C;">
+              <div style="font-size: 14px; font-weight: 800; margin-top: 3px; color: #120E0C; line-height: 1.2;">
                 ${bari.name}
               </div>
-              <div style="font-size: 11px; color: #5A4E46; margin-top: 3px;">
-                🚶 ${bari.walkingTime || 'Walk from station'}
+              ${bari.bengaliName ? `<div style="font-size: 11px; color: #8F1D18; font-weight: 600; font-family: serif;">${bari.bengaliName}</div>` : ''}
+              <div style="font-size: 11px; color: #5A4E46; margin-top: 4px; line-height: 1.3;">
+                📍 ${bari.address}
               </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=${bari.latitude},${bari.longitude}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 6px; font-size: 11px; color: #8F1D18; font-weight: 700; text-decoration: underline;">
-                Google Maps ↗
-              </a>
+              <div style="font-size: 11px; color: #8F1D18; margin-top: 3px; font-weight: 600;">
+                🚇 ${bari.nearestMetro} (${bari.walkingTime || 'Walkable'})
+              </div>
+              <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #E5D7C5; padding-top: 6px;">
+                <a href="/bonedi/${bari.id}" style="font-size: 11px; color: #8F1D18; font-weight: 800; text-decoration: underline;">
+                  View Details →
+                </a>
+                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: #8F1D18; font-weight: 800; text-decoration: underline; display: flex; align-items: center; gap: 2px;">
+                  Open Map ↗
+                </a>
+              </div>
             </div>
           `);
 

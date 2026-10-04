@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { BonediBari } from '@/data/types';
 import { BonediAreaGroup } from '@/data/bonedi';
 import QuickJumpDropdown, { DropdownItem } from '@/components/QuickJumpDropdown';
+import NearbyPandalExtension from '@/components/NearbyPandalExtension';
+import { getNearbyPandalsForBonedi } from '@/lib/proximity';
 import {
   ArrowLeft,
   Navigation,
@@ -54,6 +56,9 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
     href: `/bonedi/${b.id}`,
     icon: '🏛️',
   }));
+
+  const lastBari = baris[baris.length - 1];
+  const nearbyPandals = lastBari ? getNearbyPandalsForBonedi(lastBari.id, area.id) : [];
 
   const handleNextStop = () => {
     if (currentStopIndex < baris.length - 1) {
@@ -386,6 +391,16 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                   );
                 })}
               </div>
+
+              {/* Extend Your Walk: Nearby Famous Pandals */}
+              {nearbyPandals && nearbyPandals.length > 0 && (
+                <div className="pt-6">
+                  <NearbyPandalExtension
+                    nearbyPandals={nearbyPandals}
+                    fromBonediName={lastBari?.name || area.name}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Right 5 cols: Sticky Desktop Map (Desktop Route Section 43 & 17) */}
@@ -511,6 +526,16 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                 </Link>
               ))}
             </div>
+
+            {/* Extend Your Walk: Nearby Famous Pandals in List View */}
+            {nearbyPandals && nearbyPandals.length > 0 && (
+              <div className="pt-8">
+                <NearbyPandalExtension
+                  nearbyPandals={nearbyPandals}
+                  fromBonediName={lastBari?.name || area.name}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

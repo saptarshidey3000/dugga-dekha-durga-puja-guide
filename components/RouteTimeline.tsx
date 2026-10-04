@@ -13,15 +13,29 @@ import {
   Bookmark,
   Footprints,
   ExternalLink,
+  Landmark,
+  Check,
+  X,
 } from 'lucide-react';
 import { isPandalSaved, savePandal, removeSavedPandal } from '@/lib/storage';
+import { NearbyBonediItem } from '@/lib/proximity';
+import NearbyBonediExtension from '@/components/NearbyBonediExtension';
 
 interface RouteTimelineProps {
   route: Route;
   onSeeOnMap?: (pandalId: string) => void;
+  nearbyBaris?: NearbyBonediItem[];
+  addedBariIds?: string[];
+  onToggleBari?: (bariId: string) => void;
 }
 
-export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps) {
+export default function RouteTimeline({
+  route,
+  onSeeOnMap,
+  nearbyBaris = [],
+  addedBariIds = [],
+  onToggleBari,
+}: RouteTimelineProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedIds, setSavedIds] = useState<{ [id: string]: boolean }>({});
 
@@ -43,6 +57,10 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
   const activePandal = activeStop ? PANDALS.find((p) => p.id === activeStop.pandalId) : null;
   const nextStop = route.stops[currentStep + 1];
   const nextPandal = nextStop ? PANDALS.find((p) => p.id === nextStop.pandalId) : null;
+  const lastStop = route.stops[route.stops.length - 1];
+  const lastPandal = lastStop ? PANDALS.find((p) => p.id === lastStop.pandalId) : null;
+
+  const addedBarisList = nearbyBaris.filter((item) => addedBariIds.includes(item.bonedi.id));
 
   const currentFormatted =
     activeStop && activeStop.order < 10 ? `0${activeStop.order}` : `${activeStop?.order || '01'}`;
@@ -308,7 +326,121 @@ export default function RouteTimeline({ route, onSeeOnMap }: RouteTimelineProps)
             </div>
           );
         })}
+
+        {/* DYNAMIC EXTENDED HERITAGE STOPS (If user toggled them on) */}
+        {addedBarisList.map((item, addIdx) => {
+          const stopNumber = route.stops.length + addIdx + 1;
+          const stopNumberFormatted = stopNumber < 10 ? `0${stopNumber}` : `${stopNumber}`;
+
+          return (
+            <div
+              key={item.bonedi.id}
+              id={`stop-${item.bonedi.id}`}
+              className="relative pl-8 sm:pl-10 pb-8 animate-fadeIn"
+            >
+              {/* Walking time from previous stop */}
+              <div className="absolute -left-[35px] sm:-left-[43px] -top-7 flex items-center gap-1 text-[11px] font-extrabold text-[#E1BE68] bg-[#120E0C] px-3 py-0.5 rounded-full border border-[#C9973E] shadow-sm">
+                <span>↓ 🚶 ~{item.walkingMinutes} min ({item.distanceMeters}m)</span>
+              </div>
+
+              {/* Numbered Marker: Special Heritage Red / Gold */}
+              <div
+                className="absolute -left-[45px] sm:-left-[53px] top-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-black text-sm sm:text-base border-2 border-[#E1BE68] bg-[#8F1D18] text-[#E1BE68] shadow-xl ring-4 ring-[#C9973E]/40"
+              >
+                {stopNumberFormatted}
+              </div>
+
+              {/* Stop Card */}
+              <div className="rounded-3xl p-5 sm:p-7 border-2 border-[#E1BE68] bg-[#120E0C]/95 backdrop-blur-md shadow-2xl ring-2 ring-[#C9973E]/30 space-y-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#8F1D18] text-[#E1BE68] border border-[#C9973E]/50">
+                        EXTENDED HERITAGE STOP
+                      </span>
+                      <span className="text-[10px] text-[#E1BE68]/80 font-bold uppercase">
+                        {item.bonedi.area}
+                      </span>
+                    </div>
+                    <h3 className="font-editorial text-2xl sm:text-3xl font-extrabold text-[#F7F0E2]">
+                      {item.bonedi.name}
+                    </h3>
+                    {item.bonedi.bengaliName && (
+                      <p className="text-xs text-[#E1BE68] font-serif mt-0.5">
+                        {item.bonedi.bengaliName}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Remove / Toggle Off Button */}
+                  {onToggleBari && (
+                    <button
+                      onClick={() => onToggleBari(item.bonedi.id)}
+                      className="px-3 py-1 rounded-full bg-[#241714] hover:bg-[#8F1D18] text-[#F7F0E2]/70 hover:text-[#F7F0E2] border border-[#C9973E]/40 text-[10px] font-bold transition-colors"
+                      title="Remove from Route"
+                    >
+                      Remove ✕
+                    </button>
+                  )}
+                </div>
+
+                <p className="text-xs sm:text-sm text-[#F7F0E2]/85 leading-relaxed">
+                  {item.bonedi.description}
+                </p>
+
+                {/* Walking Instruction */}
+                <div className="bg-[#241714]/90 p-3.5 rounded-2xl border border-[#C9973E]/40 text-xs text-[#F7F0E2] flex items-start gap-2.5">
+                  <Navigation className="w-4 h-4 text-[#E1BE68] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-extrabold text-[#E1BE68]">Walking Connection: </span>
+                    <span className="text-[#F7F0E2]/90">{item.directionInstruction}</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#C9973E]/20">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {onSeeOnMap && item.bonedi.latitude && (
+                      <button
+                        onClick={() => onSeeOnMap(item.bonedi.id)}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] border border-[#C9973E]/50 text-xs font-bold transition-all shadow-sm"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-[#E1BE68]" />
+                        <span>SEE ON MAP →</span>
+                      </button>
+                    )}
+
+                    <Link
+                      href={`/bonedi/${item.bonedi.id}`}
+                      className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#241714] hover:bg-[#35120F] text-[#E1BE68] text-xs font-bold transition-all border border-[#C9973E]/40"
+                    >
+                      <span>View History & Dalans</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+
+                  <span className="text-[11px] font-bold text-[#E1BE68] bg-[#241714] px-3 py-1 rounded-full border border-[#C9973E]/30">
+                    Est. {item.bonedi.yearEstablished || 'Ancient Heritage'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
+
+      {/* EXTEND YOUR WALK: NEARBY HERITAGE / BONEDI BARI SECTION */}
+      {nearbyBaris && nearbyBaris.length > 0 && (
+        <div className="pt-4">
+          <NearbyBonediExtension
+            nearbyBaris={nearbyBaris}
+            addedBariIds={addedBariIds}
+            onToggleBari={onToggleBari || (() => {})}
+            onSeeOnMap={onSeeOnMap}
+            lastPandalName={lastPandal?.name || 'Last Pandal'}
+          />
+        </div>
+      )}
     </div>
   );
 }

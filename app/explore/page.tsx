@@ -4,6 +4,7 @@ import React, { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { PANDALS } from '@/data/pandals';
+import { BONEDI_BARIS } from '@/data/bonedi';
 import { CATEGORIES } from '@/data/categories';
 import { Region, PandalCategory } from '@/data/types';
 import PandalCard from '@/components/PandalCard';
@@ -25,6 +26,7 @@ function ExploreContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMap, setShowMap] = useState(false);
+  const [includeBonedi, setIncludeBonedi] = useState(false);
   const [selectedPandalId, setSelectedPandalId] = useState<string | null>(null);
 
   const regions = [
@@ -86,20 +88,35 @@ function ExploreContent() {
       {/* Interactive Map Drawer (if toggled) */}
       {showMap && (
         <div className="bg-[#120E0C]/95 border-2 border-[#C9973E]/40 p-4 rounded-3xl shadow-2xl animate-fadeIn space-y-3">
-          <div className="flex items-center justify-between text-xs text-[#E1BE68] font-bold uppercase">
-            <span>Showing {filteredPandals.length} Pandals on OpenStreetMap</span>
-            <button
-              onClick={() => setShowMap(false)}
-              className="text-[#F7F0E2]/70 hover:text-[#F7F0E2] font-bold px-2 py-0.5 rounded bg-[#241714] border border-[#C9973E]/40"
-            >
-              Close Map ✕
-            </button>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#E1BE68] font-bold uppercase">
+            <span>
+              Showing {filteredPandals.length} Pandals{includeBonedi ? ` + ${BONEDI_BARIS.length} Bonedi Baris` : ''} on OpenStreetMap
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIncludeBonedi(!includeBonedi)}
+                className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors cursor-pointer ${
+                  includeBonedi
+                    ? 'bg-[#8F1D18] text-[#F7F0E2] border-[#E1BE68]'
+                    : 'bg-[#241714] text-[#E1BE68] border-[#C9973E]/40 hover:bg-[#35120F]'
+                }`}
+              >
+                🏛️ {includeBonedi ? 'Hide Bonedi Baris' : `Show Bonedi Baris (${BONEDI_BARIS.length})`}
+              </button>
+              <button
+                onClick={() => setShowMap(false)}
+                className="text-[#F7F0E2]/70 hover:text-[#F7F0E2] font-bold px-2 py-0.5 rounded bg-[#241714] border border-[#C9973E]/40"
+              >
+                Close Map ✕
+              </button>
+            </div>
           </div>
           <InteractiveMap
             pandals={filteredPandals}
+            bonediBaris={includeBonedi ? BONEDI_BARIS : []}
             selectedPandalId={selectedPandalId}
             onSelectPandal={(id) => setSelectedPandalId(id)}
-            heightClass="h-[420px]"
+            heightClass="h-[440px]"
           />
         </div>
       )}

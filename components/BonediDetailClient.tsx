@@ -7,6 +7,8 @@ import { BonediBari } from '@/data/types';
 import { BonediAreaGroup } from '@/data/bonedi';
 import { ArrowLeft, MapPin, ArrowRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { getNearbyPandalsForBonedi } from '@/lib/proximity';
+import NearbyPandalExtension from '@/components/NearbyPandalExtension';
 
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
@@ -27,6 +29,7 @@ export default function BonediDetailClient({
   nextBari,
 }: BonediDetailClientProps) {
   const [imgSrc, setImgSrc] = useState(bonedi.image || '/bonedi-mobile.png');
+  const nearbyPandals = getNearbyPandalsForBonedi(bonedi.id, parentArea?.id);
 
   return (
     <div className="bg-transparent min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#120E0C]">
@@ -236,16 +239,41 @@ export default function BonediDetailClient({
         {bonedi.latitude && bonedi.longitude && (
           <div className="bg-[#EEE1C8]/40 border border-[#C9973E]/30 p-4 rounded-2xl shadow-sm space-y-3">
             <div className="flex items-center justify-between text-xs font-bold text-[#8F1D18] uppercase">
-              <span>Courtyard Map Location</span>
-              <span className="text-[#241714]/70">
+              <span className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#8F1D18]" />
+                <span>Courtyard Map Location & GPS</span>
+              </span>
+              <a
+                href={bonedi.googleMapsUrl || `https://maps.google.com/?q=${encodeURIComponent(bonedi.name + ' Kolkata')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 rounded-full bg-[#8F1D18] text-[#F7F0E2] text-[11px] font-bold hover:bg-[#B52A22] transition-colors shadow-xs flex items-center gap-1"
+              >
+                <span>Navigate on Google Maps ↗</span>
+              </a>
+            </div>
+            <div className="text-xs text-[#241714]/80 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[#C9973E]/20">
+              <span className="font-semibold">📍 {bonedi.address}</span>
+              <span className="text-[11px] font-mono text-[#8F1D18] font-bold">
                 {bonedi.latitude.toFixed(4)}, {bonedi.longitude.toFixed(4)}
               </span>
             </div>
             <InteractiveMap
               bonediBaris={[bonedi]}
+              selectedPandalId={bonedi.id}
               center={[bonedi.latitude, bonedi.longitude]}
               zoom={16}
-              heightClass="h-[300px]"
+              heightClass="h-[320px]"
+            />
+          </div>
+        )}
+
+        {/* Extend Your Walk: Nearby Famous Pandals */}
+        {nearbyPandals && nearbyPandals.length > 0 && (
+          <div className="pt-4">
+            <NearbyPandalExtension
+              nearbyPandals={nearbyPandals}
+              fromBonediName={bonedi.name}
             />
           </div>
         )}

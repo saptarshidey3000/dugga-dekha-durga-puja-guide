@@ -7,6 +7,7 @@ import RouteTimeline from '@/components/RouteTimeline';
 import { ArrowLeft, Navigation, MapPin } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { RouteMapStop } from '@/components/CuratedRouteMap';
+import { getNearbyBonediForRoute } from '@/lib/proximity';
 
 const CuratedRouteMap = dynamic(() => import('@/components/CuratedRouteMap'), {
   ssr: false,
@@ -30,9 +31,20 @@ export default function RouteDetailClient({
 }: RouteDetailClientProps) {
   const [selectedPandalId, setSelectedPandalId] = useState<string | null>(null);
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
+  const [addedBariIds, setAddedBariIds] = useState<string[]>([]);
 
-  // Convert route stops to map format
-  const mapStops: RouteMapStop[] = route.stops.map((s) => {
+  const nearbyBaris = getNearbyBonediForRoute(route);
+
+  const handleToggleBari = (bariId: string) => {
+    setAddedBariIds((prev) =>
+      prev.includes(bariId) ? prev.filter((id) => id !== bariId) : [...prev, bariId]
+    );
+  };
+
+  const addedBarisList = nearbyBaris.filter((item) => addedBariIds.includes(item.bonedi.id));
+
+  // Base stops + added Bonedi Bari stops plotted on map
+  const baseMapStops: RouteMapStop[] = route.stops.map((s) => {
     const p = pandals.find((pandal) => pandal.id === s.pandalId);
     return {
       order: s.order,
@@ -45,9 +57,27 @@ export default function RouteDetailClient({
     };
   });
 
+  const mapStops: RouteMapStop[] = [
+    ...baseMapStops,
+    ...addedBarisList.map((item, idx) => ({
+      order: baseMapStops.length + idx + 1,
+      name: `🏛️ ${item.bonedi.name}`,
+      lat: item.bonedi.latitude || 0,
+      lng: item.bonedi.longitude || 0,
+      area: `${item.bonedi.area} (Bonedi Bari)`,
+      walkingTime: `~${item.walkingMinutes} min`,
+      pandalId: item.bonedi.id,
+    })),
+  ];
+
   const activeOrder = selectedPandalId
-    ? route.stops.find((s) => s.pandalId === selectedPandalId)?.order || null
+    ? mapStops.find((s) => s.pandalId === selectedPandalId)?.order || null
     : null;
+
+  const extraMinutes = addedBarisList.reduce((acc, curr) => acc + curr.walkingMinutes, 0);
+  const displayDuration = extraMinutes > 0
+    ? `${route.estimatedDuration} (+${extraMinutes}m heritage)`
+    : route.estimatedDuration;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 bg-transparent text-[#F7F0E2]">
@@ -86,7 +116,7 @@ export default function RouteDetailClient({
           <CuratedRouteMap
             regionName={route.region}
             distance={route.totalWalkingDistance}
-            walkingTime={route.estimatedDuration}
+            walkingTime={displayDuration}
             stops={mapStops}
             activeStopOrder={activeOrder}
             onSelectStop={(_, id) => id && setSelectedPandalId(id)}
@@ -105,6 +135,9 @@ export default function RouteDetailClient({
               setSelectedPandalId(pandalId);
               setMobileMapOpen(true);
             }}
+            nearbyBaris={nearbyBaris}
+            addedBariIds={addedBariIds}
+            onToggleBari={handleToggleBari}
           />
         </div>
 
@@ -113,7 +146,7 @@ export default function RouteDetailClient({
           <CuratedRouteMap
             regionName={route.region}
             distance={route.totalWalkingDistance}
-            walkingTime={route.estimatedDuration}
+            walkingTime={displayDuration}
             stops={mapStops}
             activeStopOrder={activeOrder}
             onSelectStop={(_, id) => id && setSelectedPandalId(id)}
@@ -133,8 +166,16 @@ export default function RouteDetailClient({
             )}
             <div className="flex items-center justify-between">
               <span className="font-bold text-[#E1BE68]">Curated Trail:</span>
-              <span className="font-semibold text-[#F7F0E2]">{route.totalWalkingDistance} · {route.stops.length} Stops</span>
+              <span className="font-semibold text-[#F7F0E2]">
+                {route.totalWalkingDistance} · {mapStops.length} Stops {addedBariIds.length > 0 && `(${addedBariIds.length} Extended)`}
+              </span>
             </div>
+            {addedBariIds.length > 0 && (
+              <div className="pt-2 border-t border-[#C9973E]/30 flex items-center justify-between text-[#E1BE68]">
+                <span className="font-bold">Heritage Extension:</span>
+                <span className="font-semibold">+{extraMinutes} min walk</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
