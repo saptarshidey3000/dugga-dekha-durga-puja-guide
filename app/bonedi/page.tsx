@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { BONEDI_AREAS, BONEDI_BARIS } from '@/data/bonedi';
 import BonediCard from '@/components/BonediCard';
-import { Landmark, ArrowRight, Search, X, MapPin } from 'lucide-react';
+import QuickJumpDropdown, { DropdownItem } from '@/components/QuickJumpDropdown';
+import { Landmark, ArrowRight, Search, X, MapPin, Compass } from 'lucide-react';
 
 export default function BonediLandingPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,37 +20,75 @@ export default function BonediLandingPage() {
       )
     : [];
 
+  // Dropdown items: Enclaves + Historic Households
+  const bonediDropdownItems: DropdownItem[] = [
+    // Group 1: 6 Heritage Enclaves
+    ...BONEDI_AREAS.map((area) => ({
+      id: `area-${area.id}`,
+      title: `${area.name} Enclave`,
+      subtitle: area.bengaliName,
+      badge: `${area.bariIds.length} Baris`,
+      group: '🏛️ Heritage Enclaves (Walking Routes)',
+      highlight: `Metro: ${area.nearestMetro}`,
+      href: `/bonedi/${area.id}`,
+      icon: '🏛️',
+    })),
+    // Group 2: All 25 Historic Bonedi Bari Estates
+    ...BONEDI_BARIS.map((bari) => ({
+      id: `bari-${bari.id}`,
+      title: bari.name,
+      subtitle: bari.bengaliName,
+      badge: bari.yearEstablished ? `Est. ${bari.yearEstablished}` : bari.area,
+      group: '🚪 Verified Historic Households',
+      highlight: `Metro: ${bari.nearestMetro} (${bari.walkingTime || 'Direct'})`,
+      href: `/bonedi/${bari.id}`,
+      icon: '🚪',
+    })),
+  ];
+
   return (
     <div className="bg-transparent min-h-screen py-10 sm:py-14 px-4 sm:px-8 text-[#F7F0E2]">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Editorial Header */}
-        <div className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-3">
+        <div className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#8F1D18] text-[#E1BE68] text-[11px] font-black tracking-widest uppercase border border-[#C9973E]/50 shadow-sm">
             <Landmark className="w-3.5 h-3.5" />
             <span>Kolkata Heritage Courtyard Guide</span>
           </div>
 
-          <h1 className="font-editorial text-4xl sm:text-6xl font-extrabold text-[#F7F0E2] tracking-tight">
-            BONEDI BARI GUIDE
-          </h1>
-
-          <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] font-bold">
-            Choose Your Heritage Area
-          </p>
+          <div>
+            <h1 className="font-editorial text-4xl sm:text-6xl font-extrabold text-[#F7F0E2] tracking-tight">
+              BONEDI BARI GUIDE
+            </h1>
+            <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] font-bold mt-1">
+              Choose Your Heritage Area
+            </p>
+          </div>
 
           <p className="text-sm sm:text-base text-[#F7F0E2]/85 max-w-2xl leading-relaxed">
             Before the grand community Sarbojanin pandals, Kolkata’s festival lived inside ancestral courtyards. Experience authentic Thakurdalans, antique Belgian glass chandeliers, and family worship rituals spanning over three centuries.
           </p>
+
+          {/* Quick Jump Dropdown for Bonedi Baris & Enclaves */}
+          <div className="pt-3 border-t border-[#C9973E]/30">
+            <QuickJumpDropdown
+              items={bonediDropdownItems}
+              label="⚡ Quick Jump to Heritage Enclave or Household (25+ Baris):"
+              placeholder="Select an Enclave or Bonedi Bari to jump directly..."
+              icon={<Compass className="w-4 h-4 text-[#E1BE68]" />}
+              variant="bonedi"
+            />
+          </div>
         </div>
 
-        {/* 6 Area Cards Grid */}
+        {/* 6 Area Cards Grid — Entire card is clickable */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-[#E1BE68]">
               6 Heritage Enclaves
             </span>
             <span className="text-xs text-[#F7F0E2]/70 font-semibold">
-              Total {BONEDI_BARIS.length} Historic Aristocratic Households
+              Total {BONEDI_BARIS.length} Historic Aristocratic Households • Tap any card to open
             </span>
           </div>
 
@@ -58,9 +97,10 @@ export default function BonediLandingPage() {
               const housesInArea = BONEDI_BARIS.filter((b) => area.bariIds.includes(b.id));
 
               return (
-                <div
+                <Link
                   key={area.id}
-                  className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 hover:border-[#E1BE68] rounded-3xl p-6 flex flex-col justify-between hover:shadow-2xl transition-all hover:-translate-y-1"
+                  href={`/bonedi/${area.id}`}
+                  className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 hover:border-[#E1BE68] rounded-3xl p-6 flex flex-col justify-between hover:shadow-2xl transition-all hover:-translate-y-1 group cursor-pointer block text-left"
                 >
                   <div className="space-y-4">
                     {/* Header: Area & Count */}
@@ -69,14 +109,14 @@ export default function BonediLandingPage() {
                         <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#E1BE68] block">
                           Heritage Enclave
                         </span>
-                        <h2 className="font-editorial text-2xl font-bold text-[#F7F0E2]">
+                        <h2 className="font-editorial text-2xl font-bold text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors">
                           {area.name}
                         </h2>
                         <span className="text-xs text-[#E1BE68] font-serif block">
                           {area.bengaliName}
                         </span>
                       </div>
-                      <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E]/40">
+                      <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E]/40 shadow-xs">
                         {area.bariIds.length} Bonedi Baris
                       </span>
                     </div>
@@ -119,15 +159,14 @@ export default function BonediLandingPage() {
                     </div>
                   </div>
 
-                  {/* Primary CTA Button */}
-                  <Link
-                    href={`/bonedi/${area.id}`}
-                    className="mt-6 w-full py-3.5 rounded-2xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] font-black text-xs uppercase tracking-wider text-center flex items-center justify-center gap-2 shadow-md transition-all group border border-[#C9973E]/50"
+                  {/* Primary CTA Visual Indicator */}
+                  <div
+                    className="mt-6 w-full py-3.5 rounded-2xl bg-[#8F1D18] group-hover:bg-[#B52A22] text-[#F7F0E2] font-black text-xs uppercase tracking-wider text-center flex items-center justify-center gap-2 shadow-md transition-all border border-[#C9973E]/50 group-hover:scale-[1.01]"
                   >
                     <span>EXPLORE {area.name.toUpperCase()}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-[#E1BE68] group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               );
             })}
           </div>

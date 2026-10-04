@@ -7,7 +7,61 @@ import { METRO_STATIONS } from '@/data/metros';
 import { ROUTES } from '@/data/routes';
 import { Region } from '@/data/types';
 import MetroStationCard from '@/components/MetroStationCard';
-import { MapPin, ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
+import QuickJumpDropdown, { DropdownItem } from '@/components/QuickJumpDropdown';
+import { MapPin, ArrowRight, ArrowLeft, ChevronRight, Compass, Sparkles } from 'lucide-react';
+
+const REGION_THEMES: Record<
+  string,
+  {
+    badge: string;
+    gradient: string;
+    tagline: string;
+    icon: string;
+    accentBorder: string;
+    features: string;
+  }
+> = {
+  'South Kolkata': {
+    badge: 'Rashbehari Corridors & Mega Experimental Art',
+    gradient: 'from-[#8F1D18]/90 via-[#2a0e0c]/95 to-[#120E0C]/95',
+    tagline: 'Artistic installations, experimental lighting, and classic South Kolkata mega pujas centered along Rashbehari Avenue.',
+    icon: '🌟',
+    accentBorder: 'border-[#C9973E]/70 shadow-amber-950/40',
+    features: '7 Metro Hubs • 23 Award-Winning Pandals',
+  },
+  'North Kolkata': {
+    badge: 'Kumartuli Clay Artisans & Aristocratic Heritage',
+    gradient: 'from-[#7A1F1A]/90 via-[#260e0d]/95 to-[#120E0C]/95',
+    tagline: 'Centuries-old community traditions, Bagbazar Sarbojanin, clay artisan workshops, and vintage Rajbari lanes.',
+    icon: '🏺',
+    accentBorder: 'border-yellow-600/70 shadow-yellow-950/40',
+    features: '4 Historic Metro Hubs • 12 Heritage Pandals',
+  },
+  'Dum Dum': {
+    badge: 'Award-Winning Lakeside Park Walking Circuit',
+    gradient: 'from-[#8F2B18]/90 via-[#29130d]/95 to-[#120E0C]/95',
+    tagline: 'A compact walking circuit inside Dum Dum Park where five renowned theme pujas surround the numbered local tanks.',
+    icon: '🌳',
+    accentBorder: 'border-orange-500/70 shadow-orange-950/40',
+    features: '1 Dedicated Park Hub • 5 Renowned Theme Pujas',
+  },
+  'Salt Lake + New Town': {
+    badge: 'Green Line Corridor & Modern Boulevard Pujas',
+    gradient: 'from-[#173023]/90 via-[#18211b]/95 to-[#120E0C]/95',
+    tagline: 'Sprawling block celebrations, architectural scale, and New Town mega-complexes connected by Line 2 East-West Metro.',
+    icon: '🏢',
+    accentBorder: 'border-emerald-600/70 shadow-emerald-950/40',
+    features: '3 Green Line Metro Hubs • 4 Block Celebrations',
+  },
+  'Central Kolkata': {
+    badge: 'Illuminated Heritage Squares & College Street Circuits',
+    gradient: 'from-[#7e2518]/90 via-[#24130c]/95 to-[#120E0C]/95',
+    tagline: 'Historic public squares, legendary illumination across College Square, and mega-budget spectacles at Santosh Mitra Square.',
+    icon: '🏛️',
+    accentBorder: 'border-amber-600/70 shadow-amber-950/40',
+    features: '3 Central Metro Hubs • 7 High-Footfall Pandals',
+  },
+};
 
 const REGION_CONFIGS: { id: Region; label: string; count: number; metroHub: string; description: string }[] = [
   {
@@ -79,9 +133,34 @@ function MetroGuideContent() {
         (selectedRegion === 'Salt Lake + New Town' && (m.region as string) === 'East / West Metro')
     );
 
+    const theme = REGION_THEMES[selectedRegion] || REGION_THEMES['South Kolkata'];
+
+    // Map stations to dropdown items with direct route redirect
+    const dropdownItems: DropdownItem[] = stationsInRegion.map((metro) => {
+      const route = ROUTES.find((r) => r.metroStationId === metro.id);
+      const pandalCount = route
+        ? route.stops.length
+        : metro.popularFor
+        ? metro.popularFor.length
+        : 4;
+      const targetHref = route ? `/route/${route.id}` : `/metro/${metro.id}`;
+
+      return {
+        id: metro.id,
+        title: metro.name,
+        subtitle: metro.bengaliName,
+        badge: `${pandalCount} Pandals`,
+        highlight: route
+          ? `Route: ${route.name}`
+          : metro.recommendedExit || `${metro.region} Hub`,
+        href: targetHref,
+        icon: '🚇',
+      };
+    });
+
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 bg-transparent text-[#F7F0E2]">
-        {/* Top Back Navigation */}
+        {/* Top Back Navigation & Region Switcher */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#C9973E]/30">
           <Link
             href="/metro"
@@ -109,45 +188,78 @@ function MetroGuideContent() {
           </div>
         </div>
 
-        {/* Dedicated Region Page Header */}
-        <div className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E1BE68] animate-pulse" />
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68]">
-              METRO GUIDE
+        {/* Dedicated Region Page Header — Distinct Regional Styling */}
+        <div
+          className={`bg-gradient-to-br ${theme.gradient} backdrop-blur-md border-2 ${theme.accentBorder} rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E1BE68] animate-pulse" />
+              <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68]">
+                METRO GUIDE • {selectedRegion.toUpperCase()}
+              </span>
+            </div>
+
+            {/* Distinct Region Flair Badge */}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#120E0C]/80 border border-[#C9973E]/40 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#E1BE68]">
+              <span>{theme.icon}</span>
+              <span>{theme.badge}</span>
             </span>
           </div>
 
-          <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#F7F0E2] tracking-tight">
-            {matchedRegion.label}
-          </h1>
-
-          <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] font-bold">
-            Choose a Metro hub to start your route.
-          </p>
+          <div>
+            <h1 className="font-editorial text-3xl sm:text-5xl font-extrabold text-[#F7F0E2] tracking-tight">
+              {matchedRegion.label}
+            </h1>
+            <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] font-bold mt-1">
+              Choose a Metro hub to start your route.
+            </p>
+          </div>
 
           <p className="text-xs sm:text-sm text-[#F7F0E2]/85 max-w-2xl leading-relaxed">
-            &quot;Explore pandals through Kolkata&apos;s Metro network. Pick a station, step out the right exit gate, and follow an ordered walking trail.&quot;
+            {theme.tagline}
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3 text-xs font-bold text-[#E1BE68]">
-            <span className="bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/40">
-              🚇 {stationsInRegion.length} Metro Hub{stationsInRegion.length > 1 ? 's' : ''} Available
+          <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-[#E1BE68]">
+            <span className="bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/40 shadow-xs flex items-center gap-1.5">
+              <span>🚇</span>
+              <span>{stationsInRegion.length} Metro Hub{stationsInRegion.length > 1 ? 's' : ''} Available</span>
             </span>
-            <span className="bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/40">
-              🛕 {matchedRegion.count} Curated Pandals
+            <span className="bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/40 shadow-xs flex items-center gap-1.5">
+              <span>🛕</span>
+              <span>{matchedRegion.count} Curated Pandals</span>
             </span>
+            <span className="bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/40 shadow-xs text-[#F7F0E2]/80 hidden sm:inline-flex">
+              ✨ Tap any station card or select from the dropdown below to hop
+            </span>
+          </div>
+
+          {/* Interactive Metro Station Quick Jump Dropdown */}
+          <div className="pt-2 sm:pt-3 border-t border-[#C9973E]/30">
+            <QuickJumpDropdown
+              items={dropdownItems}
+              label={`⚡ Quick Jump to a ${selectedRegion} Metro Hub:`}
+              placeholder={`Select a Metro station in ${selectedRegion} to jump directly...`}
+              icon={<Compass className="w-4 h-4 text-[#E1BE68]" />}
+              variant="metro"
+            />
           </div>
         </div>
 
         {/* Metro Hubs Cards Grid */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold uppercase tracking-widest text-red-500">
-              Available Metro Hubs in {selectedRegion}:
-            </h2>
-            <span className="text-xs text-[#F7F0E2]/70">
-              Select a station to open the walking route
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#E1BE68] flex items-center gap-2">
+                <span>🚇</span>
+                <span>Available Metro Hubs in {selectedRegion}:</span>
+              </h2>
+              <span className="text-[11px] text-[#F7F0E2]/70">
+                Click anywhere on any station card below to open the walking route immediately
+              </span>
+            </div>
+            <span className="text-xs text-[#E1BE68]/80 font-bold bg-[#120E0C]/90 px-3 py-1 rounded-full border border-[#C9973E]/30">
+              {stationsInRegion.length} Hubs
             </span>
           </div>
 
@@ -162,22 +274,56 @@ function MetroGuideContent() {
   }
 
   // DEFAULT VIEW: CHOOSE REGION (5 Regions)
+  const allMetroDropdownItems: DropdownItem[] = METRO_STATIONS.map((metro) => {
+    const route = ROUTES.find((r) => r.metroStationId === metro.id);
+    const pandalCount = route
+      ? route.stops.length
+      : metro.popularFor
+      ? metro.popularFor.length
+      : 4;
+    const targetHref = route ? `/route/${route.id}` : `/metro/${metro.id}`;
+
+    return {
+      id: metro.id,
+      title: metro.name,
+      subtitle: metro.bengaliName,
+      badge: `${pandalCount} Pandals`,
+      group: metro.region,
+      highlight: route
+        ? `Route: ${route.name}`
+        : `${metro.line} • ${metro.recommendedExit || 'Direct Exit'}`,
+      href: targetHref,
+      icon: '🚇',
+    };
+  });
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-10 bg-transparent text-[#F7F0E2]">
       {/* Screen Title & Subtitle */}
-      <div className="text-center max-w-2xl mx-auto pb-4">
-        <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68] inline-block px-3.5 py-1 rounded-full bg-[#120E0C]/90 border border-[#C9973E]/50 mb-3 shadow-md">
+      <div className="text-center max-w-2xl mx-auto pb-4 space-y-3">
+        <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68] inline-block px-3.5 py-1 rounded-full bg-[#120E0C]/90 border border-[#C9973E]/50 shadow-md">
           Primary Transit Experience
         </span>
         <h1 className="font-editorial text-4xl sm:text-6xl font-extrabold text-[#F7F0E2] tracking-tight drop-shadow-md">
           METRO GUIDE
         </h1>
-        <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] mt-2 font-bold">
+        <p className="font-editorial text-xl sm:text-2xl text-[#E1BE68] font-bold">
           Choose Your Kolkata Region
         </p>
-        <p className="text-xs sm:text-sm text-[#F7F0E2]/85 mt-2 max-w-xl mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#F7F0E2]/85 max-w-xl mx-auto leading-relaxed">
           &quot;Organized around primary Metro arteries for effortless travel across North, South, Central, Salt Lake + New Town, and Dum Dum.&quot;
         </p>
+
+        {/* Global Metro Hub Jump Dropdown */}
+        <div className="pt-3 max-w-xl mx-auto text-left">
+          <QuickJumpDropdown
+            items={allMetroDropdownItems}
+            label="⚡ Quick Jump to Any Kolkata Metro Hub (30+ Stations):"
+            placeholder="Select any Metro station across Kolkata to jump directly..."
+            icon={<Compass className="w-4 h-4 text-[#E1BE68]" />}
+            variant="metro"
+          />
+        </div>
       </div>
 
       {/* 5 Region Cards — Entire card is clickable */}

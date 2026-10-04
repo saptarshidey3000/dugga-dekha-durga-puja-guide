@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { BonediBari } from '@/data/types';
 import { BonediAreaGroup } from '@/data/bonedi';
+import QuickJumpDropdown, { DropdownItem } from '@/components/QuickJumpDropdown';
 import {
   ArrowLeft,
   Navigation,
@@ -15,6 +17,7 @@ import {
   Footprints,
   Eye,
   CheckCircle2,
+  Compass,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -33,6 +36,7 @@ interface BonediAreaClientProps {
 }
 
 export default function BonediAreaClient({ area, baris }: BonediAreaClientProps) {
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<'hopping' | 'list'>('hopping');
   const [selectedBariId, setSelectedBariId] = useState<string | null>(baris[0]?.id || null);
   const [mobileMapOpen, setMobileMapOpen] = useState(false);
@@ -40,6 +44,16 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
 
   const currentBari = baris[currentStopIndex] || baris[0];
   const nextBari = currentStopIndex < baris.length - 1 ? baris[currentStopIndex + 1] : null;
+
+  const bariDropdownItems: DropdownItem[] = baris.map((b) => ({
+    id: b.id,
+    title: b.name,
+    subtitle: b.bengaliName,
+    badge: b.yearEstablished ? `Est. ${b.yearEstablished}` : b.walkingTime || b.nearestMetro,
+    highlight: `Metro: ${b.nearestMetro} • ${b.address}`,
+    href: `/bonedi/${b.id}`,
+    icon: '🏛️',
+  }));
 
   const handleNextStop = () => {
     if (currentStopIndex < baris.length - 1) {
@@ -141,6 +155,17 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                 <ArrowRight className="w-4 h-4" />
               </button>
             )}
+          </div>
+
+          {/* Quick Jump Dropdown for Baris in this Enclave */}
+          <div className="mt-5 pt-4 border-t border-[#C9973E]/30">
+            <QuickJumpDropdown
+              items={bariDropdownItems}
+              label={`⚡ Quick Jump to a Bonedi Bari in ${area.name} (${baris.length} Baris):`}
+              placeholder={`Select any Bonedi Bari in ${area.name} to jump directly...`}
+              icon={<Compass className="w-4 h-4 text-[#E1BE68]" />}
+              variant="bonedi"
+            />
           </div>
         </div>
 
@@ -422,9 +447,10 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {baris.map((bari) => (
-                <div
+                <Link
                   key={bari.id}
-                  className="bg-[#EEE1C8]/60 border border-[#C9973E]/30 rounded-2xl overflow-hidden p-5 flex flex-col justify-between hover:border-[#C9973E] hover:shadow-lg transition-all"
+                  href={`/bonedi/${bari.id}`}
+                  className="bg-[#EEE1C8]/60 border border-[#C9973E]/30 rounded-2xl overflow-hidden p-5 flex flex-col justify-between hover:border-[#8F1D18] hover:shadow-xl transition-all cursor-pointer group block text-left"
                 >
                   <div className="space-y-3">
                     <div className="relative h-44 w-full rounded-xl overflow-hidden bg-[#241714] border border-[#C9973E]/20">
@@ -433,7 +459,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                         alt={bari.name}
                         fill
                         sizes="(max-width: 640px) 100vw, 320px"
-                        className="object-cover"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       {bari.yearEstablished && (
                         <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#8F1D18] text-[#F7F0E2]">
@@ -443,7 +469,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                     </div>
 
                     <div>
-                      <h3 className="font-editorial text-xl font-bold text-[#120E0C]">
+                      <h3 className="font-editorial text-xl font-bold text-[#120E0C] group-hover:text-[#8F1D18] transition-colors">
                         {bari.name}
                       </h3>
                       {bari.bengaliName && (
@@ -474,14 +500,13 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                     <span className="text-xs text-[#8F1D18] font-bold">
                       🚶 {bari.walkingTime || '~5 min'}
                     </span>
-                    <Link
-                      href={`/bonedi/${bari.id}`}
-                      className="px-3.5 py-1.5 rounded-lg bg-[#8F1D18] text-[#F7F0E2] text-xs font-bold hover:bg-[#B52A22] transition-colors"
+                    <div
+                      className="px-3.5 py-1.5 rounded-lg bg-[#8F1D18] group-hover:bg-[#B52A22] text-[#F7F0E2] text-xs font-bold transition-colors"
                     >
                       View Details →
-                    </Link>
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

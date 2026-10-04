@@ -26,7 +26,10 @@ export default function MetroStationCard({ metro }: MetroStationCardProps) {
   const targetHref = route ? `/route/${route.id}` : `/metro/${metro.id}`;
 
   return (
-    <div className="relative rounded-3xl bg-[#120E0C]/90 backdrop-blur-md hover:bg-[#120E0C] border-2 border-[#C9973E]/40 hover:border-[#E1BE68] p-6 shadow-xl hover:shadow-2xl flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1">
+    <Link
+      href={targetHref}
+      className="relative rounded-3xl bg-[#120E0C]/90 backdrop-blur-md hover:bg-[#120E0C] border-2 border-[#C9973E]/40 hover:border-[#E1BE68] p-6 shadow-xl hover:shadow-2xl flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 cursor-pointer block text-left"
+    >
       <div>
         {/* Top Header: Metro Icon & Pandal Count */}
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -71,14 +74,13 @@ export default function MetroStationCard({ metro }: MetroStationCardProps) {
         )}
       </div>
 
-      {/* Primary CTA Button: START PANDAL HOPPING → */}
-      <Link
-        href={targetHref}
-        className="w-full mt-4 py-3.5 px-5 rounded-2xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] font-black text-xs tracking-wider uppercase shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] border border-[#C9973E]/50"
+      {/* Primary CTA Visual Indicator: START PANDAL HOPPING → */}
+      <div
+        className="w-full mt-4 py-3.5 px-5 rounded-2xl bg-[#8F1D18] group-hover:bg-[#B52A22] text-[#F7F0E2] font-black text-xs tracking-wider uppercase shadow-lg group-hover:shadow-xl transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01] border border-[#C9973E]/50"
       >
         <span>START PANDAL HOPPING</span>
         <ArrowRight className="w-4 h-4 text-[#E1BE68] group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 }

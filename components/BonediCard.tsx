@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { BonediBari } from '@/data/types';
 import { Landmark, MapPin, Navigation, ArrowRight } from 'lucide-react';
 
@@ -12,10 +13,20 @@ interface BonediCardProps {
 }
 
 export default function BonediCard({ bonedi, onSeeOnMap }: BonediCardProps) {
+  const router = useRouter();
   const [imgSrc, setImgSrc] = useState(bonedi.image || '/bonedi-mobile.png');
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button')) return;
+    router.push(`/bonedi/${bonedi.id}`);
+  };
+
   return (
-    <div className="group rounded-3xl bg-[#120E0C]/90 backdrop-blur-md text-[#F7F0E2] border-2 border-[#C9973E]/40 hover:border-[#E1BE68] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+    <div
+      onClick={handleCardClick}
+      className="group rounded-3xl bg-[#120E0C]/90 backdrop-blur-md text-[#F7F0E2] border-2 border-[#C9973E]/40 hover:border-[#E1BE68] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 cursor-pointer"
+    >
       {/* 1. IMAGE (Section 23: Visual emphasis for Bonedi Bari) */}
       <div className="relative aspect-[16/10] w-full bg-[#241714] overflow-hidden border-b border-[#C9973E]/30">
         <Image
