@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BonediBari } from '@/data/types';
@@ -26,6 +26,8 @@ export default function BonediDetailClient({
   parentArea,
   nextBari,
 }: BonediDetailClientProps) {
+  const [imgSrc, setImgSrc] = useState(bonedi.image || '/bonedi-mobile.png');
+
   return (
     <div className="bg-transparent min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#120E0C]">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -56,12 +58,14 @@ export default function BonediDetailClient({
         {/* Visual Banner (Section 18 & 06 Palette) */}
         <div className="relative h-64 sm:h-96 w-full rounded-3xl overflow-hidden border border-[#C9973E]/40 shadow-2xl bg-[#241714]">
           <Image
-            src={bonedi.image || '/bonedi-mobile.png'}
+            src={imgSrc}
             alt={bonedi.name}
             fill
             priority
+            unoptimized
             sizes="(max-width: 1024px) 100vw, 896px"
             className="object-cover"
+            onError={() => setImgSrc('/bonedi-mobile.png')}
           />
           {/* Subtle bottom gradient purely for title contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />

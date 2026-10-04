@@ -283,6 +283,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                               src={bari.image || '/pujo-mobile.png'}
                               alt={bari.name}
                               fill
+                              unoptimized
                               sizes="(max-width: 640px) 100vw, 192px"
                               className="object-cover"
                             />
@@ -458,6 +459,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                         src={bari.image || '/pujo-mobile.png'}
                         alt={bari.name}
                         fill
+                        unoptimized
                         sizes="(max-width: 640px) 100vw, 320px"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
