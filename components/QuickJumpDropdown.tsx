@@ -102,14 +102,14 @@ export default function QuickJumpDropdown({
         };
 
   return (
-    <div ref={dropdownRef} className={`relative w-full ${className}`}>
+    <div ref={dropdownRef} className={`relative w-full ${isOpen ? 'z-[90]' : 'z-10'} ${className}`}>
       {label && (
-        <div className="flex items-center justify-between gap-2 mb-1.5">
+        <div className="flex items-center justify-between gap-2 mb-2 bg-[#120E0C]/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-[#C9973E]/40 shadow-sm">
           <label className="text-[11px] font-extrabold uppercase tracking-widest text-[#E1BE68] flex items-center gap-1.5">
             {icon}
             <span>{label}</span>
           </label>
-          <span className="text-[10px] text-[#F7F0E2]/60 font-semibold hidden sm:inline">
+          <span className="text-[10px] text-[#F7F0E2]/75 font-semibold hidden sm:inline">
             Tap to open route immediately
           </span>
         </div>
@@ -153,7 +153,7 @@ export default function QuickJumpDropdown({
 
       {/* Dropdown Popover List */}
       {isOpen && (
-        <div className="absolute z-50 left-0 right-0 mt-2 bg-[#120E0C]/98 backdrop-blur-xl border-2 border-[#C9973E] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 max-h-[380px] flex flex-col">
+        <div className="absolute z-[100] left-0 right-0 mt-2 bg-[#120E0C]/98 backdrop-blur-2xl border-2 border-[#C9973E] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden animate-in fade-in zoom-in-95 duration-150 max-h-[380px] flex flex-col">
           {/* Quick Filter Search if items > 4 */}
           {items.length > 4 && (
             <div className="p-2.5 border-b border-[#C9973E]/30 bg-[#241714]/80">

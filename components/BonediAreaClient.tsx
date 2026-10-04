@@ -82,10 +82,10 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#C9973E]/30">
           <Link
             href="/bonedi"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8F1D18] hover:text-[#B52A22] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#120E0C]/90 hover:bg-[#8F1D18] text-xs font-bold text-[#E1BE68] hover:text-[#F7F0E2] border border-[#C9973E]/50 shadow-md transition-all"
           >
-            <ArrowLeft className="w-4 h-4 text-[#B52A22]" />
-            <span>Back to All Heritage Enclaves</span>
+            <ArrowLeft className="w-4 h-4 text-[#E1BE68]" />
+            <span>← Back to All Heritage Enclaves</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
         </div>
 
         {/* Hero Area Header (Festive Red & Gold) */}
-        <div className="bg-gradient-to-br from-[#8F1D18] via-[#8F1D18] to-[#241714] border border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 text-[#F7F0E2] shadow-xl">
+        <div className="bg-gradient-to-br from-[#8F1D18] via-[#8F1D18] to-[#241714] border border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 text-[#F7F0E2] shadow-xl relative z-40">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
             <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#241714] text-[#E1BE68] border border-[#C9973E]/40">
               Heritage Enclave
@@ -421,15 +421,15 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
                       {idx < baris.length - 1 && (() => {
                         const nextStop = baris[idx + 1];
                         return (
-                          <div className="flex flex-wrap items-center gap-2 py-2 text-xs font-bold text-[#8F1D18] uppercase tracking-wider pl-2">
-                            <span>↓ NEXT STOP:</span>
-                            <span className="text-[#120E0C] font-semibold">{nextStop.name}</span>
+                          <div className="flex flex-wrap items-center gap-2 py-2 px-3.5 my-1 text-xs font-bold bg-[#120E0C]/90 backdrop-blur-md border border-[#C9973E]/30 rounded-xl text-[#E1BE68] uppercase tracking-wider">
+                            <span className="text-[#E1BE68]">↓ NEXT STOP:</span>
+                            <span className="text-[#F7F0E2] font-semibold">{nextStop.name}</span>
                             {nextStop.commute ? (
-                              <span className="text-[#C9973E] font-medium lowercase">
+                              <span className="text-[#E1BE68]/80 font-medium lowercase">
                                 ({nextStop.commute.mode === 'WALK' ? 'walk' : nextStop.commute.mode === 'BOOK_AUTO' ? 'auto' : 'transit'} ~{nextStop.commute.durationMinutes} min · {nextStop.commute.distanceMeters}m · ~{nextStop.commute.estimatedSteps} steps)
                               </span>
                             ) : nextStop.walkingTime && (
-                              <span className="text-[#C9973E]">({nextStop.walkingTime})</span>
+                              <span className="text-[#E1BE68]/80">({nextStop.walkingTime})</span>
                             )}
                           </div>
                         );
@@ -586,49 +586,6 @@ export default function BonediAreaClient({ area, baris }: BonediAreaClientProps)
           </div>
         )}
       </div>
-
-      {/* STICKY CURRENT / NEXT STOP BAR ON MOBILE (Sections 15 & 37) */}
-      {viewMode === 'hopping' && (
-        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 px-3 py-2 pointer-events-none">
-          <div className="max-w-md mx-auto bg-[#8F1D18] text-[#F7F0E2] border-2 border-[#C9973E] rounded-2xl p-3 shadow-2xl pointer-events-auto flex items-center justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#E1BE68] block">
-                STOP {currentStopIndex + 1} OF {baris.length}
-              </span>
-              <p className="font-editorial text-sm font-bold truncate">
-                {currentBari.name}
-              </p>
-              {nextBari && (
-                <p className="text-[11px] text-white/80 truncate">
-                  Next: <strong className="text-[#E1BE68]">{nextBari.name}</strong> ({nextBari.walkingTime || 'walk'})
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1.5 shrink-0">
-              <button
-                onClick={() => setMobileMapOpen(true)}
-                className="px-2.5 py-1.5 rounded-lg bg-[#241714] text-[#E1BE68] border border-[#C9973E] text-xs font-bold"
-              >
-                Map
-              </button>
-
-              {nextBari ? (
-                <button
-                  onClick={handleNextStop}
-                  className="px-3 py-1.5 rounded-lg bg-[#E1BE68] text-[#8F1D18] text-xs font-bold shadow-md hover:bg-white transition-colors"
-                >
-                  Next →
-                </button>
-              ) : (
-                <span className="px-2.5 py-1 rounded text-[11px] font-bold text-[#E1BE68] border border-[#C9973E]/50">
-                  Done ✓
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

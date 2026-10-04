@@ -167,68 +167,6 @@ export default function RouteTimeline({
         </div>
       </div>
 
-      {/* CURRENT / NEXT STOP STICKY BAR */}
-      {activePandal && (
-        <div className="sticky top-16 z-30 bg-[#120E0C]/95 backdrop-blur-xl text-[#F7F0E2] p-4 rounded-2xl border-2 border-[#C9973E] shadow-2xl animate-fadeIn">
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="font-extrabold uppercase tracking-widest text-[#E1BE68] flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#E1BE68] animate-ping" />
-              CURRENT STOP: {currentFormatted} — {activePandal.name.toUpperCase()}
-            </span>
-            <span className="text-[11px] text-[#F7F0E2]/70 font-bold">
-              Stop {currentStep + 1} of {route.stops.length}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2.5 border-t border-[#C9973E]/30">
-            {nextPandal ? (
-              <div className="text-xs text-[#F7F0E2] flex items-center gap-1.5 truncate">
-                <span className="text-[#E1BE68] font-bold">↓ NEXT:</span>
-                <span className="font-extrabold text-[#F7F0E2]">
-                  {nextFormatted} — {nextPandal.name}
-                </span>
-                <span className="text-[#E1BE68] font-semibold text-[11px] shrink-0">
-                  (🚶 ~{nextStop?.walkingTime || '4 min'})
-                </span>
-              </div>
-            ) : (
-              <p className="text-xs text-[#E1BE68] font-bold">
-                🎉 Final Pandal on this curated route!
-              </p>
-            )}
-
-            <div className="flex items-center gap-2 shrink-0">
-              {(activePandal.googleMapsUrl || activePandal.latitude) && (
-                <a
-                  href={activePandal.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${activePandal.latitude},${activePandal.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#F7F0E2] text-xs font-bold transition-colors border border-[#C9973E]/40 flex items-center gap-1"
-                >
-                  <span>SEE ON MAP</span>
-                  <ExternalLink className="w-3 h-3 text-[#E1BE68]" />
-                </a>
-              )}
-              {nextStop && (
-                <button
-                  onClick={() => {
-                    const next = currentStep + 1;
-                    setCurrentStep(next);
-                    if (route.stops[next] && onSeeOnMap) onSeeOnMap(route.stops[next].pandalId);
-                    const el = document.getElementById(`stop-${route.stops[next].pandalId}`);
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#C9973E] hover:bg-[#E1BE68] text-[#120E0C] text-xs font-extrabold transition-all shadow-sm flex items-center gap-1"
-                >
-                  <span>Next Stop</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* VERTICAL ROUTE TIMELINE */}
       <div className="relative pl-7 sm:pl-10 border-l-4 border-[#C9973E] space-y-10 my-8 ml-4 sm:ml-6">
         {/* Metro Starting Marker on Timeline */}

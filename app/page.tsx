@@ -2,11 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Train, Landmark, MapPin, Footprints } from 'lucide-react';
+import { ArrowRight, Train, Landmark, MapPin, Footprints, Download } from 'lucide-react';
 import { ROUTES } from '@/data/routes';
 import DuggaLogo from '@/components/DuggaLogo';
+import { usePWA } from '@/components/PWAInstallProvider';
 
 export default function HomePage() {
+  const { isInstallable, isStandalone, installApp } = usePWA();
+  const shouldShowInstall = isInstallable && !isStandalone;
+
   // 4 Popular Metro Routes (including Dum Dum Area)
   const popularRoutes = [
     ROUTES.find((r) => r.id === 'kalighat-chetla-trail') || ROUTES[0],
@@ -61,29 +65,43 @@ export default function HomePage() {
               <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
             </Link>
 
-            {/* 2. Bonedi Bari Card */}
-            <Link
-              href="/bonedi"
-              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#241714]/90 via-[#241714]/80 to-[#120E0C]/95 border-2 border-[#C9973E]/50 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#241714] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
-                  <Landmark className="w-6 h-6 text-[#E1BE68]" />
+            {/* 2. Bonedi Bari Card & Install App Button */}
+            <div className="flex flex-col gap-2.5">
+              <Link
+                href="/bonedi"
+                className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#241714]/90 via-[#241714]/80 to-[#120E0C]/95 border-2 border-[#C9973E]/50 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-[#241714] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                    <Landmark className="w-6 h-6 text-[#E1BE68]" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                      Heritage Enclaves
+                    </span>
+                    <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                      BONEDI BARI
+                    </h3>
+                    <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
+                      300-year-old aristocratic pujas
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
-                    Heritage Enclaves
-                  </span>
-                  <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
-                    BONEDI BARI
-                  </h3>
-                  <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
-                    300-year-old aristocratic pujas
-                  </p>
-                </div>
-              </div>
-              <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
-            </Link>
+                <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
+              </Link>
+
+              {/* Install App Button: ONLY in hero section under Bonedi Bari div */}
+              {shouldShowInstall && (
+                <button
+                  onClick={installApp}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#E1BE68] hover:text-[#F7F0E2] border-2 border-[#C9973E]/70 text-xs font-black uppercase tracking-wider transition-all shadow-xl hover:shadow-2xl cursor-pointer"
+                  title="Install Dugga Dekha on your device"
+                >
+                  <Download className="w-4 h-4 text-[#E1BE68]" />
+                  <span>INSTALL DUGGA DEKHA</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </section>

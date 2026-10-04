@@ -86,7 +86,7 @@ export default function BonediLandingPage() {
     <div className="bg-transparent min-h-screen py-10 sm:py-14 px-4 sm:px-8 text-[#F7F0E2]">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Editorial Header */}
-        <div className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        <div className="bg-[#120E0C]/90 backdrop-blur-md border-2 border-[#C9973E]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 relative z-40">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#8F1D18] text-[#E1BE68] text-[11px] font-black tracking-widest uppercase border border-[#C9973E]/50 shadow-sm self-start">
               <Landmark className="w-3.5 h-3.5" />
@@ -244,11 +244,12 @@ export default function BonediLandingPage() {
 
         {/* 6 Area Cards Grid — Entire card is clickable */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-[#E1BE68]">
-              6 Heritage Enclaves
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#120E0C]/90 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-[#C9973E]/40 shadow-md">
+            <span className="text-xs font-black uppercase tracking-wider text-[#E1BE68] flex items-center gap-1.5">
+              <span>🏛️</span>
+              <span>6 Heritage Enclaves</span>
             </span>
-            <span className="text-xs text-[#F7F0E2]/70 font-semibold">
+            <span className="text-xs text-[#F7F0E2]/80 font-medium">
               Total {BONEDI_BARIS.length} Historic Aristocratic Households • Tap any card to open
             </span>
           </div>

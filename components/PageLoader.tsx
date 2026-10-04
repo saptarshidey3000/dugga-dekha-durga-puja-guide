@@ -33,6 +33,15 @@ export default function PageLoader() {
     };
   }, []);
 
+  // Helper: Determine if loader should be skipped (e.g. between /metro and /route for all regions)
+  const shouldSkipLoader = (fromPath?: string | null, toPath?: string | null) => {
+    if (!fromPath || !toPath) return false;
+    if (fromPath === toPath) return true;
+    const fromMetroOrRoute = fromPath.startsWith('/metro') || fromPath.startsWith('/route');
+    const toMetroOrRoute = toPath.startsWith('/metro') || toPath.startsWith('/route');
+    return fromMetroOrRoute && toMetroOrRoute;
+  };
+
   // 2. Route change animation (1 second whenever navigating between different pages)
   useEffect(() => {
     if (isFirstMount.current) {
@@ -44,15 +53,15 @@ export default function PageLoader() {
     const prevPath = prevPathnameRef.current;
     prevPathnameRef.current = pathname;
 
-    // Do NOT trigger loader when navigating within /metro (e.g. /metro <-> /metro?region=...)
-    if (prevPath === '/metro' && pathname === '/metro') {
+    // Do NOT trigger loader when navigating between /metro and /route (for every region to route)
+    if (shouldSkipLoader(prevPath, pathname)) {
       return;
     }
 
     showLoader(1000);
   }, [pathname]);
 
-  // 3. Link click interceptor (triggers 1 second load on navigation, excluding /metro <-> /metro?region=...)
+  // 3. Link click interceptor (triggers 1 second load on navigation, excluding /metro <-> /route)
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a');
@@ -72,8 +81,8 @@ export default function PageLoader() {
           const currentPath = window.location.pathname;
           const targetPath = url.pathname;
 
-          // Do NOT show loader when navigating between /metro and /metro?region=...
-          if (currentPath === '/metro' && targetPath === '/metro') {
+          // Do NOT show loader when navigating between /metro and /route
+          if (shouldSkipLoader(currentPath, targetPath)) {
             return;
           }
 

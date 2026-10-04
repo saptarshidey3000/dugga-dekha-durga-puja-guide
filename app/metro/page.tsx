@@ -190,7 +190,7 @@ function MetroGuideContent() {
 
         {/* Dedicated Region Page Header — Distinct Regional Styling */}
         <div
-          className={`bg-gradient-to-br ${theme.gradient} backdrop-blur-md border-2 ${theme.accentBorder} rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4`}
+          className={`bg-gradient-to-br ${theme.gradient} backdrop-blur-md border-2 ${theme.accentBorder} rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4 relative z-40`}
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -248,18 +248,18 @@ function MetroGuideContent() {
 
         {/* Metro Hubs Cards Grid */}
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#120E0C]/90 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-[#C9973E]/40 shadow-md">
             <div>
-              <h2 className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#E1BE68] flex items-center gap-2">
+              <h2 className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#F7F0E2] flex items-center gap-2">
                 <span>🚇</span>
-                <span>Available Metro Hubs in {selectedRegion}:</span>
+                <span>Available Metro Hubs in <strong className="text-[#E1BE68]">{selectedRegion}</strong>:</span>
               </h2>
-              <span className="text-[11px] text-[#F7F0E2]/70">
+              <span className="text-[11px] text-[#F7F0E2]/80 font-medium">
                 Click anywhere on any station card below to open the walking route immediately
               </span>
             </div>
-            <span className="text-xs text-[#E1BE68]/80 font-bold bg-[#120E0C]/90 px-3 py-1 rounded-full border border-[#C9973E]/30">
-              {stationsInRegion.length} Hubs
+            <span className="text-xs text-[#E1BE68] font-bold bg-[#241714] px-3.5 py-1.5 rounded-full border border-[#C9973E]/50 shadow-xs">
+              {stationsInRegion.length} Hubs Available
             </span>
           </div>
 
@@ -300,8 +300,8 @@ function MetroGuideContent() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-10 bg-transparent text-[#F7F0E2]">
       {/* Screen Title & Subtitle */}
-      <div className="text-center max-w-2xl mx-auto pb-4 space-y-3">
-        <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68] inline-block px-3.5 py-1 rounded-full bg-[#120E0C]/90 border border-[#C9973E]/50 shadow-md">
+      <div className="text-center max-w-2xl mx-auto pb-4 space-y-3 bg-[#120E0C]/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-[#C9973E]/40 shadow-xl relative z-40">
+        <span className="text-xs font-extrabold uppercase tracking-widest text-[#E1BE68] inline-block px-3.5 py-1 rounded-full bg-[#241714] border border-[#C9973E]/50 shadow-md">
           Primary Transit Experience
         </span>
         <h1 className="font-editorial text-4xl sm:text-6xl font-extrabold text-[#F7F0E2] tracking-tight drop-shadow-md">
