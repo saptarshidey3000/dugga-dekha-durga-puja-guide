@@ -1,13 +1,16 @@
 // Dugga Dekha Service Worker
-const CACHE_NAME = 'dugga-dekha-v1';
+const CACHE_NAME = 'dugga-dekha-v2';
 
 const STATIC_PRECACHE = [
   '/offline',
-  '/manifest.webmanifest',
+  '/manifest.json',
+  '/app-icon.png',
   '/logo-dd.png',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
+  '/icons/icon-512x512-maskable.png',
   '/icons/apple-touch-icon.png',
+  '/favicon.ico',
 ];
 
 // Install: Cache essential shell & offline fallback

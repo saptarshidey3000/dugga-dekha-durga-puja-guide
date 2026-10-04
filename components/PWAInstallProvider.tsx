@@ -158,13 +158,13 @@ export default function PWAInstallProvider({ children }: { children: React.React
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#C9973E]/30 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8 rounded-full border border-[#C9973E] bg-[#241714] overflow-hidden flex items-center justify-center p-1">
+                <div className="relative w-10 h-10 rounded-xl border border-[#C9973E] bg-[#241714] overflow-hidden flex items-center justify-center p-0.5 shadow-md shrink-0">
                   <Image
-                    src="/logo-dd.png"
-                    alt="Dugga Dekha Logo"
-                    width={32}
-                    height={16}
-                    className="object-contain"
+                    src="/app-icon.png"
+                    alt="Dugga Dekha App Icon"
+                    width={40}
+                    height={40}
+                    className="object-cover rounded-lg"
                   />
                 </div>
                 <div>
