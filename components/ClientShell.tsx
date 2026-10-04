@@ -20,19 +20,13 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   // - Individual Bonedi Baris ('/bonedi/[id]'): REDUCED BLUR (blur-[2px])
   // - Metro ('/metro', '/metro?region=...'), Routes ('/route/...', '/routes'): REDUCED BLUR (blur-[2px])
   // - Saved ('/saved'), Explore ('/explore'), Pandal ('/pandal'): BLUR (blur-[5px])
-  // Background blur rules according to user specifications:
-  // - Home ('/'): No blur
-  // - Bonedi Bari main listing ('/bonedi'): DO NOT BLUR
-  // - Individual Bonedi Baris ('/bonedi/[id]'): REDUCED BLUR (blur-[2px])
-  // - Metro ('/metro', '/metro?region=...'), Routes ('/route/...', '/routes'): REDUCED BLUR (blur-[2px])
-  // - Saved ('/saved'), Explore ('/explore'), Pandal ('/pandal'): BLUR (blur-[4px])
   const getBlurClass = () => {
     if (!pathname || pathname === '/') {
-      return 'blur-none';
+      return 'blur-none scale-100';
     }
     // Main Bonedi Bari listing page: DO NOT BLUR
     if (pathname === '/bonedi') {
-      return 'blur-none';
+      return 'blur-none scale-100';
     }
     // Individual Bonedi Bari detail pages and Metro & Route pages: REDUCED BLUR
     if (
@@ -41,7 +35,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
       pathname.startsWith('/route') ||
       pathname.startsWith('/routes')
     ) {
-      return 'blur-[2px]';
+      return 'blur-[2px] scale-[1.02]';
     }
     // Saved, Explore, Pandal: FULL BLUR
     if (
@@ -49,9 +43,9 @@ export default function ClientShell({ children }: { children: React.ReactNode })
       pathname.startsWith('/explore') ||
       pathname.startsWith('/pandal')
     ) {
-      return 'blur-[4px]';
+      return 'blur-[5px] scale-105';
     }
-    return 'blur-none';
+    return 'blur-none scale-100';
   };
 
   // Background artwork selection:
@@ -68,50 +62,23 @@ export default function ClientShell({ children }: { children: React.ReactNode })
       </Suspense>
 
       {/* ============================================================
-          GLOBAL FIXED BACKGROUND LAYER (Completely locked to viewport, 0 glitch/motion on scroll)
-          - Hardware-accelerated GPU layer
-          - contain: strict prevents layout/scroll re-renders
-          - Fixed viewport dimensions prevent jitter on mobile & desktop
+          GLOBAL FIXED BACKGROUND LAYER
+          - Mobile: /003a00d2-6b35-4474-9e8a-69eebd551cca.png (or /bonedi-mobile.png for Bonedi Bari)
+          - Desktop / Laptop: /hopping-laptop-tab.png (or /bonedi bari image.png for Bonedi Bari)
+          - Blur effect: tuned per page (no blur on /bonedi, reduced blur on /bonedi/[id], blur on /saved & /metro)
       ============================================================ */}
       <div
-        className="fixed inset-0 pointer-events-none -z-10 overflow-hidden bg-[#120E0C]"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100vw',
-          height: '100dvh',
-          minHeight: '-webkit-fill-available',
-          transform: 'translate3d(0, 0, 0)',
-          WebkitTransform: 'translate3d(0, 0, 0)',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
-          contain: 'strict',
-        }}
+        className="fixed inset-0 w-full h-full pointer-events-none -z-20 overflow-hidden"
         aria-hidden="true"
       >
         <picture
-          className={`absolute -inset-3 w-[calc(100%+24px)] h-[calc(100%+24px)] block ${getBlurClass()}`}
-          style={{
-            transform: 'translate3d(0, 0, 0)',
-            WebkitTransform: 'translate3d(0, 0, 0)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-          }}
+          className={`block w-full h-full transition-[filter,transform] duration-500 ease-out ${getBlurClass()}`}
         >
           <source media="(min-width: 768px)" srcSet={desktopBg} />
           <img
             src={mobileBg}
             alt="Dugga Dekha Kolkata Durga Puja Background"
-            className="w-full h-full object-cover object-center pointer-events-none select-none"
-            style={{
-              transform: 'translate3d(0, 0, 0)',
-              WebkitTransform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-            }}
+            className="w-full h-full object-cover object-center"
           />
         </picture>
       </div>

@@ -31,7 +31,6 @@
   --color-almost-black: #120E0C;
 }
 
-html,
 body {
   background-color: transparent;
   color: var(--text-primary);
