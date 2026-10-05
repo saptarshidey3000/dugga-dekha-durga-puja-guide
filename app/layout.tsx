@@ -57,6 +57,7 @@ export const viewport: Viewport = {
 };
 
 import PWAInstallProvider from '@/components/PWAInstallProvider';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function RootLayout({
   children,
@@ -69,6 +70,7 @@ export default function RootLayout({
         <PWAInstallProvider>
           <ClientShell>{children}</ClientShell>
         </PWAInstallProvider>
+        <Analytics />
       </body>
     </html>
   );
