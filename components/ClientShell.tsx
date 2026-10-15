@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import BottomNav from './BottomNav';
+import Footer from './Footer';
 import SearchModal from './SearchModal';
 import PageLoader from './PageLoader';
 
@@ -86,6 +87,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
 
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <main className="flex-1 pb-16 md:pb-0 relative z-10">{children}</main>
+      <Footer />
       <BottomNav />
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>

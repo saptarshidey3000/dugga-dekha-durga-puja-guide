@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Train, Landmark, MapPin, Footprints, Download, Navigation } from 'lucide-react';
 import { ROUTES } from '@/data/routes';
-import DuggaLogo from '@/components/DuggaLogo';
 import { usePWA } from '@/components/PWAInstallProvider';
 
 export default function HomePage() {
@@ -317,21 +316,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ============================================================
-          FOOTER WITH UNIFIED DUGGA LOGO (Section 12)
-      ============================================================ */}
-      <footer className="border-t border-[#C9973E]/40 py-12 px-4 sm:px-8 bg-[#120E0C]/95 backdrop-blur-xl text-[#F7F0E2] text-center text-xs">
-        <div className="max-w-4xl mx-auto space-y-4 flex flex-col items-center">
-          <DuggaLogo size="lg" className="justify-center" />
-          <p className="text-xs text-[#E1BE68] font-bold">
-            &quot;Dugga Dekha tells you where to start and where to go next.&quot;
-          </p>
-          <p className="text-[11px] text-[#F7F0E2]/70 max-w-md">
-            Curated Kolkata Metro & Bonedi Bari walking guide. Leaflet + OpenStreetMap navigation.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
