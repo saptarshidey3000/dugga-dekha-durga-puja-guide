@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Train, Landmark, Bookmark } from 'lucide-react';
+import { Home, Train, Landmark, Bookmark, Navigation } from 'lucide-react';
 import { getSavedPandals } from '@/lib/storage';
 
 export default function BottomNav() {
@@ -26,14 +26,15 @@ export default function BottomNav() {
 
   const items = [
     { label: 'Home', href: '/', icon: Home, exact: true },
+    { label: 'Near Me', href: '/near-me', icon: Navigation },
     { label: 'Metro', href: '/metro', icon: Train },
     { label: 'Bonedi', href: '/bonedi', icon: Landmark },
     { label: 'Saved', href: '/saved', icon: Bookmark, badge: badgeCount > 0 ? badgeCount : null },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#241714]/95 backdrop-blur-xl border-t border-[#C9973E]/30 px-3 py-2 safe-area-pb shadow-[0_-8px_25px_rgba(18,14,12,0.4)]">
-      <div className="grid grid-cols-4 items-center">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#241714]/95 backdrop-blur-xl border-t border-[#C9973E]/30 px-2 py-2 safe-area-pb shadow-[0_-8px_25px_rgba(18,14,12,0.4)]">
+      <div className="grid grid-cols-5 items-center">
         {items.map((item) => {
           const isActive = item.exact
             ? pathname === item.href

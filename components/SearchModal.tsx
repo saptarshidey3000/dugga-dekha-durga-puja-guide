@@ -71,8 +71,17 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       ).slice(0, 4)
     : [];
 
+  const matchesNearMe = !!(
+    cleanQ &&
+    ('near me'.includes(cleanQ) ||
+      cleanQ.includes('near') ||
+      cleanQ.includes('locat') ||
+      cleanQ.includes('gps') ||
+      cleanQ.includes('around'))
+  );
+
   const hasResults =
-    matchingPandals.length > 0 || matchingMetros.length > 0 || matchingBonedi.length > 0;
+    matchesNearMe || matchingPandals.length > 0 || matchingMetros.length > 0 || matchingBonedi.length > 0;
 
   return (
     <div
@@ -115,6 +124,35 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {cleanQ ? (
             hasResults ? (
               <div className="space-y-6">
+                {/* Near Me Quick Match Card */}
+                {matchesNearMe && (
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#8F1D18] block mb-2 px-2">
+                      DISCOVERY FEATURE
+                    </span>
+                    <Link
+                      href="/near-me"
+                      onClick={onClose}
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E]/70 shadow-md group hover:bg-[#B52A22] transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-[#120E0C] text-[#E1BE68] flex items-center justify-center text-base shrink-0">
+                          📍
+                        </div>
+                        <div>
+                          <h4 className="font-editorial font-bold text-sm text-[#F7F0E2]">
+                            Explore Near You (GPS)
+                          </h4>
+                          <p className="text-xs text-[#E1BE68]">
+                            Find pandals, heritage Pujas and Metro stations around you
+                          </p>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
+                    </Link>
+                  </div>
+                )}
+
                 {/* Pandals Results */}
                 {matchingPandals.length > 0 && (
                   <div>
@@ -232,11 +270,18 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 Quick Suggestions:
               </span>
               <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/near-me"
+                  onClick={onClose}
+                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#8F1D18] text-[#F7F0E2] border border-[#C9973E] hover:bg-[#B52A22] transition-colors flex items-center gap-1 shadow-xs"
+                >
+                  <span>📍 Near Me</span>
+                </Link>
                 {['Kalighat', 'Deshapriya Park', 'Shobhabazar', 'Kumartuli', 'Maddox Square', 'Laha Bari'].map((hint) => (
                   <button
                     key={hint}
                     onClick={() => setQuery(hint)}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#FAF8F5] border border-[#E8DECE] hover:border-[#8F1D18] hover:text-[#8F1D18] transition-colors"
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#FAF8F5] border border-[#E8DECE] hover:border-[#8F1D18] hover:text-[#8F1D18] transition-colors cursor-pointer"
                   >
                     {hint}
                   </button>

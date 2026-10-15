@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bookmark, Train, Landmark, Compass, Menu, X } from 'lucide-react';
+import { Search, Bookmark, Train, Landmark, Compass, Menu, X, Navigation } from 'lucide-react';
 import { getSavedPandals } from '@/lib/storage';
 
 import DuggaLogo from './DuggaLogo';
@@ -36,6 +36,7 @@ export default function Navbar({ onOpenSearch }: NavbarProps) {
   }, []);
 
   const navLinks = [
+    { label: 'Near Me', href: '/near-me', icon: Navigation },
     { label: 'Metro Guide', href: '/metro', icon: Train },
     { label: 'Bonedi Bari', href: '/bonedi', icon: Landmark },
     { label: 'All Pandals', href: '/explore', icon: Compass },

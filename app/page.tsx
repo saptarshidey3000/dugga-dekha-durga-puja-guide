@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Train, Landmark, MapPin, Footprints, Download } from 'lucide-react';
+import { ArrowRight, Train, Landmark, MapPin, Footprints, Download, Navigation } from 'lucide-react';
 import { ROUTES } from '@/data/routes';
 import DuggaLogo from '@/components/DuggaLogo';
 import { usePWA } from '@/components/PWAInstallProvider';
@@ -26,7 +26,7 @@ export default function HomePage() {
       ============================================================ */}
       <section className="relative min-h-[80vh] sm:min-h-[75vh] flex flex-col justify-center px-4 sm:px-8 py-12 sm:py-20 overflow-hidden">
         {/* Hero Content */}
-        <div className="relative z-10 max-w-3xl mx-auto w-full text-center sm:text-left bg-[#120E0C]/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl border-2 border-[#C9973E]/50 shadow-2xl">
+        <div className="relative z-10 max-w-4xl mx-auto w-full text-center sm:text-left bg-[#120E0C]/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl border-2 border-[#C9973E]/50 shadow-2xl">
           <div className="inline-block px-3.5 py-1 rounded-full bg-[#8F1D18] border border-[#C9973E]/60 text-[#E1BE68] text-xs font-black tracking-widest uppercase mb-3 shadow-sm">
             KOLKATA DURGA PUJA 2026
           </div>
@@ -39,77 +39,110 @@ export default function HomePage() {
             Explore Puja. Follow the route.
           </p>
 
-          {/* Dual Primary Gateways directly in Hero: Metro Guide & Bonedi Bari */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
+          {/* Triple Primary Gateways in Hero: Metro Guide, Bonedi Bari, Near Me */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-2">
             {/* 1. Metro Guide Card */}
             <Link
               href="/metro"
-              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#8F1D18]/90 via-[#8F1D18]/70 to-[#241714]/90 border-2 border-[#C9973E]/60 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
+              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#8F1D18]/90 via-[#8F1D18]/70 to-[#241714]/90 border-2 border-[#C9973E]/60 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between text-left hover:-translate-y-0.5"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#8F1D18] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
-                  <Train className="w-6 h-6 text-[#E1BE68]" />
+                <div className="w-11 h-11 rounded-xl bg-[#8F1D18] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                  <Train className="w-5 h-5 text-[#E1BE68]" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
-                    Curated Trails · 5 Regions
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                    Curated Trails
                   </span>
-                  <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                  <h3 className="font-editorial text-lg sm:text-xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
                     METRO GUIDE
                   </h3>
-                  <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
-                    Station exits & walking routes
-                  </p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
+              <p className="text-[11px] text-[#F7F0E2]/80 mt-2.5 line-clamp-2">
+                Station exits & walking circuits across 5 regions
+              </p>
+              <div className="mt-3 pt-2 border-t border-[#C9973E]/30 flex items-center justify-between text-[11px] font-bold text-[#E1BE68]">
+                <span>Explore Metro</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
             </Link>
 
-            {/* 2. Bonedi Bari Card & Install App Button */}
-            <div className="flex flex-col gap-2.5">
-              <Link
-                href="/bonedi"
-                className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#241714]/90 via-[#241714]/80 to-[#120E0C]/95 border-2 border-[#C9973E]/50 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 text-left hover:-translate-y-0.5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[#241714] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
-                    <Landmark className="w-6 h-6 text-[#E1BE68]" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
-                      Heritage Enclaves
-                    </span>
-                    <h3 className="font-editorial text-xl sm:text-2xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
-                      BONEDI BARI
-                    </h3>
-                    <p className="text-[11px] text-[#F7F0E2]/80 mt-0.5">
-                      300-year-old aristocratic pujas
-                    </p>
-                  </div>
+            {/* 2. Bonedi Bari Card */}
+            <Link
+              href="/bonedi"
+              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#241714]/90 via-[#241714]/80 to-[#120E0C]/95 border-2 border-[#C9973E]/50 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between text-left hover:-translate-y-0.5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-[#241714] border border-[#C9973E] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                  <Landmark className="w-5 h-5 text-[#E1BE68]" />
                 </div>
-                <ArrowRight className="w-5 h-5 text-[#E1BE68] group-hover:translate-x-1 transition-transform shrink-0" />
-              </Link>
+                <div>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                    Heritage Enclaves
+                  </span>
+                  <h3 className="font-editorial text-lg sm:text-xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                    BONEDI BARI
+                  </h3>
+                </div>
+              </div>
+              <p className="text-[11px] text-[#F7F0E2]/80 mt-2.5 line-clamp-2">
+                300-year-old aristocratic household courtyards
+              </p>
+              <div className="mt-3 pt-2 border-t border-[#C9973E]/30 flex items-center justify-between text-[11px] font-bold text-[#E1BE68]">
+                <span>View Heritage</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
 
-              {/* Install App Button: ONLY in hero section under Bonedi Bari div */}
-              {shouldShowInstall && (
-                <button
-                  onClick={installApp}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#E1BE68] hover:text-[#F7F0E2] border-2 border-[#C9973E]/70 text-xs font-black uppercase tracking-wider transition-all shadow-xl hover:shadow-2xl cursor-pointer"
-                  title="Install Dugga Dekha on your device"
-                >
-                  <Download className="w-4 h-4 text-[#E1BE68]" />
-                  <span>INSTALL DUGGA DEKHA</span>
-                </button>
-              )}
-            </div>
+            {/* 3. Near Me Card */}
+            <Link
+              href="/near-me"
+              className="group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#8F1D18]/90 via-[#35120F]/90 to-[#120E0C]/95 border-2 border-[#E1BE68] hover:border-[#F7F0E2] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between text-left hover:-translate-y-0.5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-[#8F1D18] border border-[#E1BE68] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                  <Navigation className="w-5 h-5 text-[#E1BE68]" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#E1BE68] block">
+                    Live GPS Discovery
+                  </span>
+                  <h3 className="font-editorial text-lg sm:text-xl font-black text-[#F7F0E2] group-hover:text-[#E1BE68] transition-colors leading-tight">
+                    NEAR ME
+                  </h3>
+                </div>
+              </div>
+              <p className="text-[11px] text-[#F7F0E2]/80 mt-2.5 line-clamp-2">
+                Find pandals, heritage Pujas & Metros closest to you
+              </p>
+              <div className="mt-3 pt-2 border-t border-[#C9973E]/30 flex items-center justify-between text-[11px] font-bold text-[#E1BE68]">
+                <span>Find Around You</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
           </div>
+
+          {/* Install App Button: cleanly placed below primary gateways */}
+          {shouldShowInstall && (
+            <div className="mt-4">
+              <button
+                onClick={installApp}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#8F1D18] hover:bg-[#B52A22] text-[#E1BE68] hover:text-[#F7F0E2] border-2 border-[#C9973E]/70 text-xs font-black uppercase tracking-wider transition-all shadow-xl hover:shadow-2xl cursor-pointer"
+                title="Install Dugga Dekha on your device"
+              >
+                <Download className="w-4 h-4 text-[#E1BE68]" />
+                <span>INSTALL DUGGA DEKHA</span>
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
       {/* ============================================================
-          SECTION: WHAT ARE YOU LOOKING FOR? (TWO MAJOR JOURNEYS)
+          SECTION: WHAT ARE YOU LOOKING FOR? (THREE PRIMARY JOURNEYS)
       ============================================================ */}
-      <section id="discovery" className="px-4 sm:px-8 py-16 max-w-5xl mx-auto scroll-mt-14">
+      <section id="discovery" className="px-4 sm:px-8 py-16 max-w-6xl mx-auto scroll-mt-14">
         <div className="text-center max-w-xl mx-auto mb-10 bg-[#120E0C]/85 backdrop-blur-md p-6 rounded-3xl border border-[#C9973E]/40 shadow-xl">
           <span className="text-xs font-black uppercase tracking-widest text-[#E1BE68]">
             Start Your Journey
@@ -122,8 +155,8 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* 2 Primary Decision Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* 3 Primary Decision Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Metro Puja Guide */}
           <Link
             href="/metro"
@@ -172,6 +205,32 @@ export default function HomePage() {
 
             <div className="mt-8 pt-4 border-t border-[#C9973E]/30 flex items-center justify-between text-xs font-bold text-[#E1BE68]">
               <span>Explore Heritage Enclaves</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          {/* Card 3: Near Me */}
+          <Link
+            href="/near-me"
+            className="group relative rounded-3xl p-7 sm:p-8 bg-[#120E0C]/90 backdrop-blur-md hover:bg-[#120E0C] text-[#F7F0E2] border-2 border-[#C9973E]/40 hover:border-[#E1BE68] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-14 h-14 rounded-2xl bg-[#8F1D18] border border-[#E1BE68]/70 flex items-center justify-center mb-6 shadow-md group-hover:scale-105 transition-transform">
+                <Navigation className="w-7 h-7 text-[#E1BE68]" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#E1BE68]">
+                Instant Discovery
+              </span>
+              <h3 className="font-editorial text-2xl sm:text-3xl font-extrabold text-[#F7F0E2] mt-1 mb-2">
+                NEAR ME
+              </h3>
+              <p className="text-xs sm:text-sm text-[#F7F0E2]/85 leading-relaxed">
+                Walking around Kolkata? Tap &ldquo;Use My Location&rdquo; to uncover the closest pandals, Bonedi Bari courtyards, and Metro stations sorted by distance.
+              </p>
+            </div>
+
+            <div className="mt-8 pt-4 border-t border-[#C9973E]/30 flex items-center justify-between text-xs font-bold text-[#E1BE68]">
+              <span>Discover Around You</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>

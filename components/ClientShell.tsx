@@ -28,12 +28,13 @@ export default function ClientShell({ children }: { children: React.ReactNode })
     if (pathname === '/bonedi') {
       return 'blur-none scale-100';
     }
-    // Individual Bonedi Bari detail pages and Metro & Route pages: REDUCED BLUR
+    // Individual Bonedi Bari detail pages, Metro, Route, and Near Me pages: REDUCED BLUR
     if (
       pathname.startsWith('/bonedi/') ||
       pathname.startsWith('/metro') ||
       pathname.startsWith('/route') ||
-      pathname.startsWith('/routes')
+      pathname.startsWith('/routes') ||
+      pathname.startsWith('/near-me')
     ) {
       return 'blur-[2px] scale-[1.02]';
     }
